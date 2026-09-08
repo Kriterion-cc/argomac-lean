@@ -36,7 +36,7 @@ It takes that one proof as its argument. `Submission.AdaptivePrivacy` states it.
 | `randomnessFromSeed` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
 | `perfectCorrectness` | `Proof/RCBComplete.lean` with the termination instance in `Proof/Base7Termination.lean`. |
 | `lamportCompatible` | `Proof/Lamport.lean`. |
-| `adaptivePrivacy` | Open. `Proof/Security.lean` reduces it to one trace transport and one change bound per adversary. |
+| `adaptivePrivacy` | Open. `Proof/Security.lean` reduces it to one trace transport and one change bound per adversary. The inherited simulator is not yet sound: `IdealEncoding.outputTargets` returns the output point and 90 points at infinity, and `ProgrammingBridge.coordinateLowTarget` returns 0 for every bit but one. The evaluator observes both, and the real world returns uniform values there. The simulator must sample 90 free rows and one uniform target per gate, and adjust one value per digit adaptor, as `gc_privacy_proofs.tex` does for `GC_1` and `GC_2`. |
 
 ## Fixed-key schedule
 
