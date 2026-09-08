@@ -26,6 +26,18 @@ The construction and the proof import the challenge library. That library is
 these files and declare it as the Lean library `Kriterion`. Kriterion does this for
 every submission it verifies.
 
+## Status
+
+`Submission.solutionOf` closes every field of `Kriterion.Solution` except `adaptivePrivacy`.
+It takes that one proof as its argument. `Submission.AdaptivePrivacy` states it.
+
+| Field | Where |
+| --- | --- |
+| `randomnessFromSeed` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
+| `perfectCorrectness` | `Proof/RCBComplete.lean` with the termination instance in `Proof/Base7Termination.lean`. |
+| `lamportCompatible` | `Proof/Lamport.lean`. |
+| `adaptivePrivacy` | Open. `Proof/Security.lean` reduces it to one trace transport and one change bound per adversary. |
+
 ## Source
 
 The paper source is
