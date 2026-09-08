@@ -36,3 +36,9 @@ def argoMACLamportCompatible [FieldCertificate] [GroupCertificate] :
 #print axioms argoMACOutputCount
 #print axioms argoMACPerfectCorrectness
 #print axioms argoMACLamportCompatible
+
+theorem seedOffsetsClamped [FieldCertificate] [GroupCertificate] :
+    ArgoMAC.Seed.offsets.IsClamped :=
+  ArgoMAC.Seed.offsets_clamped
+
+#print axioms seedOffsetsClamped
