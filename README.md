@@ -38,6 +38,20 @@ It takes that one proof as its argument. `Submission.AdaptivePrivacy` states it.
 | `lamportCompatible` | `Proof/Lamport.lean`. |
 | `adaptivePrivacy` | Open. `Proof/Security.lean` reduces it to one trace transport and one change bound per adversary. |
 
+## Fixed-key schedule
+
+The construction indexes each fixed-key permutation by an adaptor kind, a coordinate bit
+position, and a slot (`Pipeline.FixedKeyIndex`). One bucket holds one label pair. The 91 output
+digits share the bucket and differ by an injective tweak on the permutation input
+(`Pipeline.FixedKeyLocation.tweak`). A bucket has three hash permutations and two pad
+permutations. Each permutation therefore serves one branch of every gate in its bucket, and no
+gate reads two labels through one permutation.
+
+This is the paper's bucketing from `gc_rpm_proof.tex`. The collision term per permutation is
+`Q ^ 2 / 2 + 2 * Q * q`. Summed over `16,510` point permutations with `Q = 91` and `6,350` curve
+permutations with `Q = 1`, the `q`-free part is `2 ^ 27.03`. `Security.bucketedCTPRFHas100Bits`
+proves the work-per-advantage bound at 100 bits with about two bits of margin.
+
 ## Source
 
 The paper source is

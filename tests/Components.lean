@@ -146,20 +146,11 @@ theorem pipelineMatchesRows [FieldCertificate]
 theorem fixedKeyCounts :
     ArgoMAC.Pipeline.pointDigitAdaptorsPerOutput = 13 ∧
       ArgoMAC.Pipeline.digitAdaptorCount = 1188 ∧
-      ArgoMAC.Pipeline.fixedKeyWindowCount = 3564 ∧
-      ArgoMAC.Pipeline.permutationCount = 17820 ∧
-      ArgoMAC.Pipeline.hashPermutationCount = 10692 ∧
-      ArgoMAC.Pipeline.padPermutationCount = 7128 :=
-  ⟨rfl, rfl, ArgoMAC.Pipeline.fixedKeyWindowCountValue,
-    ArgoMAC.Pipeline.permutationCountValue,
-    ArgoMAC.Pipeline.hashPermutationCountValue,
-    ArgoMAC.Pipeline.padPermutationCountValue⟩
-
-theorem fixedKeyWindowLoads :
-    ArgoMAC.BitAdaptor.fixedKeyWindowLoad ⟨0, by decide⟩ = 91 ∧
-      ArgoMAC.BitAdaptor.fixedKeyWindowLoad ⟨1, by decide⟩ = 91 ∧
-        ArgoMAC.BitAdaptor.fixedKeyWindowLoad ⟨2, by decide⟩ = 72 :=
-  ArgoMAC.BitAdaptor.fixedKeyWindowLoads
+      ArgoMAC.Pipeline.pointBucketCount = 16510 ∧
+      ArgoMAC.Pipeline.curveBucketCount = 6350 ∧
+      ArgoMAC.Pipeline.digitsPerBucket = 91 :=
+  ⟨rfl, rfl, ArgoMAC.Pipeline.pointBucketCountValue,
+    ArgoMAC.Pipeline.curveBucketCountValue, rfl⟩
 
 #print axioms generatorIsOnCurve
 #print axioms zeroIsNotOnCurve
@@ -177,4 +168,3 @@ theorem fixedKeyWindowLoads :
 #print axioms fieldLayerMatchesRows
 #print axioms pipelineMatchesRows
 #print axioms fixedKeyCounts
-#print axioms fixedKeyWindowLoads

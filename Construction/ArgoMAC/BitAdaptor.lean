@@ -4,7 +4,6 @@ This file defines one bit adaptor.
 
 import BN254
 import Cryptography.Primitives
-import Mathlib.Tactic.FinCases
 
 namespace Kriterion.ArgoMAC
 
@@ -13,42 +12,6 @@ def coordinateBitCount : Nat := 254
 namespace BitAdaptor
 
 open BN254 Cryptography
-
-def fixedKeyMaxUsesPerBucket : Nat := 91
-def fixedKeyWindowCount : Nat := 3
-def fixedKeyPermutationsPerWindow : Nat := 5
-
-/-- The adaptor uses fixed-key AES windows in a 91, 91, 72 schedule. -/
-def fixedKeyWindowIndex (position : Nat) : Nat :=
-  position / fixedKeyMaxUsesPerBucket
-
-theorem fixedKeyWindowIndexValid {position : Nat}
-    (valid : position < fixedKeyMaxUsesPerBucket * fixedKeyWindowCount) :
-    fixedKeyWindowIndex position < fixedKeyWindowCount := by
-  exact (Nat.div_lt_iff_lt_mul (by decide)).mpr (by simpa [mul_comm] using valid)
-
-/-- This value counts coordinate positions in one fixed-key window. -/
-def fixedKeyWindowLoad (window : Fin fixedKeyWindowCount) : Nat :=
-  ((Finset.range coordinateBitCount).filter fun position =>
-    fixedKeyWindowIndex position = window).card
-
-set_option maxRecDepth 100000 in
-/-- The three fixed-key windows have the 91, 91, and 72 schedule. -/
-theorem fixedKeyWindowLoads :
-    fixedKeyWindowLoad ⟨0, by decide⟩ = 91 ∧
-      fixedKeyWindowLoad ⟨1, by decide⟩ = 91 ∧
-        fixedKeyWindowLoad ⟨2, by decide⟩ = 72 := by
-  decide
-
-/-- Every fixed-key permutation receives at most 91 construction inputs. -/
-theorem fixedKeyWindowLoadBound (window : Fin fixedKeyWindowCount) :
-    fixedKeyWindowLoad window ≤ fixedKeyMaxUsesPerBucket := by
-  change Fin 3 at window
-  fin_cases window
-  · simpa [fixedKeyMaxUsesPerBucket] using (fixedKeyWindowLoads).1.le
-  · simpa [fixedKeyMaxUsesPerBucket] using (fixedKeyWindowLoads).2.1.le
-  · simpa [fixedKeyMaxUsesPerBucket] using
-      Nat.le_trans (fixedKeyWindowLoads).2.2.le (by decide : 72 ≤ 91)
 
 /-- A byte MAC key stores the labels for zero and one. -/
 structure Key where
@@ -69,7 +32,7 @@ structure FixedKeyOracle where
   decrypt : Block → Ciphertext → BaseField
   decryptEncrypt : ∀ label message, decrypt label (encrypt label message) = message
 
-/-- Each window uses three hash permutations and two pad permutations. -/
+/-- Each bucket uses three hash permutations and two pad permutations. -/
 structure FixedKeyPermutations where
   hash : Fin 3 → Equiv Block Block
   pad : Fin 2 → Equiv Block Block
