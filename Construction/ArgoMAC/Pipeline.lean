@@ -17,22 +17,21 @@ def pointDigitAdaptorsPerOutput : Nat := 13
 def digitAdaptorCount : Nat :=
   curveDigitAdaptorCount + FieldMacToECMac.outputMacCount * pointDigitAdaptorsPerOutput
 
-def fixedKeyWindowCount : Nat :=
-  digitAdaptorCount * BitAdaptor.fixedKeyWindowCount
+/-- Each fixed-key bucket holds one label pair and separates its gates by a digit tweak.
+A bucket has three hash permutations and two pad permutations. -/
+def bucketSlotCount : Nat := 5
 
-def permutationCount : Nat :=
-  fixedKeyWindowCount * BitAdaptor.fixedKeyPermutationsPerWindow
+def pointBucketCount : Nat :=
+  pointDigitAdaptorsPerOutput * coordinateBitCount * bucketSlotCount
 
-def hashPermutationCount : Nat :=
-  fixedKeyWindowCount * 3
+def curveBucketCount : Nat :=
+  curveDigitAdaptorCount * coordinateBitCount * bucketSlotCount
 
-def padPermutationCount : Nat :=
-  fixedKeyWindowCount * 2
+/-- One point bucket serves one gate for each output digit. -/
+def digitsPerBucket : Nat := FieldMacToECMac.outputMacCount
 
-theorem fixedKeyWindowCountValue : fixedKeyWindowCount = 3564 := by decide
-theorem permutationCountValue : permutationCount = 17820 := by decide
-theorem hashPermutationCountValue : hashPermutationCount = 10692 := by decide
-theorem padPermutationCountValue : padPermutationCount = 7128 := by decide
+theorem pointBucketCountValue : pointBucketCount = 16510 := by decide
+theorem curveBucketCountValue : curveBucketCount = 6350 := by decide
 
 inductive CurveAdaptor
   | y4 | y6 | x3 | x5 | x7
@@ -52,56 +51,82 @@ inductive FixedKeyLocation
       (coordinate : PointCoordinate) (adaptor : PointAdaptor)
 deriving DecidableEq, Fintype
 
+/-- A bucket kind is one adaptor family. The output digit is not part of it. -/
+inductive FixedKeyKind
+  | curve (adaptor : CurveAdaptor)
+  | point (coordinate : PointCoordinate) (adaptor : PointAdaptor)
+deriving DecidableEq, Fintype
+
 inductive FixedKeySlot
   | hash (slot : Fin 3)
   | pad (slot : Fin 2)
 deriving DecidableEq, Fintype
 
-/-- This index selects one public fixed-key permutation. -/
+/-- This index selects one public fixed-key permutation: one bucket and one slot. -/
 structure FixedKeyIndex where
-  location : FixedKeyLocation
-  window : Fin BitAdaptor.fixedKeyWindowCount
+  kind : FixedKeyKind
+  position : Fin coordinateBitCount
   slot : FixedKeySlot
 deriving DecidableEq, Fintype
 
+def FixedKeyLocation.kind : FixedKeyLocation → FixedKeyKind
+  | .curve adaptor => .curve adaptor
+  | .point _ coordinate adaptor => .point coordinate adaptor
+
+/-- The digit tweak is injective on the 91 outputs. A curve gate uses no tweak. -/
+def FixedKeyLocation.tweak : FixedKeyLocation → Block
+  | .curve _ => 0
+  | .point output _ _ => BitVec.ofNat 128 (output.val + 1)
+
+/-- The tweak map is an involution on blocks. -/
+def tweakEquiv (tweak : Block) : Equiv Block Block where
+  toFun block := block ^^^ tweak
+  invFun block := block ^^^ tweak
+  left_inv block := by
+    show block ^^^ tweak ^^^ tweak = block
+    rw [BitVec.xor_assoc, BitVec.xor_self, BitVec.xor_zero]
+  right_inv block := by
+    show block ^^^ tweak ^^^ tweak = block
+    rw [BitVec.xor_assoc, BitVec.xor_self, BitVec.xor_zero]
+
+/-- The gate permutation reads the bucket permutation at the tweaked label. -/
 def fixedKeyPermutations
     (oracle : PermutationOracle FixedKeyIndex Block)
-    (location : FixedKeyLocation) (window : Nat) : BitAdaptor.FixedKeyPermutations := {
-  hash := fun slot => oracle.permutation {
-    location
-    window := ⟨window % BitAdaptor.fixedKeyWindowCount, by
-      exact Nat.mod_lt _ (by decide)⟩
+    (location : FixedKeyLocation) (position : Nat) : BitAdaptor.FixedKeyPermutations := {
+  hash := fun slot => (tweakEquiv location.tweak).trans (oracle.permutation {
+    kind := location.kind
+    position := ⟨position % coordinateBitCount, Nat.mod_lt _ (by decide)⟩
     slot := .hash slot
-  }
-  pad := fun slot => oracle.permutation {
-    location
-    window := ⟨window % BitAdaptor.fixedKeyWindowCount, by
-      exact Nat.mod_lt _ (by decide)⟩
+  })
+  pad := fun slot => (tweakEquiv location.tweak).trans (oracle.permutation {
+    kind := location.kind
+    position := ⟨position % coordinateBitCount, Nat.mod_lt _ (by decide)⟩
     slot := .pad slot
-  }
+  })
 }
 
-def fixedKeyWindow (oracle : PermutationOracle FixedKeyIndex Block)
-    (location : FixedKeyLocation) (window : Nat) : BitAdaptor.FixedKeyOracle :=
-  BitAdaptor.fixedKeyOracle (fixedKeyPermutations oracle location window)
+/-- This oracle serves the gate of one location at one coordinate bit position. -/
+def fixedKeyGate (oracle : PermutationOracle FixedKeyIndex Block)
+    (location : FixedKeyLocation) (position : Nat) : BitAdaptor.FixedKeyOracle :=
+  BitAdaptor.fixedKeyOracle (fixedKeyPermutations oracle location position)
 
 def curveOracles (oracle : PermutationOracle FixedKeyIndex Block) :
     CurveMembership.Oracles := {
-  y4 := fixedKeyWindow oracle (.curve .y4)
-  y6 := fixedKeyWindow oracle (.curve .y6)
-  x3 := fixedKeyWindow oracle (.curve .x3)
-  x5 := fixedKeyWindow oracle (.curve .x5)
-  x7 := fixedKeyWindow oracle (.curve .x7)
+  y4 := fixedKeyGate oracle (.curve .y4)
+  y6 := fixedKeyGate oracle (.curve .y6)
+  x3 := fixedKeyGate oracle (.curve .x3)
+  x5 := fixedKeyGate oracle (.curve .x5)
+  x7 := fixedKeyGate oracle (.curve .x7)
 }
 
 def biquadraticOracles (oracle : PermutationOracle FixedKeyIndex Block)
     (output : Fin FieldMacToECMac.outputMacCount) (coordinate : PointCoordinate) :
     Biquadratic.Oracles := {
-  y6 := fixedKeyWindow oracle (.point output coordinate .y6)
-  y8 := fixedKeyWindow oracle (.point output coordinate .y8)
-  y10 := fixedKeyWindow oracle (.point output coordinate .y10)
-  x7 := fixedKeyWindow oracle (.point output coordinate .x7)
-  x9 := fixedKeyWindow oracle (.point output coordinate .x9)
+  y6 := fixedKeyGate oracle (.point output coordinate .y6)
+  y8 := fixedKeyGate oracle (.point output coordinate .y8)
+  y10 := fixedKeyGate oracle (.point output coordinate .y10)
+  x7 := fixedKeyGate oracle (.point output coordinate .x7)
+  x9 := fixedKeyGate oracle (.point output coordinate .x9)
 }
 
 def pointOracles (oracle : PermutationOracle FixedKeyIndex Block) :

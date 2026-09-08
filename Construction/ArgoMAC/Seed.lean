@@ -328,17 +328,16 @@ def pointCoordinateCode : Pipeline.PointCoordinate → Nat
 def pointAdaptorCode : Pipeline.PointAdaptor → Nat
   | .y6 => 0 | .y8 => 1 | .y10 => 2 | .x7 => 3 | .x9 => 4
 
-def locationCode : Pipeline.FixedKeyLocation → Nat
+def kindCode : Pipeline.FixedKeyKind → Nat
   | .curve adaptor => curveAdaptorCode adaptor
-  | .point output coordinate adaptor =>
-      5 + (output.val * 3 + pointCoordinateCode coordinate) * 5 + pointAdaptorCode adaptor
+  | .point coordinate adaptor => 5 + pointCoordinateCode coordinate * 5 + pointAdaptorCode adaptor
 
 def slotCode : Pipeline.FixedKeySlot → Nat
   | .hash slot => slot.val
   | .pad slot => 3 + slot.val
 
 def fixedKeyCode (index : Pipeline.FixedKeyIndex) : Nat :=
-  (locationCode index.location * 3 + index.window.val) * 5 + slotCode index.slot
+  (kindCode index.kind * coordinateBitCount + index.position.val) * 5 + slotCode index.slot
 
 def encPRFCode (index : EncPRF.PermutationIndex) : Nat :=
   (match index.1 with | .x => 0 | .y => 1) * coordinateBitCount + index.2.val

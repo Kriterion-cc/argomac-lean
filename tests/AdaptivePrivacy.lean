@@ -7,26 +7,10 @@ theorem paperCTPRFHas100Bits :
       ArgoMAC.Security.permutationWork ArgoMAC.Security.paperConcreteCTPRFError :=
   ArgoMAC.Security.paperConcreteCTPRFHas100Bits
 
-theorem fullScheduleTransferredCTPRFDoesNotHave100Bits :
-    ¬Cryptography.Assumptions.ConcreteBound 100
-      ArgoMAC.Security.permutationWork ArgoMAC.Security.fullScheduleTransferredCTPRFError :=
-  ArgoMAC.Security.fullScheduleTransferredCTPRFDoesNotHave100Bits
-
-theorem programmedHashArithmeticHas100Bits :
+theorem bucketedCTPRFHas100Bits :
     Cryptography.Assumptions.ConcreteBound 100
-      ArgoMAC.Security.permutationWork ArgoMAC.Security.programmedHashError :=
-  ArgoMAC.Security.programmedHashArithmeticHas100Bits
-
-theorem programmedPadArithmeticHas100Bits :
-    Cryptography.Assumptions.ConcreteBound 100
-      ArgoMAC.Security.permutationWork ArgoMAC.Security.programmedPadError :=
-  ArgoMAC.Security.programmedPadArithmeticHas100Bits
-
-theorem selectedBranchProgrammingArithmeticHas100Bits (bit : Bool) :
-    Cryptography.Assumptions.ConcreteBound 100
-      ArgoMAC.Security.permutationWork
-      (ArgoMAC.Security.selectedBranchProgrammedError bit) :=
-  ArgoMAC.Security.selectedBranchProgrammingArithmeticHas100Bits bit
+      ArgoMAC.Security.permutationWork ArgoMAC.Security.bucketedCTPRFError :=
+  ArgoMAC.Security.bucketedCTPRFHas100Bits
 
 theorem hashLiftRoundingArithmeticHas100Bits :
     Cryptography.Assumptions.WorkPerAdvantage 100 1
@@ -34,12 +18,7 @@ theorem hashLiftRoundingArithmeticHas100Bits :
   ArgoMAC.Security.hashLiftRoundingArithmeticHas100Bits
 
 #print axioms paperCTPRFHas100Bits
-#print axioms fullScheduleTransferredCTPRFDoesNotHave100Bits
-#print axioms programmedHashArithmeticHas100Bits
-#print axioms programmedPadArithmeticHas100Bits
-#print axioms selectedBranchProgrammingArithmeticHas100Bits
-#print axioms ArgoMAC.Security.selectedBranchBucketSquareBound
-#print axioms ArgoMAC.Security.selectedBranchBucketLinearBound
+#print axioms bucketedCTPRFHas100Bits
 #print axioms hashLiftRoundingArithmeticHas100Bits
 #print axioms ArgoMAC.Security.vectorFunctionEquiv
 #print axioms ArgoMAC.Security.Garbling.Randomness.data_injective
