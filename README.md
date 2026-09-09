@@ -80,7 +80,8 @@ Lean bounds the valid source sum over compatible transcript sources.
 Lean bounds the invalid source sum after independent Enc/hash sampling.
 Lean checks the exact valid and invalid source phase factors.
 Lean splits the original random tape into the exact source sum.
-The final valid-input and invalid-input transcript comparisons remain open.
+Lean bounds the full invalid ghost source by the actual real adaptive transcript.
+The final valid-input transcript comparison remains open.
 
 ## Simulator
 

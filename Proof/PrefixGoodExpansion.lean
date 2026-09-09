@@ -64,9 +64,9 @@ theorem sourceGoodMass_nested_map {Outer Inner Choice Source Transcript : Type*}
     sourceGoodMass samples kernel bad output =
       ∑' first, outer first * ∑' second, inner second *
         sourceGoodMass (choices first second) (fun choice => kernel (project first second choice))
-          ((project first second) ⁻¹' bad) output := by
+          {choice | bad (project first second choice)} output := by
   rw [samplesEq]
-  simp only [sourceGoodMass_bind, sourceGoodMass_map]
+  simp only [sourceGoodMass_bind, sourceGoodMass_map]; rfl
 
 private theorem fullGatePrefixSamples_expansion [FieldCertificate] [GroupCertificate] {Prefix : Type*}
     (scalar : ScalarField) (witness : Garbling.Randomness) (parameter : Nat)
@@ -98,7 +98,7 @@ private theorem fullGatePrefixGood_mass_aux [FieldCertificate] [GroupCertificate
         (retainedSourceRows scalar (maskRetainedTape randomness))
         (decodeFullSource (tag.1, sharedCircuitHashRest randomness tag.2))) (maskRetainedTape randomness).2.2)
         (fun selected => kernel (randomness, tag, selected))
-        ((fun selected => (randomness, tag, selected)) ⁻¹' bad) output := by
+        {selected | bad (randomness, tag, selected)} output := by
   exact sourceGoodMass_nested_map tapes tags
     (fun randomness tag =>
       choose (circuitMaskSourceTable (maskRetainedTape randomness).2.2.1.1 (maskRetainedTape randomness).2.2.1.2.value
@@ -121,7 +121,7 @@ theorem fullGatePrefixGood_mass [FieldCertificate] [GroupCertificate] {Prefix Ob
           (retainedSourceRows scalar (maskRetainedTape randomness))
           (decodeFullSource (tag.1, sharedCircuitHashRest randomness tag.2))) (maskRetainedTape randomness).2.2)
           (fun selected => kernel (randomness, tag, selected))
-          ((fun selected => (randomness, tag, selected)) ⁻¹' bad) output := by
+          {selected | bad (randomness, tag, selected)} output := by
   exact fullGatePrefixGood_mass_aux scalar choose kernel bad output
     (fullGatePrefixSamples scalar witness parameter choose) (randomTape witness parameter)
     (PMF.uniformOfFintype ((RawCircuitGate → FullHashLift) × CircuitMaskTables))

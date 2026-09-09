@@ -1,4 +1,4 @@
-import Proof.HiddenEncPRFGame
+import Proof.EncPRFGame
 
 namespace Kriterion.ArgoMAC.Security
 

@@ -1,4 +1,5 @@
-import Proof.EncHashSourceMass
+import Proof.EncPRFTranscript
+import Proof.HiddenHashSource
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography

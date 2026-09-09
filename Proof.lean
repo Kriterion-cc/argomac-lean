@@ -39,8 +39,6 @@ import Proof.TapeDistribution
 import Proof.EncPRFTranscript
 import Proof.MaskRandomizerDistribution
 import Proof.EncPRFGame
-import Proof.HiddenEncPRFGame
-import Proof.AdaptiveProgram
 import Proof.AdaptivePermutationRatio
 import Proof.ActualScheduleRecords
 import Proof.AdaptiveGameRatio
@@ -100,12 +98,10 @@ import Proof.SourceRekeyGood
 import Proof.ValidSourceRatio
 import Proof.FullSourceTape
 import Proof.NormalizedLinkedCurveRatio
-import Proof.SelectedLabelCancellation
 import Proof.FullGateSharedSource
 import Proof.FullGateCurveTransport
 import Proof.FullSourceFlags
 import Proof.TagFiberMass
-import Proof.EncHashSourceMass
 import Proof.RetainedTableAlignment
 import Proof.RealSourceLower
 import Proof.CrossSourceMass
@@ -152,3 +148,10 @@ import Proof.ValidGlobalSourceRatio
 import Proof.ValidNamedSourceRatio
 import Proof.RandomTapeSourceSum
 import Proof.SmallSourceRatio
+import Proof.ValidPrefixPhaseWeight
+import Proof.ValidPrefixRestSum
+import Proof.ValidEventSourceSum
+import Proof.InvalidGlobalSourceRatio
+import Proof.RealSourceProjection
+import Proof.InvalidEndpointRatio
+import Proof.InvalidGhostEndpoint
