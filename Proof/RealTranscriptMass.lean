@@ -364,7 +364,7 @@ def rawBucketOffset {Gate : Type} (gates : Gate → RawGatePrescription)
     (index : Pipeline.FixedKeyIndex) (use : RawBucketUse gates index) : Block :=
   (gates use.1.1).offset use.1.2
 
-private theorem rawGatesWithLabels_domain {Gate : Type} (gates : Gate → RawGatePrescription)
+theorem rawGatesWithLabels_domain {Gate : Type} (gates : Gate → RawGatePrescription)
     (labels : RawLabelBucket → Bool → Block) (index : Pipeline.FixedKeyIndex) :
     rawBucketDomain (rawGatesWithLabels gates labels) index =
       fun use : RawBucketUse gates index =>
@@ -374,7 +374,7 @@ private theorem rawGatesWithLabels_domain {Gate : Type} (gates : Gate → RawGat
   subst index
   cases slot <;> rfl
 
-private theorem rawGatesWithLabels_range {Gate : Type} (gates : Gate → RawGatePrescription)
+theorem rawGatesWithLabels_range {Gate : Type} (gates : Gate → RawGatePrescription)
     (labels : RawLabelBucket → Bool → Block) (index : Pipeline.FixedKeyIndex) :
     rawBucketRange (rawGatesWithLabels gates labels) index =
       fun use : RawBucketUse gates index => rawBucketOffset gates index use ^^^
@@ -510,7 +510,7 @@ theorem rawCoveredFixedTranscript_mass {Gate : Type} [Fintype Gate] [Fintype Blo
     (fun query : ResidualFixedQueryDomain history covered index => reference.permutation index query.1.1)
     (domainsDistinct index) (rangesDistinct index)
 
-private theorem not_mem_forbidden_of_disjoint {Gate Query : Type} [Fintype Gate] [Fintype Query]
+theorem not_mem_forbidden_of_disjoint {Gate Query : Type} [Fintype Gate] [Fintype Query]
     (tweak offset : Gate → Block) (queryDomain queryRange : Query → Block) (label : Block)
     (domains : ∀ gate query, label ^^^ tweak gate ≠ queryDomain query)
     (ranges : ∀ gate query, offset gate ^^^ label ≠ queryRange query) :

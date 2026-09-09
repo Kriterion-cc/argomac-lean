@@ -100,4 +100,47 @@ theorem realGame_adaptiveDecisionProgram {oracle : OracleSpec}
           handler randomness).map Prod.fst) := by
   simp only [GarbledCircuit.realGame, adaptiveDecisionProgram_run, PMF.map_bind]
 
+/-- This operation changes only the result of an oracle program. -/
+noncomputable def mapOracleProgram {oracle : OracleSpec} {First Second : Type} (mapResult : First → Second) :
+    {budget : Nat} → OracleProgram oracle First budget → OracleProgram oracle Second budget
+  | _, .pure distribution => .pure (distribution.map mapResult)
+  | _, .query request next => .query request (fun answer => mapOracleProgram mapResult (next answer))
+  | _, .sample distribution next => .sample distribution (fun value => mapOracleProgram mapResult (next value))
+
+/-- The result map preserves every oracle state transition. -/
+theorem mapOracleProgram_run {oracle : OracleSpec} {First Second State : Type}
+    (mapResult : First → Second) (handler : OracleHandler oracle State) {budget : Nat}
+    (program : OracleProgram oracle First budget) (state : State) :
+    (mapOracleProgram mapResult program).run handler state =
+      (program.run handler state).map (fun output => (mapResult output.1, output.2)) := by
+  induction program generalizing state with
+  | pure distribution => simp only [mapOracleProgram, OracleProgram.run, PMF.map_comp, Function.comp_def]
+  | query request next inductionHypothesis => exact inductionHypothesis _ _
+  | sample distribution next inductionHypothesis =>
+      simp only [mapOracleProgram, OracleProgram.run, PMF.map_bind]
+      apply congrArg distribution.bind
+      funext value
+      exact inductionHypothesis value state
+
+/-- This combined program retains the selected input for branch-specific events. -/
+noncomputable def adaptiveInputDecisionProgram {oracle : OracleSpec} {Input Public Labels Aux : Type}
+    (adversary : GarbledCircuit.AdaptiveAdversary oracle Input Public Labels Aux)
+    (parameter : Nat) (table : Public) (auxiliary : Aux) (labels : Input → Labels) :
+    OracleProgram oracle (Input × Bool)
+      (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) :=
+  appendOracleProgram (fun selected => mapOracleProgram (Prod.mk selected.1)
+    (adversary.decide parameter table (labels selected.1) auxiliary selected.2))
+    (adversary.chooseInput parameter table auxiliary)
+
+/-- The tagged program has the exact two-phase result and selected input. -/
+theorem adaptiveInputDecisionProgram_run {oracle : OracleSpec} {Input Public Labels Aux State : Type}
+    (adversary : GarbledCircuit.AdaptiveAdversary oracle Input Public Labels Aux)
+    (parameter : Nat) (table : Public) (auxiliary : Aux) (labels : Input → Labels)
+    (handler : OracleHandler oracle State) (state : State) :
+    (adaptiveInputDecisionProgram adversary parameter table auxiliary labels).run handler state =
+      ((adversary.chooseInput parameter table auxiliary).run handler state).bind fun selected =>
+        ((adversary.decide parameter table (labels selected.1.1) auxiliary selected.1.2).run
+          handler selected.2).map (fun output => ((selected.1.1, output.1), output.2)) := by
+  simp only [adaptiveInputDecisionProgram, appendOracleProgram_run, mapOracleProgram_run]
+
 end Kriterion.ArgoMAC.Security

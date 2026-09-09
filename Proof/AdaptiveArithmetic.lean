@@ -119,4 +119,26 @@ theorem smallBudget_slots_fit [Fintype Block] (queries : Nat) (small : queries <
   norm_num at small ⊢
   omega
 
+/-- The checked collision, query, linking, and source losses fit the adaptive envelope. -/
+theorem adaptiveLossSum_le_envelope (before queries : Nat) (beforeLe : before ≤ queries) :
+    (243390420 : ℝ) / 2 ^ 128 + 182 * before / 2 ^ 128 + 182 * queries / 2 ^ 128 +
+      queries / (baseFieldModulus : ℝ) + (508 + 4 * queries) / 2 ^ 128 + 1 / baseFieldModulus +
+      2 * (301752 * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384) + (2 : ℝ) ^ (-240 : ℤ) ≤
+        adaptiveErrorEnvelope queries := by
+  have hidden : (queries : ℝ) / baseFieldModulus ≤ queries / (2 : ℝ) ^ 128 := by
+    simpa only [div_eq_mul_inv, one_mul] using
+      mul_le_mul_of_nonneg_left fieldMaskLoss_le_block (Nat.cast_nonneg queries)
+  have offset : (2 : ℝ) ^ (-240 : ℤ) ≤ 1 / (2 : ℝ) ^ 128 := by norm_num
+  have prefixBound : (before : ℝ) ≤ queries := by exact_mod_cast beforeLe
+  calc
+    _ ≤ (243390420 : ℝ) / 2 ^ 128 + 182 * before / 2 ^ 128 + 182 * queries / 2 ^ 128 +
+        queries / (2 : ℝ) ^ 128 + (508 + 4 * queries) / 2 ^ 128 + 1 / 2 ^ 128 + 2 * (301752 / 2 ^ 128) +
+        1 / 2 ^ 128 := by linarith [circuitHashRounding_le_blocks, fieldMaskLoss_le_block]
+    _ ≤ adaptiveErrorEnvelope queries := by
+      norm_num [adaptiveErrorEnvelope, adaptiveConstantCount, adaptiveQueryCount,
+        Pipeline.pointDigitAdaptorsPerOutput, Pipeline.curveDigitAdaptorCount,
+        Pipeline.digitsPerBucket, FieldMacToECMac.outputMacCount, coordinateBitCount,
+        bitAdaptorEvaluationCountValue, blockBits]
+      linarith [Nat.cast_nonneg (α := ℝ) queries]
+
 end Kriterion.ArgoMAC.Security

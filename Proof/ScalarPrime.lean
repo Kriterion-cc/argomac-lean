@@ -1,7 +1,6 @@
 import BN254
 import Mathlib.NumberTheory.LucasPrimality
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.Ring
+import Mathlib.Tactic
 
 namespace Kriterion.BN254
 

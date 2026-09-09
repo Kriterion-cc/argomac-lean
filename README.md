@@ -58,7 +58,13 @@ The final transcript proof must place the actual advantage below that envelope.
 Lean checks the full shared hash source and adaptive output-row bound.
 Lean checks the actual hidden-hash link bound `q/p + (508 + 4q)/2^128`.
 The transcript factors retain both query phases and allow valid replay after encoding.
-The final composition and the concrete collision premises remain open.
+Lean checks the point birthday and adaptive prequery bounds.
+Lean connects the full source to the actual ideal simulator transcript.
+The invalid source keeps its curve request.
+Lean checks the joint bad-source bound with the actual retained rows.
+Lean checks the real-source density and weighted hidden-hash comparison.
+Lean checks the complete hash-fiber transport and its invalid-source collision flag.
+The final valid-input and invalid-input mass comparisons remain open.
 
 ## Simulator
 
