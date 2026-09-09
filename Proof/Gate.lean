@@ -10,21 +10,26 @@ namespace Kriterion.ArgoMAC.Security
 
 open BN254 Cryptography
 
+/-- The `window` argument is the coordinate bit position of the gate. -/
 def fixedKeyIndex (location : Pipeline.FixedKeyLocation) (window : Nat)
     (slot : Pipeline.FixedKeySlot) : Pipeline.FixedKeyIndex :=
-  ⟨location, ⟨window % BitAdaptor.fixedKeyWindowCount,
-    Nat.mod_lt _ (by decide)⟩, slot⟩
+  ⟨location.kind, ⟨window % coordinateBitCount, Nat.mod_lt _ (by decide)⟩, slot⟩
+
+/-- The bucket permutation reads the label at this tweaked input. -/
+def gateInput (location : Pipeline.FixedKeyLocation) (label : Block) : Block :=
+  label ^^^ location.tweak
 
 def programFixedSlot (state : SimulatorState) (location : Pipeline.FixedKeyLocation)
     (window : Nat) (slot : Pipeline.FixedKeySlot) (label block : Block) : SimulatorState :=
-  tryProgramFixed state (fixedKeyIndex location window slot) label (block ^^^ label)
+  tryProgramFixed state (fixedKeyIndex location window slot) (gateInput location label)
+    (block ^^^ label)
 
 def fixedProgramRecord (location : Pipeline.FixedKeyLocation) (window : Nat)
     (slot : Pipeline.FixedKeySlot) (label block : Block) :
     PermutationRecord Pipeline.FixedKeyIndex Block :=
   { action := .program, origin := .simulator,
     index := fixedKeyIndex location window slot,
-    domain := label, range := block ^^^ label }
+    domain := gateInput location label, range := block ^^^ label }
 
 def programHashGate (state : SimulatorState) (location : Pipeline.FixedKeyLocation)
     (window : Nat) (label : Block) (blocks : Fin 3 → Block) : SimulatorState :=
@@ -48,19 +53,19 @@ def HashGateFresh (state : SimulatorState) (location : Pipeline.FixedKeyLocation
   let first := programFixedSlot state location window (.hash 0) label (blocks 0)
   let second := programFixedSlot first location window (.hash 1) label (blocks 1)
   FreshPermutationPair state.fixedTranscript (fixedKeyIndex location window (.hash 0))
-      label (blocks 0 ^^^ label) ∧
+      (gateInput location label) (blocks 0 ^^^ label) ∧
     FreshPermutationPair first.fixedTranscript (fixedKeyIndex location window (.hash 1))
-      label (blocks 1 ^^^ label) ∧
+      (gateInput location label) (blocks 1 ^^^ label) ∧
     FreshPermutationPair second.fixedTranscript (fixedKeyIndex location window (.hash 2))
-      label (blocks 2 ^^^ label)
+      (gateInput location label) (blocks 2 ^^^ label)
 
 def PadGateFresh (state : SimulatorState) (location : Pipeline.FixedKeyLocation)
     (window : Nat) (label : Block) (blocks : Fin 2 → Block) : Prop :=
   let first := programFixedSlot state location window (.pad 0) label (blocks 0)
   FreshPermutationPair state.fixedTranscript (fixedKeyIndex location window (.pad 0))
-      label (blocks 0 ^^^ label) ∧
+      (gateInput location label) (blocks 0 ^^^ label) ∧
     FreshPermutationPair first.fixedTranscript (fixedKeyIndex location window (.pad 1))
-      label (blocks 1 ^^^ label)
+      (gateInput location label) (blocks 1 ^^^ label)
 
 def GateFresh (state : SimulatorState) (location : Pipeline.FixedKeyLocation)
     (window : Nat) (bit : Bool) (label : Block) (hashBlocks : Fin 3 → Block)
@@ -247,7 +252,8 @@ def programGateForTarget (state : SimulatorState) (location : Pipeline.FixedKeyL
 def recordConstructionFixed (state : SimulatorState)
     (location : Pipeline.FixedKeyLocation) (window : Nat)
     (slot : Pipeline.FixedKeySlot) (label : Block) : SimulatorState :=
-  (constructionOracleHandler (.fixedForward (fixedKeyIndex location window slot) label) state).2
+  (constructionOracleHandler (.fixedForward (fixedKeyIndex location window slot)
+    (gateInput location label)) state).2
 
 /-- This operation records the five permutation queries from one gate construction. -/
 def recordGateConstructionQueries (state : SimulatorState)
@@ -264,7 +270,7 @@ def garbleGate (state : SimulatorState) (location : Pipeline.FixedKeyLocation)
     (window : Nat) (slope : BaseField) (key : BitAdaptor.Key) :
     BitAdaptor.Table × BitAdaptor.OutputKey × SimulatorState :=
   let result := BitAdaptor.garble
-    (Pipeline.fixedKeyWindow state.fixedOracle location window) slope key
+    (Pipeline.fixedKeyGate state.fixedOracle location window) slope key
   (result.1, result.2, recordGateConstructionQueries state location window key)
 
 theorem recordConstructionFixed_preservesInvariant (state : SimulatorState)
@@ -273,7 +279,8 @@ theorem recordConstructionFixed_preservesInvariant (state : SimulatorState)
     (invariant : SimulatorInvariant state) :
     SimulatorInvariant (recordConstructionFixed state location window slot label) :=
   oracleHandlerFor_preservesInvariant .construction
-    (.fixedForward (fixedKeyIndex location window slot) label) state invariant
+    (.fixedForward (fixedKeyIndex location window slot) (gateInput location label)) state
+    invariant
 
 /-- Gate construction records all five queries and preserves the shared invariant. -/
 theorem recordGateConstructionQueries_preservesInvariant (state : SimulatorState)
@@ -308,25 +315,21 @@ theorem hashGate_evaluate_of_matches
     (table : BitAdaptor.Table) (target : BaseField) (blocks : Fin 3 → Block)
     (blocksTarget : ((blocks 2 ++ blocks 1 ++ blocks 0).toNat : BaseField) = target)
     (matchPoints : ∀ slot, oracle.permutation
-      (fixedKeyIndex location window (.hash slot)) label = blocks slot ^^^ label) :
-    BitAdaptor.evaluate (Pipeline.fixedKeyWindow oracle location window)
+      (fixedKeyIndex location window (.hash slot)) (gateInput location label) =
+        blocks slot ^^^ label) :
+    BitAdaptor.evaluate (Pipeline.fixedKeyGate oracle location window)
       table false label = target := by
   have hash (slot : Fin 3) : daviesMeyer
-      (oracle.permutation (fixedKeyIndex location window (.hash slot))) label =
+      ((Pipeline.fixedKeyPermutations oracle location window).hash slot) label =
       blocks slot := by
     change Cryptography.xor
-      (oracle.permutation (fixedKeyIndex location window (.hash slot)) label) label =
-      blocks slot
+      (oracle.permutation (fixedKeyIndex location window (.hash slot)) (gateInput location label))
+      label = blocks slot
     rw [matchPoints slot, Cryptography.xor, BitVec.xor_assoc,
       BitVec.xor_self, BitVec.xor_zero]
   change ((daviesMeyer _ label ++ daviesMeyer _ label ++ daviesMeyer _ label).toNat :
     BaseField) = target
-  rw [show daviesMeyer _ label = blocks 2 by
-      simpa [Pipeline.fixedKeyPermutations, fixedKeyIndex] using hash 2]
-  rw [show daviesMeyer _ label = blocks 1 by
-      simpa [Pipeline.fixedKeyPermutations, fixedKeyIndex] using hash 1]
-  rw [show daviesMeyer _ label = blocks 0 by
-      simpa [Pipeline.fixedKeyPermutations, fixedKeyIndex] using hash 0]
+  rw [hash 2, hash 1, hash 0]
   exact blocksTarget
 
 /-- Matching selected pad records make one true gate return its target. -/
@@ -337,24 +340,21 @@ theorem padGate_evaluate_of_matches
     (blocksTarget : blocks 1 ++ blocks 0 =
       table.trueRow ^^^ BitAdaptor.fieldBytes target)
     (matchPoints : ∀ slot, oracle.permutation
-      (fixedKeyIndex location window (.pad slot)) label = blocks slot ^^^ label) :
-    BitAdaptor.evaluate (Pipeline.fixedKeyWindow oracle location window)
+      (fixedKeyIndex location window (.pad slot)) (gateInput location label) =
+        blocks slot ^^^ label) :
+    BitAdaptor.evaluate (Pipeline.fixedKeyGate oracle location window)
       table true label = target := by
   have pad (slot : Fin 2) : daviesMeyer
-      (oracle.permutation (fixedKeyIndex location window (.pad slot))) label =
+      ((Pipeline.fixedKeyPermutations oracle location window).pad slot) label =
       blocks slot := by
     change Cryptography.xor
-      (oracle.permutation (fixedKeyIndex location window (.pad slot)) label) label =
-      blocks slot
+      (oracle.permutation (fixedKeyIndex location window (.pad slot)) (gateInput location label))
+      label = blocks slot
     rw [matchPoints slot, Cryptography.xor, BitVec.xor_assoc,
       BitVec.xor_self, BitVec.xor_zero]
   change (((daviesMeyer _ label ++ daviesMeyer _ label) ^^^ table.trueRow).toNat :
     BaseField) = target
-  rw [show daviesMeyer _ label = blocks 1 by
-      simpa [Pipeline.fixedKeyPermutations, fixedKeyIndex] using pad 1]
-  rw [show daviesMeyer _ label = blocks 0 by
-      simpa [Pipeline.fixedKeyPermutations, fixedKeyIndex] using pad 0]
-  rw [blocksTarget]
+  rw [pad 1, pad 0, blocksTarget]
   rw [show (table.trueRow ^^^ BitAdaptor.fieldBytes target) ^^^ table.trueRow =
       BitAdaptor.fieldBytes target by
     rw [BitVec.xor_comm table.trueRow, BitVec.xor_assoc,
@@ -370,7 +370,7 @@ theorem programHashGate_evaluate (state : SimulatorState)
     (blocksTarget : ((blocks 2 ++ blocks 1 ++ blocks 0).toNat : BaseField) = target)
     (notBad : (programHashGate state location window label blocks).bad = false) :
     BitAdaptor.evaluate
-        (Pipeline.fixedKeyWindow (programHashGate state location window label blocks).fixedOracle
+        (Pipeline.fixedKeyGate (programHashGate state location window label blocks).fixedOracle
           location window) table false label = target := by
   let index0 := fixedKeyIndex location window (.hash 0)
   let index1 := fixedKeyIndex location window (.hash 1)
@@ -378,23 +378,23 @@ theorem programHashGate_evaluate (state : SimulatorState)
   let state0 := programFixedSlot state location window (.hash 0) label (blocks 0)
   let state1 := programFixedSlot state0 location window (.hash 1) label (blocks 1)
   have finalNotBad :
-      (tryProgramFixed state1 index2 label (blocks 2 ^^^ label)).bad = false := notBad
+      (tryProgramFixed state1 index2 (gateInput location label) (blocks 2 ^^^ label)).bad = false := notBad
   have state1NotBad : state1.bad = false :=
-    tryProgramFixed_priorNotBad state1 index2 label (blocks 2 ^^^ label) notBad
+    tryProgramFixed_priorNotBad state1 index2 (gateInput location label) (blocks 2 ^^^ label) notBad
   have state0NotBad : state0.bad = false :=
-    tryProgramFixed_priorNotBad state0 index1 label (blocks 1 ^^^ label) state1NotBad
-  have point0 := tryProgramFixed_apply_of_notBad state index0 label
+    tryProgramFixed_priorNotBad state0 index1 (gateInput location label) (blocks 1 ^^^ label) state1NotBad
+  have point0 := tryProgramFixed_apply_of_notBad state index0 (gateInput location label)
     (blocks 0 ^^^ label) state0NotBad
-  have point1 := tryProgramFixed_apply_of_notBad state0 index1 label
+  have point1 := tryProgramFixed_apply_of_notBad state0 index1 (gateInput location label)
     (blocks 1 ^^^ label) state1NotBad
-  have point2 := tryProgramFixed_apply_of_notBad state1 index2 label
+  have point2 := tryProgramFixed_apply_of_notBad state1 index2 (gateInput location label)
     (blocks 2 ^^^ label) notBad
-  have point0' := tryProgramFixed_preservesOther state0 index0 index1 label
-    (blocks 0 ^^^ label) label (blocks 1 ^^^ label) (by simp [index0, index1, fixedKeyIndex]) point0
-  have point0'' := tryProgramFixed_preservesOther state1 index0 index2 label
-    (blocks 0 ^^^ label) label (blocks 2 ^^^ label) (by simp [index0, index2, fixedKeyIndex]) point0'
-  have point1' := tryProgramFixed_preservesOther state1 index1 index2 label
-    (blocks 1 ^^^ label) label (blocks 2 ^^^ label) (by simp [index1, index2, fixedKeyIndex]) point1
+  have point0' := tryProgramFixed_preservesOther state0 index0 index1 (gateInput location label)
+    (blocks 0 ^^^ label) (gateInput location label) (blocks 1 ^^^ label) (by simp [index0, index1, fixedKeyIndex]) point0
+  have point0'' := tryProgramFixed_preservesOther state1 index0 index2 (gateInput location label)
+    (blocks 0 ^^^ label) (gateInput location label) (blocks 2 ^^^ label) (by simp [index0, index2, fixedKeyIndex]) point0'
+  have point1' := tryProgramFixed_preservesOther state1 index1 index2 (gateInput location label)
+    (blocks 1 ^^^ label) (gateInput location label) (blocks 2 ^^^ label) (by simp [index1, index2, fixedKeyIndex]) point1
   apply hashGate_evaluate_of_matches
     (programHashGate state location window label blocks).fixedOracle
     location window label table target blocks blocksTarget
@@ -410,19 +410,19 @@ theorem programPadGate_evaluate (state : SimulatorState)
     (blocksTarget : blocks 1 ++ blocks 0 = table.trueRow ^^^ BitAdaptor.fieldBytes target)
     (notBad : (programPadGate state location window label blocks).bad = false) :
     BitAdaptor.evaluate
-        (Pipeline.fixedKeyWindow (programPadGate state location window label blocks).fixedOracle
+        (Pipeline.fixedKeyGate (programPadGate state location window label blocks).fixedOracle
           location window) table true label = target := by
   let index0 := fixedKeyIndex location window (.pad 0)
   let index1 := fixedKeyIndex location window (.pad 1)
   let state0 := programFixedSlot state location window (.pad 0) label (blocks 0)
   have state0NotBad : state0.bad = false :=
-    tryProgramFixed_priorNotBad state0 index1 label (blocks 1 ^^^ label) notBad
-  have point0 := tryProgramFixed_apply_of_notBad state index0 label
+    tryProgramFixed_priorNotBad state0 index1 (gateInput location label) (blocks 1 ^^^ label) notBad
+  have point0 := tryProgramFixed_apply_of_notBad state index0 (gateInput location label)
     (blocks 0 ^^^ label) state0NotBad
-  have point1 := tryProgramFixed_apply_of_notBad state0 index1 label
+  have point1 := tryProgramFixed_apply_of_notBad state0 index1 (gateInput location label)
     (blocks 1 ^^^ label) notBad
-  have point0' := tryProgramFixed_preservesOther state0 index0 index1 label
-    (blocks 0 ^^^ label) label (blocks 1 ^^^ label) (by simp [index0, index1, fixedKeyIndex]) point0
+  have point0' := tryProgramFixed_preservesOther state0 index0 index1 (gateInput location label)
+    (blocks 0 ^^^ label) (gateInput location label) (blocks 1 ^^^ label) (by simp [index0, index1, fixedKeyIndex]) point0
   apply padGate_evaluate_of_matches
     (programPadGate state location window label blocks).fixedOracle
     location window label table target blocks blocksTarget
@@ -441,7 +441,7 @@ theorem programGate_evaluate (state : SimulatorState)
       table.trueRow ^^^ BitAdaptor.fieldBytes target)
     (notBad : (programGate state location window bit label hashBlocks padBlocks).bad = false) :
     BitAdaptor.evaluate
-        (Pipeline.fixedKeyWindow
+        (Pipeline.fixedKeyGate
           (programGate state location window bit label hashBlocks padBlocks).fixedOracle
           location window) table bit label = target := by
   cases bit
@@ -456,7 +456,7 @@ theorem programGateForTarget_evaluate (state : SimulatorState)
     (table : BitAdaptor.Table) (target : BaseField) (lift : HashLift target)
     (notBad : (programGateForTarget state location window bit label table target lift).bad = false) :
     BitAdaptor.evaluate
-        (Pipeline.fixedKeyWindow
+        (Pipeline.fixedKeyGate
           (programGateForTarget state location window bit label table target lift).fixedOracle
           location window) table bit label = target := by
   exact programGate_evaluate state location window bit label table target
@@ -497,14 +497,14 @@ theorem programHashGate_fresh_of_notBad (state : SimulatorState)
   let state0 := programFixedSlot state location window (.hash 0) label (blocks 0)
   let state1 := programFixedSlot state0 location window (.hash 1) label (blocks 1)
   have finalNotBad :
-      (tryProgramFixed state1 index2 label (blocks 2 ^^^ label)).bad = false := notBad
+      (tryProgramFixed state1 index2 (gateInput location label) (blocks 2 ^^^ label)).bad = false := notBad
   have state1NotBad : state1.bad = false :=
-    tryProgramFixed_priorNotBad state1 index2 label (blocks 2 ^^^ label) notBad
+    tryProgramFixed_priorNotBad state1 index2 (gateInput location label) (blocks 2 ^^^ label) notBad
   have state0NotBad : state0.bad = false :=
-    tryProgramFixed_priorNotBad state0 index1 label (blocks 1 ^^^ label) state1NotBad
-  have first := tryProgramFixed_badOrFresh state index0 label (blocks 0 ^^^ label)
-  have second := tryProgramFixed_badOrFresh state0 index1 label (blocks 1 ^^^ label)
-  have third := tryProgramFixed_badOrFresh state1 index2 label (blocks 2 ^^^ label)
+    tryProgramFixed_priorNotBad state0 index1 (gateInput location label) (blocks 1 ^^^ label) state1NotBad
+  have first := tryProgramFixed_badOrFresh state index0 (gateInput location label) (blocks 0 ^^^ label)
+  have second := tryProgramFixed_badOrFresh state0 index1 (gateInput location label) (blocks 1 ^^^ label)
+  have third := tryProgramFixed_badOrFresh state1 index2 (gateInput location label) (blocks 2 ^^^ label)
   rcases first with bad | firstFresh
   · have bad0 : state0.bad = true := by simpa [state0, programFixedSlot] using bad
     exact (Bool.false_ne_true (state0NotBad.symm.trans bad0)).elim
@@ -524,11 +524,11 @@ theorem programPadGate_fresh_of_notBad (state : SimulatorState)
   let index1 := fixedKeyIndex location window (.pad 1)
   let state0 := programFixedSlot state location window (.pad 0) label (blocks 0)
   have finalNotBad :
-      (tryProgramFixed state0 index1 label (blocks 1 ^^^ label)).bad = false := notBad
+      (tryProgramFixed state0 index1 (gateInput location label) (blocks 1 ^^^ label)).bad = false := notBad
   have state0NotBad : state0.bad = false :=
-    tryProgramFixed_priorNotBad state0 index1 label (blocks 1 ^^^ label) notBad
-  have first := tryProgramFixed_badOrFresh state index0 label (blocks 0 ^^^ label)
-  have second := tryProgramFixed_badOrFresh state0 index1 label (blocks 1 ^^^ label)
+    tryProgramFixed_priorNotBad state0 index1 (gateInput location label) (blocks 1 ^^^ label) notBad
+  have first := tryProgramFixed_badOrFresh state index0 (gateInput location label) (blocks 0 ^^^ label)
+  have second := tryProgramFixed_badOrFresh state0 index1 (gateInput location label) (blocks 1 ^^^ label)
   rcases first with bad | firstFresh
   · have bad0 : state0.bad = true := by simpa [state0, programFixedSlot] using bad
     exact (Bool.false_ne_true (state0NotBad.symm.trans bad0)).elim
@@ -598,7 +598,7 @@ def GateDirective.programRecords (directive : GateDirective) :
 def GateDirective.Satisfied (directive : GateDirective)
     (state : SimulatorState) : Prop :=
   BitAdaptor.evaluate
-    (Pipeline.fixedKeyWindow state.fixedOracle directive.location directive.window)
+    (Pipeline.fixedKeyGate state.fixedOracle directive.location directive.window)
     directive.table directive.bit directive.label = directive.target
 
 /-- This operation applies the selected gate programs in order. -/
@@ -716,7 +716,7 @@ def digitGateSchedule {count : Nat}
     (lifts : ∀ index, HashLift (targets index)) : List GateDirective :=
   List.ofFn fun index : Fin count => {
     location
-    window := BitAdaptor.fixedKeyWindowIndex index.val
+    window := index.val
     bit := values index
     label := labels.get index
     table := tables.get index
@@ -1221,7 +1221,7 @@ theorem programFixedSlot_fixedTranscript_of_fresh (state : SimulatorState)
     (location : Pipeline.FixedKeyLocation) (window : Nat)
     (slot : Pipeline.FixedKeySlot) (label block : Block)
     (fresh : FreshPermutationPair state.fixedTranscript
-      (fixedKeyIndex location window slot) label (block ^^^ label)) :
+      (fixedKeyIndex location window slot) (gateInput location label) (block ^^^ label)) :
     (programFixedSlot state location window slot label block).fixedTranscript =
       fixedProgramRecord location window slot label block :: state.fixedTranscript := by
   have checked := (freshPermutationPairCheck_eq_true _ _ _ _).2 fresh
@@ -1231,7 +1231,7 @@ theorem programFixedSlot_fixedTranscript_length_of_fresh (state : SimulatorState
     (location : Pipeline.FixedKeyLocation) (window : Nat)
     (slot : Pipeline.FixedKeySlot) (label block : Block)
     (fresh : FreshPermutationPair state.fixedTranscript
-      (fixedKeyIndex location window slot) label (block ^^^ label)) :
+      (fixedKeyIndex location window slot) (gateInput location label) (block ^^^ label)) :
     (programFixedSlot state location window slot label block).fixedTranscript.length =
       state.fixedTranscript.length + 1 := by
   rw [programFixedSlot_fixedTranscript_of_fresh state location window slot label block fresh]
@@ -1435,7 +1435,7 @@ theorem programFixedSlot_bad_of_bad (state : SimulatorState)
     (bad : state.bad = true) :
     (programFixedSlot state location window slot label block).bad = true :=
   tryProgramFixed_bad_of_bad state (fixedKeyIndex location window slot)
-    label (block ^^^ label) bad
+    (gateInput location label) (block ^^^ label) bad
 
 theorem programHashGate_bad_of_bad (state : SimulatorState)
     (location : Pipeline.FixedKeyLocation) (window : Nat)
@@ -1554,14 +1554,14 @@ theorem digitGateSchedule_evaluate
     (satisfied : GateScheduleSatisfied state
       (digitGateSchedule location tables values labels targets lifts)) :
     DigitAdaptor.evaluate
-        (fun window => Pipeline.fixedKeyWindow state.fixedOracle location window)
+        (fun window => Pipeline.fixedKeyGate state.fixedOracle location window)
         values tables labels = Vector.ofFn targets := by
   apply Vector.ext
   intro index inRange
   let current : Fin count := ⟨index, inRange⟩
   have member : ({
       location
-      window := BitAdaptor.fixedKeyWindowIndex current.val
+      window := current.val
       bit := values current
       label := labels.get current
       table := tables.get current
@@ -1582,7 +1582,7 @@ theorem digitGateSchedule_evaluateValue
       (digitGateSchedule location tables values labels targets lifts)) :
     DigitAdaptor.fromBits (fun index =>
       (DigitAdaptor.evaluate
-        (fun window => Pipeline.fixedKeyWindow state.fixedOracle location window)
+        (fun window => Pipeline.fixedKeyGate state.fixedOracle location window)
         values tables labels).get index) = DigitAdaptor.fromBits targets := by
   rw [digitGateSchedule_evaluate state location tables values labels targets lifts satisfied]
   simp
@@ -2034,7 +2034,7 @@ theorem programDigitGateSchedule_evaluateValue
       (digitGateSchedule location tables values labels targets lifts)).bad = false) :
     DigitAdaptor.fromBits (fun index =>
       (DigitAdaptor.evaluate
-        (fun window => Pipeline.fixedKeyWindow
+        (fun window => Pipeline.fixedKeyGate
           (programGateSchedule state
             (digitGateSchedule location tables values labels targets lifts)).fixedOracle
           location window)

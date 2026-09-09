@@ -751,18 +751,6 @@ def paperActiveInputsPerBucket : Nat := 92
 /-- The paper proof uses 6858 independent permutation buckets. -/
 def paperBucketCount : Nat := 6858
 
-/-- Mixed selected branches fit below the three-hash birthday budget. -/
-theorem selectedBranchBucketSquareBound (falseUses trueUses capacity : Nat)
-    (loadBound : falseUses + trueUses ≤ capacity) :
-    3 * falseUses ^ 2 + 2 * trueUses ^ 2 ≤ 3 * capacity ^ 2 := by
-  nlinarith [Nat.zero_le falseUses, Nat.zero_le trueUses]
-
-/-- Mixed selected branches fit below the three-hash linear query budget. -/
-theorem selectedBranchBucketLinearBound (falseUses trueUses capacity : Nat)
-    (loadBound : falseUses + trueUses ≤ capacity) :
-    3 * falseUses + 2 * trueUses ≤ 3 * capacity := by
-  omega
-
 noncomputable def paperCTPRFError (securityParameter oracleQueries : Nat) : ℝ :=
   ((3 * paperBucketCount * paperActiveInputsPerBucket ^ 2 +
       4 * paperActiveInputsPerBucket * oracleQueries : Nat) : ℝ) /
@@ -805,100 +793,51 @@ theorem paperConcreteCTPRFHas100Bits :
       norm_num
       exact_mod_cast countBound
 
-/-- This formula applies the paper shape to all full-schedule fixed-key permutations. -/
-noncomputable def fullScheduleTransferredCTPRFError (oracleQueries : Nat) : ℝ :=
-  ((3 * Pipeline.permutationCount * BitAdaptor.fixedKeyMaxUsesPerBucket ^ 2 +
-      4 * BitAdaptor.fixedKeyMaxUsesPerBucket * oracleQueries : Nat) : ℝ) /
-    (2 : ℝ) ^ blockBits
+/-- Each fixed-key permutation serves one branch of every gate in its bucket.
+A point bucket holds `digitsPerBucket` gates with one label pair and distinct tweaks.
+A curve bucket holds one gate. The paper events `bad2`, `bad4`, and `bad3` give
+`Q ^ 2 / 2 + 2 * Q * q` per permutation. This formula sums them. -/
+noncomputable def bucketedCTPRFError (oracleQueries : Nat) : ℝ :=
+  ((Pipeline.pointBucketCount * Pipeline.digitsPerBucket ^ 2 + Pipeline.curveBucketCount +
+      4 * Pipeline.digitsPerBucket * oracleQueries : Nat) : ℝ) /
+    (2 : ℝ) ^ (blockBits + 1)
 
-/-- The direct transfer of the paper formula gives less than 100 bits. -/
-theorem fullScheduleTransferredCTPRFDoesNotHave100Bits :
-    ¬ConcreteBound 100 permutationWork fullScheduleTransferredCTPRFError := by
-  intro transferred
-  have zeroQuery := transferred 0
-  rw [WorkPerAdvantage] at zeroQuery
-  norm_num [fullScheduleTransferredCTPRFError, Pipeline.permutationCount,
-    Pipeline.fixedKeyWindowCount, Pipeline.digitAdaptorCount,
-    Pipeline.curveDigitAdaptorCount, Pipeline.pointDigitAdaptorsPerOutput,
-    FieldMacToECMac.outputMacCount, BitAdaptor.fixedKeyWindowCount,
-    BitAdaptor.fixedKeyPermutationsPerWindow, BitAdaptor.fixedKeyMaxUsesPerBucket,
-    blockBits, permutationWork] at zeroQuery
-
-/-- This is the bound shape for one programmable permutation schedule. -/
-noncomputable def programmedScheduleError (permutationCount oracleQueries : Nat) : ℝ :=
-  ((3 * permutationCount * BitAdaptor.fixedKeyMaxUsesPerBucket ^ 2 +
-      4 * BitAdaptor.fixedKeyMaxUsesPerBucket * oracleQueries : Nat) : ℝ) /
-    (2 : ℝ) ^ blockBits
-
-/-- Each schedule below the hash schedule retains 100-bit arithmetic. -/
-theorem programmedScheduleArithmeticHas100Bits (permutationCount : Nat)
-    (scheduleBound : permutationCount ≤ Pipeline.hashPermutationCount) :
-    ConcreteBound 100 permutationWork (programmedScheduleError permutationCount) := by
+/-- The bucketed schedule gives at least 100 bits of concrete security. -/
+theorem bucketedCTPRFHas100Bits :
+    ConcreteBound 100 permutationWork bucketedCTPRFError := by
   intro queries
   have countBound :
-      3 * permutationCount * BitAdaptor.fixedKeyMaxUsesPerBucket ^ 2 +
-          4 * BitAdaptor.fixedKeyMaxUsesPerBucket * queries ≤
-        permutationWork queries * 2 ^ 28 := by
+      Pipeline.pointBucketCount * Pipeline.digitsPerBucket ^ 2 + Pipeline.curveBucketCount +
+          4 * Pipeline.digitsPerBucket * queries ≤ permutationWork queries * 2 ^ 29 := by
     cases queries with
     | zero =>
-        norm_num [Pipeline.hashPermutationCount, Pipeline.fixedKeyWindowCount,
-          Pipeline.digitAdaptorCount, Pipeline.curveDigitAdaptorCount,
-          Pipeline.pointDigitAdaptorsPerOutput, FieldMacToECMac.outputMacCount,
-          BitAdaptor.fixedKeyWindowCount, BitAdaptor.fixedKeyMaxUsesPerBucket,
-          permutationWork] at scheduleBound ⊢
-        omega
+        norm_num [Pipeline.pointBucketCount, Pipeline.curveBucketCount, Pipeline.digitsPerBucket,
+          Pipeline.pointDigitAdaptorsPerOutput, Pipeline.curveDigitAdaptorCount,
+          Pipeline.bucketSlotCount, FieldMacToECMac.outputMacCount, coordinateBitCount,
+          permutationWork]
     | succ queries =>
         rw [permutationWork, Nat.max_eq_left (by omega : 1 ≤ queries + 1)]
-        norm_num [Pipeline.hashPermutationCount, Pipeline.fixedKeyWindowCount,
-          Pipeline.digitAdaptorCount, Pipeline.curveDigitAdaptorCount,
-          Pipeline.pointDigitAdaptorsPerOutput, FieldMacToECMac.outputMacCount,
-          BitAdaptor.fixedKeyWindowCount, BitAdaptor.fixedKeyMaxUsesPerBucket]
-          at scheduleBound ⊢
+        norm_num [Pipeline.pointBucketCount, Pipeline.curveBucketCount, Pipeline.digitsPerBucket,
+          Pipeline.pointDigitAdaptorsPerOutput, Pipeline.curveDigitAdaptorCount,
+          Pipeline.bucketSlotCount, FieldMacToECMac.outputMacCount, coordinateBitCount]
         omega
   rw [WorkPerAdvantage]
-  change (((3 * permutationCount * BitAdaptor.fixedKeyMaxUsesPerBucket ^ 2 +
-      4 * BitAdaptor.fixedKeyMaxUsesPerBucket * queries : Nat) : ℝ) /
-      (2 : ℝ) ^ 128) * (2 : ℝ) ^ 100 ≤ ((permutationWork queries : Nat) : ℝ)
+  change (((Pipeline.pointBucketCount * Pipeline.digitsPerBucket ^ 2 +
+      Pipeline.curveBucketCount + 4 * Pipeline.digitsPerBucket * queries : Nat) : ℝ) /
+      (2 : ℝ) ^ (128 + 1)) * (2 : ℝ) ^ 100 ≤ ((permutationWork queries : Nat) : ℝ)
   calc
-    (((3 * permutationCount * BitAdaptor.fixedKeyMaxUsesPerBucket ^ 2 +
-        4 * BitAdaptor.fixedKeyMaxUsesPerBucket * queries : Nat) : ℝ) /
-        (2 : ℝ) ^ 128) * (2 : ℝ) ^ 100 =
-      ((3 * permutationCount * BitAdaptor.fixedKeyMaxUsesPerBucket ^ 2 +
-        4 * BitAdaptor.fixedKeyMaxUsesPerBucket * queries : Nat) : ℝ) /
-        (2 : ℝ) ^ 28 := by
-      norm_num [div_eq_mul_inv]
-      ring
+    (((Pipeline.pointBucketCount * Pipeline.digitsPerBucket ^ 2 +
+        Pipeline.curveBucketCount + 4 * Pipeline.digitsPerBucket * queries : Nat) : ℝ) /
+        (2 : ℝ) ^ (128 + 1)) * (2 : ℝ) ^ 100 =
+      ((Pipeline.pointBucketCount * Pipeline.digitsPerBucket ^ 2 +
+        Pipeline.curveBucketCount + 4 * Pipeline.digitsPerBucket * queries : Nat) : ℝ) /
+        (2 : ℝ) ^ 29 := by
+        norm_num [div_eq_mul_inv]
+        ring
     _ ≤ ((permutationWork queries : Nat) : ℝ) := by
-      apply (div_le_iff₀ (by positivity : (0 : ℝ) < (2 : ℝ) ^ 28)).2
+      apply (div_le_iff₀ (by positivity : (0 : ℝ) < (2 : ℝ) ^ 29)).2
       norm_num
       exact_mod_cast countBound
-
-noncomputable def programmedHashError : Nat → ℝ :=
-  programmedScheduleError Pipeline.hashPermutationCount
-
-noncomputable def programmedPadError : Nat → ℝ :=
-  programmedScheduleError Pipeline.padPermutationCount
-
-/-- The programmable hash schedule retains 100-bit arithmetic. -/
-theorem programmedHashArithmeticHas100Bits :
-    ConcreteBound 100 permutationWork programmedHashError :=
-  programmedScheduleArithmeticHas100Bits Pipeline.hashPermutationCount (by simp)
-
-/-- The programmable pad schedule retains 100-bit arithmetic. -/
-theorem programmedPadArithmeticHas100Bits :
-    ConcreteBound 100 permutationWork programmedPadError :=
-  programmedScheduleArithmeticHas100Bits Pipeline.padPermutationCount (by decide)
-
-/-- One selected branch pays for its active schedule only. -/
-noncomputable def selectedBranchProgrammedError (bit : Bool) : Nat → ℝ :=
-  if bit then programmedPadError else programmedHashError
-
-/-- Each selected branch retains 100-bit arithmetic without a five-slot sum. -/
-theorem selectedBranchProgrammingArithmeticHas100Bits (bit : Bool) :
-    ConcreteBound 100 permutationWork (selectedBranchProgrammedError bit) := by
-  cases bit
-  · exact programmedHashArithmeticHas100Bits
-  · exact programmedPadArithmeticHas100Bits
 
 /-- This value counts all bit-adaptor evaluations in one circuit. -/
 def bitAdaptorEvaluationCount : Nat :=

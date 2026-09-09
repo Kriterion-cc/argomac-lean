@@ -18,14 +18,14 @@ def garble {count : Nat} (windows : Nat → BitAdaptor.FixedKeyOracle)
     Vector BitAdaptor.Table count × Vector BitAdaptor.OutputKey count :=
   let garbled := Vector.ofFn fun index =>
     BitAdaptor.garble
-      (windows (BitAdaptor.fixedKeyWindowIndex index.val)) slope (keys.get index)
+      (windows index.val) slope (keys.get index)
   (garbled.map Prod.fst, garbled.map Prod.snd)
 
 def evaluate {count : Nat} (windows : Nat → BitAdaptor.FixedKeyOracle)
     (values : Fin count → Bool) (tables : Vector BitAdaptor.Table count)
     (inputs : Vector Cryptography.Block count) : Vector BaseField count :=
   Vector.ofFn fun index =>
-    BitAdaptor.evaluate (windows (BitAdaptor.fixedKeyWindowIndex index.val))
+    BitAdaptor.evaluate (windows index.val)
       (tables.get index) (values index) (inputs.get index)
 
 def selectedOutputs {count : Nat} (keys : Vector BitAdaptor.OutputKey count)

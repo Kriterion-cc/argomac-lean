@@ -1,8 +1,8 @@
 /-
 This file is the entry point of the submission.
 `challenge.yaml` names `Submission.solution` as the entry.
-`solutionOf` closes every obligation field except adaptive privacy.
-`solution` appears when `AdaptivePrivacy` is proved.
+`adaptivePrivacy` proves the universal privacy field.
+`solution` supplies the verifier and benchmark entry.
 -/
 
 import Solution
@@ -24,7 +24,22 @@ def AdaptivePrivacy : Prop :=
           (Seed.randomness 0))
         Garbling.oracleHandler Security.circuitSimulatorOracleHandler 100
 
-/-- Every field except adaptive privacy is closed. -/
+/-- The checked simulator gives the required universal privacy bound. -/
+theorem adaptivePrivacy : AdaptivePrivacy := by
+  intro field group
+  letI := field
+  letI := group
+  refine ⟨Security.concreteCircuitSimulator, ?_⟩
+  have instances : (@Fintype.ofFinite Garbling.Randomness inferInstance) =
+      Security.garblingRandomnessFintype := Subsingleton.elim _ _
+  have tapes : @uniformRandomTape Garbling.Randomness (@Fintype.ofFinite _ inferInstance)
+      (Seed.randomness 0) = Security.randomTape (Seed.randomness 0) := by
+    unfold uniformRandomTape Security.randomTape
+    rw [instances]
+  rw [tapes]
+  exact Security.concreteAdaptivePrivacy (Seed.randomness 0)
+
+/-- The supplied privacy proof closes every obligation field. -/
 def solutionOf (privacy : AdaptivePrivacy) : Kriterion.Solution := {
   oracle := Garbling.oracleSpec
   Randomness := Garbling.Randomness
@@ -50,5 +65,8 @@ def solutionOf (privacy : AdaptivePrivacy) : Kriterion.Solution := {
   perfectCorrectness := fun field group => @RCBComplete.perfectCorrectness field group _
   adaptivePrivacy := privacy
 }
+
+/-- The verifier and benchmark use this computable entry. -/
+def solution : Kriterion.Solution := solutionOf adaptivePrivacy
 
 end Submission
