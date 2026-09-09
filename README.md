@@ -64,6 +64,10 @@ The invalid source keeps its curve request.
 Lean checks the joint bad-source bound with the actual retained rows.
 Lean checks the real-source density and weighted hidden-hash comparison.
 Lean checks the complete hash-fiber transport and its invalid-source collision flag.
+Lean checks the exact shared ghost-source expansion.
+Lean checks the normalized invalid-source product comparison.
+The source comparison retains every adaptive input choice.
+Lean checks the valid-source product-density bound.
 The final valid-input and invalid-input mass comparisons remain open.
 
 ## Simulator
