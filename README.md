@@ -76,7 +76,11 @@ Lean checks the exact source reindex and the actual real transcript phase factor
 Lean bounds the full linked tag sum by the actual public source event.
 Lean normalizes the valid source event with its exact full-tag density.
 Lean gives incompatible nonfixed transcripts zero source event mass.
-The final valid-input and invalid-input mass comparisons remain open.
+Lean bounds the valid source sum over compatible transcript sources.
+Lean bounds the invalid source sum after independent Enc/hash sampling.
+Lean checks the exact valid and invalid source phase factors.
+Lean splits the original random tape into the exact source sum.
+The final valid-input and invalid-input transcript comparisons remain open.
 
 ## Simulator
 
