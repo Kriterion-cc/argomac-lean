@@ -28,15 +28,15 @@ every submission it verifies.
 
 ## Status
 
-`Submission.solutionOf` closes every field of `Kriterion.Solution` except `adaptivePrivacy`.
-It takes that one proof as its argument. `Submission.AdaptivePrivacy` states it.
+`Submission.solution` supplies every field of `Kriterion.Solution`.
+`Submission.adaptivePrivacy` proves the unchanged universal 100-bit privacy obligation.
 
 | Field | Where |
 | --- | --- |
 | `randomnessFromSeed` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
 | `perfectCorrectness` | `Proof/RCBComplete.lean` with the termination instance in `Proof/Base7Termination.lean`. |
 | `lamportCompatible` | `Proof/Lamport.lean`. |
-| `adaptivePrivacy` | The full transcript bound remains open. Lean checks the circuit mask transport, point and scale laws, permutation counts, gate programming, and hash-query bounds. |
+| `adaptivePrivacy` | `Proof/ConcreteSmallSourceRatio.lean` proves the universal 100-bit bound. `Submission.adaptivePrivacy` supplies the challenge field. |
 
 ## Fixed-key schedule
 
@@ -52,36 +52,19 @@ A point permutation serves 91 gates.
 A curve permutation serves one gate.
 
 The field encoding biases the pad blocks.
-The active collision proof uses this bias.
-`Security.adaptiveErrorEnvelope_has100Bits` checks a conservative integer envelope at 100 bits.
-The final transcript proof must place the actual advantage below that envelope.
-Lean checks the full shared hash source and adaptive output-row bound.
-Lean checks the actual hidden-hash link bound `q/p + (508 + 4q)/2^128`.
-The transcript factors retain both query phases and allow valid replay after encoding.
-Lean checks the point birthday and adaptive prequery bounds.
-Lean connects the full source to the actual ideal simulator transcript.
-The invalid source keeps its curve request.
-Lean checks the joint bad-source bound with the actual retained rows.
-Lean checks the real-source density and weighted hidden-hash comparison.
-Lean checks the complete hash-fiber transport and its invalid-source collision flag.
-Lean checks the exact shared ghost-source expansion.
-Lean checks the normalized invalid-source product comparison.
-The source comparison retains every adaptive input choice.
-Lean checks the valid-source product-density bound and its complete good-tag sum.
-Lean bounds the invalid ghost source by the normalized missing-query source.
-Lean factors that source into both adversary phases and its exact source event.
-Every nonzero good transcript supplies compatible reference states and the query bound.
-Lean checks the common prefix history for every retained source.
-Lean checks the exact source reindex and the actual real transcript phase factors.
-Lean bounds the full linked tag sum by the actual public source event.
-Lean normalizes the valid source event with its exact full-tag density.
-Lean gives incompatible nonfixed transcripts zero source event mass.
-Lean bounds the valid source sum over compatible transcript sources.
-Lean bounds the invalid source sum after independent Enc/hash sampling.
-Lean checks the exact valid and invalid source phase factors.
-Lean splits the original random tape into the exact source sum.
-Lean bounds the full invalid ghost source by the actual real adaptive transcript.
-The final valid-input transcript comparison remains open.
+The active collision proof includes this bias.
+
+## Adaptive privacy
+
+The proof keeps both adaptive query phases and the original uniform random tape.
+The proof covers valid and invalid inputs.
+
+- `ValidEndpointRatio.lean` bounds the valid source by the real transcript.
+- `InvalidGhostEndpoint.lean` bounds the invalid source by the real transcript.
+- `ConcreteSmallSourceRatio.lean` combines both input cases for every small query budget.
+- `AdaptiveSourceBound.lean` combines the source ratio with the ideal transcript bound.
+- `AdaptiveLossAccounting.lean` places the full error below the 100-bit envelope.
+- The large-budget case uses the bound of one on the decision advantage.
 
 ## Simulator
 
@@ -90,9 +73,9 @@ It samples all free gate targets.
 It changes one low target in each coordinate to fix the required result.
 The operation preserves the public table.
 
-The new distribution lemmas use the standard Lean axioms.
-They do not assume adaptive privacy.
-`Submission.solution` remains absent until the full privacy theorem passes Lean.
+The proof uses only `propext`, `Classical.choice`, and `Quot.sound`.
+The proof does not assume adaptive privacy.
+The verifier and benchmark use the computable `Submission.solution` entry.
 
 ## Source
 

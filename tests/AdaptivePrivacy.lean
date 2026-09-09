@@ -1,6 +1,8 @@
-import Proof
+import Submission
 
 open Kriterion Kriterion.BN254
+
+example : Kriterion.Solution := Submission.solution
 
 theorem paperCTPRFHas100Bits :
     Cryptography.Assumptions.ConcreteBound 100
