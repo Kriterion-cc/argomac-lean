@@ -15,6 +15,9 @@ local instance publicVectorFintype {Value : Type} {count : Nat} [Fintype Value] 
     Fintype (Vector Value count) :=
   Fintype.ofEquiv (Fin count → Value) vectorFunctionEquiv
 
+local instance publicTargetsFintype : Fintype (Fin coordinateBitCount → BaseField) :=
+  inferInstance
+
 local instance ciphertextFintype : Fintype BitAdaptor.Ciphertext :=
   Fintype.ofEquiv (Fin (2 ^ 256)) BitVec.equivFin.symm.toEquiv
 
@@ -44,6 +47,7 @@ structure CurvePublicSample where
   coefficients : Fin 3 → BaseField
   tables : Fin 5 → Vector BitAdaptor.Table coordinateBitCount
   quotients : Fin 5 → Fin coordinateBitCount → HashLiftQuotient
+  targets : Fin 5 → Fin coordinateBitCount → BaseField
 deriving Fintype
 
 def CurvePublicSample.request (sample : CurvePublicSample) : CurveGateRequest := {
@@ -55,21 +59,21 @@ def CurvePublicSample.request (sample : CurvePublicSample) : CurveGateRequest :=
   x7Table := sample.tables 2
   y4Table := sample.tables 3
   y6Table := sample.tables 4
-  x3Targets := fun _ => 0
-  x5Targets := fun _ => 0
-  x7Targets := fun _ => 0
-  y4Targets := fun _ => 0
-  y6Targets := fun _ => 0
+  x3Targets := sample.targets 0
+  x5Targets := sample.targets 1
+  x7Targets := sample.targets 2
+  y4Targets := sample.targets 3
+  y6Targets := sample.targets 4
   x3Quotients := sample.quotients 0
   x5Quotients := sample.quotients 1
   x7Quotients := sample.quotients 2
   y4Quotients := sample.quotients 3
   y6Quotients := sample.quotients 4
-  x3Lifts := fun index => goodHashLift 0 (sample.quotients 0 index)
-  x5Lifts := fun index => goodHashLift 0 (sample.quotients 1 index)
-  x7Lifts := fun index => goodHashLift 0 (sample.quotients 2 index)
-  y4Lifts := fun index => goodHashLift 0 (sample.quotients 3 index)
-  y6Lifts := fun index => goodHashLift 0 (sample.quotients 4 index)
+  x3Lifts := fun index => goodHashLift (sample.targets 0 index) (sample.quotients 0 index)
+  x5Lifts := fun index => goodHashLift (sample.targets 1 index) (sample.quotients 1 index)
+  x7Lifts := fun index => goodHashLift (sample.targets 2 index) (sample.quotients 2 index)
+  y4Lifts := fun index => goodHashLift (sample.targets 3 index) (sample.quotients 3 index)
+  y6Lifts := fun index => goodHashLift (sample.targets 4 index) (sample.quotients 4 index)
 }
 
 /-- This sample contains one scalar-independent RCB X table. -/
@@ -77,6 +81,7 @@ structure XPublicSample where
   coefficients : Fin 5 → BaseField
   tables : Fin 4 → Vector BitAdaptor.Table coordinateBitCount
   quotients : Fin 4 → Fin coordinateBitCount → HashLiftQuotient
+  targets : Fin 4 → Fin coordinateBitCount → BaseField
 deriving Fintype
 
 def XPublicSample.request (sample : XPublicSample) : BiquadraticXRequest := {
@@ -89,18 +94,18 @@ def XPublicSample.request (sample : XPublicSample) : BiquadraticXRequest := {
   y8Table := sample.tables 1
   y10Table := sample.tables 2
   x9Table := sample.tables 3
-  y6Targets := fun _ => 0
-  y8Targets := fun _ => 0
-  y10Targets := fun _ => 0
-  x9Targets := fun _ => 0
+  y6Targets := sample.targets 0
+  y8Targets := sample.targets 1
+  y10Targets := sample.targets 2
+  x9Targets := sample.targets 3
   y6Quotients := sample.quotients 0
   y8Quotients := sample.quotients 1
   y10Quotients := sample.quotients 2
   x9Quotients := sample.quotients 3
-  y6Lifts := fun index => goodHashLift 0 (sample.quotients 0 index)
-  y8Lifts := fun index => goodHashLift 0 (sample.quotients 1 index)
-  y10Lifts := fun index => goodHashLift 0 (sample.quotients 2 index)
-  x9Lifts := fun index => goodHashLift 0 (sample.quotients 3 index)
+  y6Lifts := fun index => goodHashLift (sample.targets 0 index) (sample.quotients 0 index)
+  y8Lifts := fun index => goodHashLift (sample.targets 1 index) (sample.quotients 1 index)
+  y10Lifts := fun index => goodHashLift (sample.targets 2 index) (sample.quotients 2 index)
+  x9Lifts := fun index => goodHashLift (sample.targets 3 index) (sample.quotients 3 index)
 }
 
 /-- This sample contains one scalar-independent RCB Y table. -/
@@ -108,6 +113,7 @@ structure YPublicSample where
   coefficients : Fin 4 → BaseField
   tables : Fin 4 → Vector BitAdaptor.Table coordinateBitCount
   quotients : Fin 4 → Fin coordinateBitCount → HashLiftQuotient
+  targets : Fin 4 → Fin coordinateBitCount → BaseField
 deriving Fintype
 
 def YPublicSample.request (sample : YPublicSample) : BiquadraticYRequest := {
@@ -119,18 +125,18 @@ def YPublicSample.request (sample : YPublicSample) : BiquadraticYRequest := {
   y10Table := sample.tables 1
   x7Table := sample.tables 2
   x9Table := sample.tables 3
-  y8Targets := fun _ => 0
-  y10Targets := fun _ => 0
-  x7Targets := fun _ => 0
-  x9Targets := fun _ => 0
+  y8Targets := sample.targets 0
+  y10Targets := sample.targets 1
+  x7Targets := sample.targets 2
+  x9Targets := sample.targets 3
   y8Quotients := sample.quotients 0
   y10Quotients := sample.quotients 1
   x7Quotients := sample.quotients 2
   x9Quotients := sample.quotients 3
-  y8Lifts := fun index => goodHashLift 0 (sample.quotients 0 index)
-  y10Lifts := fun index => goodHashLift 0 (sample.quotients 1 index)
-  x7Lifts := fun index => goodHashLift 0 (sample.quotients 2 index)
-  x9Lifts := fun index => goodHashLift 0 (sample.quotients 3 index)
+  y8Lifts := fun index => goodHashLift (sample.targets 0 index) (sample.quotients 0 index)
+  y10Lifts := fun index => goodHashLift (sample.targets 1 index) (sample.quotients 1 index)
+  x7Lifts := fun index => goodHashLift (sample.targets 2 index) (sample.quotients 2 index)
+  x9Lifts := fun index => goodHashLift (sample.targets 3 index) (sample.quotients 3 index)
 }
 
 /-- This sample contains one scalar-independent RCB Z table. -/
@@ -138,6 +144,7 @@ structure ZPublicSample where
   coefficients : Fin 5 → BaseField
   tables : Fin 5 → Vector BitAdaptor.Table coordinateBitCount
   quotients : Fin 5 → Fin coordinateBitCount → HashLiftQuotient
+  targets : Fin 5 → Fin coordinateBitCount → BaseField
 deriving Fintype
 
 def ZPublicSample.request (sample : ZPublicSample) : BiquadraticZRequest := {
@@ -151,21 +158,21 @@ def ZPublicSample.request (sample : ZPublicSample) : BiquadraticZRequest := {
   y10Table := sample.tables 2
   x7Table := sample.tables 3
   x9Table := sample.tables 4
-  y6Targets := fun _ => 0
-  y8Targets := fun _ => 0
-  y10Targets := fun _ => 0
-  x7Targets := fun _ => 0
-  x9Targets := fun _ => 0
+  y6Targets := sample.targets 0
+  y8Targets := sample.targets 1
+  y10Targets := sample.targets 2
+  x7Targets := sample.targets 3
+  x9Targets := sample.targets 4
   y6Quotients := sample.quotients 0
   y8Quotients := sample.quotients 1
   y10Quotients := sample.quotients 2
   x7Quotients := sample.quotients 3
   x9Quotients := sample.quotients 4
-  y6Lifts := fun index => goodHashLift 0 (sample.quotients 0 index)
-  y8Lifts := fun index => goodHashLift 0 (sample.quotients 1 index)
-  y10Lifts := fun index => goodHashLift 0 (sample.quotients 2 index)
-  x7Lifts := fun index => goodHashLift 0 (sample.quotients 3 index)
-  x9Lifts := fun index => goodHashLift 0 (sample.quotients 4 index)
+  y6Lifts := fun index => goodHashLift (sample.targets 0 index) (sample.quotients 0 index)
+  y8Lifts := fun index => goodHashLift (sample.targets 1 index) (sample.quotients 1 index)
+  y10Lifts := fun index => goodHashLift (sample.targets 2 index) (sample.quotients 2 index)
+  x7Lifts := fun index => goodHashLift (sample.targets 3 index) (sample.quotients 3 index)
+  x9Lifts := fun index => goodHashLift (sample.targets 4 index) (sample.quotients 4 index)
 }
 
 /-- This sample groups the three public tables of one complete RCB row. -/
@@ -205,6 +212,7 @@ structure SimulatorCoin where
   tableSample : PublicSample
   oracles : SimulatorOracleCoin
   inputKey : InputMacKey
+  bridgeKey : BaseField
 deriving Fintype
 
 def SimulatorCoin.state (coin : SimulatorCoin) : CircuitSimulatorState := {
@@ -222,6 +230,7 @@ def SimulatorCoin.state (coin : SimulatorCoin) : CircuitSimulatorState := {
   curve := coin.tableSample.curveRequest
   points := coin.tableSample.pointRequests
   inputKey := coin.inputKey
+  bridgeKey := coin.bridgeKey
 }
 
 /-- This public table is a witness for the finite simulator sample. -/
@@ -235,26 +244,31 @@ def defaultRowPublicSample : RowPublicSample := {
     coefficients := fun _ => 0
     tables := fun _ => Vector.replicate coordinateBitCount defaultBitAdaptorTable
     quotients := fun _ _ => defaultHashLiftQuotient
+    targets := fun _ _ => 0
   }
   y := {
     coefficients := fun _ => 0
     tables := fun _ => Vector.replicate coordinateBitCount defaultBitAdaptorTable
     quotients := fun _ _ => defaultHashLiftQuotient
+    targets := fun _ _ => 0
   }
   z := {
     coefficients := fun _ => 0
     tables := fun _ => Vector.replicate coordinateBitCount defaultBitAdaptorTable
     quotients := fun _ _ => defaultHashLiftQuotient
+    targets := fun _ _ => 0
   }
 }
 
 /-- This value is an explicit witness for the complete simulator coin. -/
 def defaultSimulatorCoin : SimulatorCoin := {
+  bridgeKey := 0
   tableSample := {
     curve := {
       coefficients := fun _ => 0
       tables := fun _ => Vector.replicate coordinateBitCount defaultBitAdaptorTable
       quotients := fun _ _ => defaultHashLiftQuotient
+      targets := fun _ _ => 0
     }
     points := Vector.replicate FieldMacToECMac.outputMacCount defaultRowPublicSample
   }
@@ -276,7 +290,7 @@ def simulatorStateTape
   (PMF.uniformOfFintype SimulatorCoin).map SimulatorCoin.state
 
 /-- This value connects the finite offline sample to the online simulator. -/
-noncomputable def concreteCircuitSimulator [FieldCertificate] :=
+noncomputable def concreteCircuitSimulator [FieldCertificate] [GroupCertificate] :=
   circuitSimulator simulatorStateTape
 
 end

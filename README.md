@@ -36,7 +36,7 @@ It takes that one proof as its argument. `Submission.AdaptivePrivacy` states it.
 | `randomnessFromSeed` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
 | `perfectCorrectness` | `Proof/RCBComplete.lean` with the termination instance in `Proof/Base7Termination.lean`. |
 | `lamportCompatible` | `Proof/Lamport.lean`. |
-| `adaptivePrivacy` | Open. `Proof/Security.lean` reduces it to one trace transport and one change bound per adversary. The inherited simulator is not yet sound: `IdealEncoding.outputTargets` returns the output point and 90 points at infinity, and `ProgrammingBridge.coordinateLowTarget` returns 0 for every bit but one. The evaluator observes both, and the real world returns uniform values there. The simulator must sample 90 free rows and one uniform target per gate, and adjust one value per digit adaptor, as `gc_privacy_proofs.tex` does for `GC_1` and `GC_2`. |
+| `adaptivePrivacy` | The full transcript bound remains open. Lean checks the circuit mask transport, point and scale laws, permutation counts, gate programming, and hash-query bounds. |
 
 ## Fixed-key schedule
 
@@ -47,10 +47,29 @@ digits share the bucket and differ by an injective tweak on the permutation inpu
 permutations. Each permutation therefore serves one branch of every gate in its bucket, and no
 gate reads two labels through one permutation.
 
-This is the paper's bucketing from `gc_rpm_proof.tex`. The collision term per permutation is
-`Q ^ 2 / 2 + 2 * Q * q`. Summed over `16,510` point permutations with `Q = 91` and `6,350` curve
-permutations with `Q = 1`, the `q`-free part is `2 ^ 27.03`. `Security.bucketedCTPRFHas100Bits`
-proves the work-per-advantage bound at 100 bits with about two bits of margin.
+The schedule follows `gc_rpm_proof.tex`.
+A point permutation serves 91 gates.
+A curve permutation serves one gate.
+
+The field encoding biases the pad blocks.
+The active collision proof uses this bias.
+`Security.adaptiveErrorEnvelope_has100Bits` checks a conservative integer envelope at 100 bits.
+The final transcript proof must place the actual advantage below that envelope.
+Lean checks the full shared hash source and adaptive output-row bound.
+Lean checks the actual hidden-hash link bound `q/p + (508 + 4q)/2^128`.
+The transcript factors retain both query phases and allow valid replay after encoding.
+The final composition and the concrete collision premises remain open.
+
+## Simulator
+
+The simulator samples 90 free points and 91 nonzero homogeneous scales.
+It samples all free gate targets.
+It changes one low target in each coordinate to fix the required result.
+The operation preserves the public table.
+
+The new distribution lemmas use the standard Lean axioms.
+They do not assume adaptive privacy.
+`Submission.solution` remains absent until the full privacy theorem passes Lean.
 
 ## Source
 

@@ -217,8 +217,7 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.programDigitGateSchedule_evaluateValue
 #print axioms ArgoMAC.Security.programBiquadraticXGateSchedule_evaluate
 #print axioms ArgoMAC.Security.programBiquadraticRowGateSchedule_evaluate
-#print axioms ArgoMAC.Security.fromBits_lowTarget
-#print axioms ArgoMAC.Security.fromBits_coordinateLowTarget
+#print axioms ArgoMAC.Security.fromBits_retargetBits
 #print axioms ArgoMAC.Security.CurveGateRequest.retarget_table
 #print axioms ArgoMAC.Security.CurveGateRequest.retarget_result
 #print axioms ArgoMAC.Security.BiquadraticXRequest.retarget_table

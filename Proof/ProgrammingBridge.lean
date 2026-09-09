@@ -9,215 +9,101 @@ namespace Kriterion.ArgoMAC.Security
 
 open BN254
 
-/-- One target in the low bit position represents one field value. -/
-def lowTarget {count : Nat} (target : BaseField) (index : Fin (count + 1)) : BaseField :=
-  if index = 0 then target else 0
+/-- This function changes the low target and keeps every free target. -/
+def retargetBits {count : Nat} (values : Fin (count + 1) → BaseField)
+    (target : BaseField) : Fin (count + 1) → BaseField :=
+  Fin.cases (target - 2 * DigitAdaptor.fromBits (fun index => values index.succ))
+    (fun index => values index.succ)
 
-theorem fromBits_lowTarget {count : Nat} (target : BaseField) :
-    DigitAdaptor.fromBits (lowTarget (count := count) target) = target := by
-  have zeroFold : ∀ size, Fin.foldr size (fun _ (value : BaseField) => 2 * value) 0 = 0 := by
-    intro size
-    induction size with
-    | zero => rfl
-    | succ size inductionHypothesis =>
-        rw [Fin.foldr_succ]
-        simp [inductionHypothesis]
+theorem fromBits_retargetBits {count : Nat}
+    (values : Fin (count + 1) → BaseField) (target : BaseField) :
+    DigitAdaptor.fromBits (retargetBits values target) = target := by
   rw [DigitAdaptor.fromBits, Fin.foldr_succ]
-  simp [lowTarget, zeroFold count]
+  simp [retargetBits, DigitAdaptor.fromBits]
 
-/-- This function puts one target in the low coordinate-bit position. -/
-def coordinateLowTarget (target : BaseField) : Fin coordinateBitCount → BaseField :=
-  lowTarget (count := 253) target
-
-theorem fromBits_coordinateLowTarget (target : BaseField) :
-    DigitAdaptor.fromBits (coordinateLowTarget target) = target :=
-  fromBits_lowTarget (count := 253) target
-
-/-- This request keeps one curve table and selects one bridge-key result. -/
+/-- This request changes one target and keeps the public table and free targets. -/
 def CurveGateRequest.retarget (request : CurveGateRequest)
     (input : AffineInput) (target : BaseField) : CurveGateRequest :=
-  let residual := target -
-    (request.c0 + request.c1 * input.x ^ 3 + request.c2 * input.y ^ 2)
-  {
-    c0 := request.c0
-    c1 := request.c1
-    c2 := request.c2
-    x3Table := request.x3Table
-    x5Table := request.x5Table
-    x7Table := request.x7Table
-    y4Table := request.y4Table
-    y6Table := request.y6Table
-    x3Targets := coordinateLowTarget 0
-    x5Targets := coordinateLowTarget 0
-    x7Targets := coordinateLowTarget residual
-    y4Targets := coordinateLowTarget 0
-    y6Targets := coordinateLowTarget 0
-    x3Quotients := request.x3Quotients
-    x5Quotients := request.x5Quotients
-    x7Quotients := request.x7Quotients
-    y4Quotients := request.y4Quotients
-    y6Quotients := request.y6Quotients
-    x3Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.x3Quotients index)
-    x5Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.x5Quotients index)
-    x7Lifts := fun index => goodHashLift ((coordinateLowTarget residual) index)
-      (request.x7Quotients index)
-    y4Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y4Quotients index)
-    y6Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y6Quotients index)
+  let residual := target - request.result input + DigitAdaptor.fromBits request.x7Targets
+  { request with
+    x7Targets := retargetBits request.x7Targets residual
+    x7Lifts := fun index => goodHashLift
+      (retargetBits request.x7Targets residual index) (request.x7Quotients index)
   }
 
 @[simp] theorem CurveGateRequest.retarget_table (request : CurveGateRequest)
     (input : AffineInput) (target : BaseField) :
-    (request.retarget input target).table = request.table := by
-  rfl
+    (request.retarget input target).table = request.table := rfl
 
 @[simp] theorem CurveGateRequest.retarget_result (request : CurveGateRequest)
     (input : AffineInput) (target : BaseField) :
     (request.retarget input target).result input = target := by
-  simp [CurveGateRequest.retarget, CurveGateRequest.result,
-    fromBits_coordinateLowTarget]
+  simp only [CurveGateRequest.retarget, CurveGateRequest.result,
+    fromBits_retargetBits]
+  ring
 
-/-- This request keeps one X table and selects one coordinate result. -/
+/-- This request changes one target and keeps the public table and free targets. -/
 def BiquadraticXRequest.retarget (request : BiquadraticXRequest)
     (input : AffineInput) (target : BaseField) : BiquadraticXRequest :=
-  let residual := target -
-    (request.c0 + request.c1 * input.x + request.c2 * input.y +
-      request.c3 * input.x * input.y + request.c5 * input.y ^ 2)
-  {
-    c0 := request.c0
-    c1 := request.c1
-    c2 := request.c2
-    c3 := request.c3
-    c5 := request.c5
-    y6Table := request.y6Table
-    y8Table := request.y8Table
-    y10Table := request.y10Table
-    x9Table := request.x9Table
-    y6Targets := coordinateLowTarget 0
-    y8Targets := coordinateLowTarget 0
-    y10Targets := coordinateLowTarget 0
-    x9Targets := coordinateLowTarget residual
-    y6Quotients := request.y6Quotients
-    y8Quotients := request.y8Quotients
-    y10Quotients := request.y10Quotients
-    x9Quotients := request.x9Quotients
-    y6Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y6Quotients index)
-    y8Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y8Quotients index)
-    y10Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y10Quotients index)
-    x9Lifts := fun index => goodHashLift ((coordinateLowTarget residual) index)
-      (request.x9Quotients index)
+  let residual := target - request.result input + DigitAdaptor.fromBits request.x9Targets
+  { request with
+    x9Targets := retargetBits request.x9Targets residual
+    x9Lifts := fun index => goodHashLift
+      (retargetBits request.x9Targets residual index) (request.x9Quotients index)
   }
 
 @[simp] theorem BiquadraticXRequest.retarget_table (request : BiquadraticXRequest)
     (input : AffineInput) (target : BaseField) :
-    (request.retarget input target).table = request.table := by
-  rfl
+    (request.retarget input target).table = request.table := rfl
 
 @[simp] theorem BiquadraticXRequest.retarget_result (request : BiquadraticXRequest)
     (input : AffineInput) (target : BaseField) :
     (request.retarget input target).result input = target := by
-  simp [BiquadraticXRequest.retarget, BiquadraticXRequest.result,
-    fromBits_coordinateLowTarget]
+  simp only [BiquadraticXRequest.retarget, BiquadraticXRequest.result,
+    fromBits_retargetBits]
+  ring
 
-/-- This request keeps one Y table and selects one coordinate result. -/
+/-- This request changes one target and keeps the public table and free targets. -/
 def BiquadraticYRequest.retarget (request : BiquadraticYRequest)
     (input : AffineInput) (target : BaseField) : BiquadraticYRequest :=
-  let residual := target -
-    (request.c0 + request.c1 * input.x + request.c4 * input.x ^ 2 +
-      request.c5 * input.y ^ 2)
-  {
-    c0 := request.c0
-    c1 := request.c1
-    c4 := request.c4
-    c5 := request.c5
-    y8Table := request.y8Table
-    y10Table := request.y10Table
-    x7Table := request.x7Table
-    x9Table := request.x9Table
-    y8Targets := coordinateLowTarget 0
-    y10Targets := coordinateLowTarget 0
-    x7Targets := coordinateLowTarget 0
-    x9Targets := coordinateLowTarget residual
-    y8Quotients := request.y8Quotients
-    y10Quotients := request.y10Quotients
-    x7Quotients := request.x7Quotients
-    x9Quotients := request.x9Quotients
-    y8Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y8Quotients index)
-    y10Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y10Quotients index)
-    x7Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.x7Quotients index)
-    x9Lifts := fun index => goodHashLift ((coordinateLowTarget residual) index)
-      (request.x9Quotients index)
+  let residual := target - request.result input + DigitAdaptor.fromBits request.x9Targets
+  { request with
+    x9Targets := retargetBits request.x9Targets residual
+    x9Lifts := fun index => goodHashLift
+      (retargetBits request.x9Targets residual index) (request.x9Quotients index)
   }
 
 @[simp] theorem BiquadraticYRequest.retarget_table (request : BiquadraticYRequest)
     (input : AffineInput) (target : BaseField) :
-    (request.retarget input target).table = request.table := by
-  rfl
+    (request.retarget input target).table = request.table := rfl
 
 @[simp] theorem BiquadraticYRequest.retarget_result (request : BiquadraticYRequest)
     (input : AffineInput) (target : BaseField) :
     (request.retarget input target).result input = target := by
-  simp [BiquadraticYRequest.retarget, BiquadraticYRequest.result,
-    fromBits_coordinateLowTarget]
+  simp only [BiquadraticYRequest.retarget, BiquadraticYRequest.result,
+    fromBits_retargetBits]
+  ring
 
-/-- This request keeps one Z table and selects one coordinate result. -/
+/-- This request changes one target and keeps the public table and free targets. -/
 def BiquadraticZRequest.retarget (request : BiquadraticZRequest)
     (input : AffineInput) (target : BaseField) : BiquadraticZRequest :=
-  let residual := target -
-    (request.c0 + request.c2 * input.y + request.c3 * input.x * input.y +
-      request.c4 * input.x ^ 2 + request.c5 * input.y ^ 2)
-  {
-    c0 := request.c0
-    c2 := request.c2
-    c3 := request.c3
-    c4 := request.c4
-    c5 := request.c5
-    y6Table := request.y6Table
-    y8Table := request.y8Table
-    y10Table := request.y10Table
-    x7Table := request.x7Table
-    x9Table := request.x9Table
-    y6Targets := coordinateLowTarget 0
-    y8Targets := coordinateLowTarget 0
-    y10Targets := coordinateLowTarget 0
-    x7Targets := coordinateLowTarget 0
-    x9Targets := coordinateLowTarget residual
-    y6Quotients := request.y6Quotients
-    y8Quotients := request.y8Quotients
-    y10Quotients := request.y10Quotients
-    x7Quotients := request.x7Quotients
-    x9Quotients := request.x9Quotients
-    y6Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y6Quotients index)
-    y8Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y8Quotients index)
-    y10Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.y10Quotients index)
-    x7Lifts := fun index => goodHashLift ((coordinateLowTarget 0) index)
-      (request.x7Quotients index)
-    x9Lifts := fun index => goodHashLift ((coordinateLowTarget residual) index)
-      (request.x9Quotients index)
+  let residual := target - request.result input + DigitAdaptor.fromBits request.x9Targets
+  { request with
+    x9Targets := retargetBits request.x9Targets residual
+    x9Lifts := fun index => goodHashLift
+      (retargetBits request.x9Targets residual index) (request.x9Quotients index)
   }
 
 @[simp] theorem BiquadraticZRequest.retarget_table (request : BiquadraticZRequest)
     (input : AffineInput) (target : BaseField) :
-    (request.retarget input target).table = request.table := by
-  rfl
+    (request.retarget input target).table = request.table := rfl
 
 @[simp] theorem BiquadraticZRequest.retarget_result (request : BiquadraticZRequest)
     (input : AffineInput) (target : BaseField) :
     (request.retarget input target).result input = target := by
-  simp [BiquadraticZRequest.retarget, BiquadraticZRequest.result,
-    fromBits_coordinateLowTarget]
+  simp only [BiquadraticZRequest.retarget, BiquadraticZRequest.result,
+    fromBits_retargetBits]
+  ring
 
 /-- This request keeps one row table and selects one homogeneous result. -/
 def BiquadraticRowRequest.retarget (request : BiquadraticRowRequest)

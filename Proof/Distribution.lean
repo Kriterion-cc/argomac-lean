@@ -2,7 +2,7 @@
 This file defines the complete uniform ArgoMAC security tape.
 -/
 
-import Proof.ProgrammingBridge
+import Proof.ProjectiveDistribution
 
 namespace Kriterion.ArgoMAC.Security
 
@@ -28,13 +28,6 @@ def vectorFunctionEquiv {Value : Type} {count : Nat} :
 local instance vectorFintype {Value : Type} {count : Nat} [Fintype Value] :
     Fintype (Vector Value count) :=
   Fintype.ofEquiv (Fin count → Value) vectorFunctionEquiv
-
-local instance nonZeroBaseFintype : Fintype NonZeroBase :=
-  Fintype.ofInjective NonZeroBase.value (by
-    intro first second equal
-    cases first
-    cases second
-    simp_all)
 
 local instance affineInputFintype : Fintype AffineInput :=
   Fintype.ofInjective (fun input => (input.x, input.y)) (by
