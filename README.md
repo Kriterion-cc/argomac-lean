@@ -71,6 +71,9 @@ Lean checks the valid-source product-density bound and its complete good-tag sum
 Lean bounds the invalid ghost source by the normalized missing-query source.
 Lean factors that source into both adversary phases and its exact source event.
 Every nonzero good transcript supplies compatible reference states and the query bound.
+Lean checks the common prefix history for every retained source.
+Lean checks the exact source reindex and the actual real transcript phase factors.
+Lean bounds the full linked tag sum by the actual public source event.
 The final valid-input and invalid-input mass comparisons remain open.
 
 ## Simulator
