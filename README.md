@@ -67,7 +67,10 @@ Lean checks the complete hash-fiber transport and its invalid-source collision f
 Lean checks the exact shared ghost-source expansion.
 Lean checks the normalized invalid-source product comparison.
 The source comparison retains every adaptive input choice.
-Lean checks the valid-source product-density bound.
+Lean checks the valid-source product-density bound and its complete good-tag sum.
+Lean bounds the invalid ghost source by the normalized missing-query source.
+Lean factors that source into both adversary phases and its exact source event.
+Every nonzero good transcript supplies compatible reference states and the query bound.
 The final valid-input and invalid-input mass comparisons remain open.
 
 ## Simulator

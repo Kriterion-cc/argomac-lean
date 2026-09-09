@@ -120,3 +120,8 @@ import Proof.InvalidSourceNormalization
 import Proof.ProductSourceRatio
 import Proof.ValidSourceSum
 import Proof.PrefixGoodExpansion
+import Proof.RetainedMissPhaseMass
+import Proof.SourceReferenceSupport
+import Proof.ValidSourceSumRatio
+import Proof.InvalidGhostFrameSum
+import Proof.InvalidGhostNormalization
