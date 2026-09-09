@@ -132,3 +132,7 @@ import Proof.InvalidNonfixedRatio
 import Proof.InvalidEventNonfixed
 import Proof.RetainedInvalidProgrammed
 import Proof.FullSourceRestTransport
+import Proof.ValidPrefixEvent
+import Proof.ValidPrefixNormalization
+import Proof.SourceNonfixedReference
+import Proof.InvalidEventAverage

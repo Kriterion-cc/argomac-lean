@@ -74,6 +74,8 @@ Every nonzero good transcript supplies compatible reference states and the query
 Lean checks the common prefix history for every retained source.
 Lean checks the exact source reindex and the actual real transcript phase factors.
 Lean bounds the full linked tag sum by the actual public source event.
+Lean normalizes the valid source event with its exact full-tag density.
+Lean gives incompatible nonfixed transcripts zero source event mass.
 The final valid-input and invalid-input mass comparisons remain open.
 
 ## Simulator
