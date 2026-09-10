@@ -30,6 +30,12 @@ every submission it verifies.
 
 `Submission.solution` supplies every field of `Kriterion.Solution`.
 `Submission.adaptivePrivacy` proves the unchanged universal 100-bit privacy obligation.
+The theorem applies to the entry variant described below.
+The theorem uses ideal permutations and an ideal hash oracle.
+The theorem covers one selected input encoding per garbling.
+It does not prove security for concrete AES, concrete SHA256, repeated label releases, or the complete BaBe protocol.
+The theorem fixes BN254 and 128-bit blocks.
+It does not define an asymptotic family for every security parameter.
 
 | Field | Where |
 | --- | --- |
@@ -47,7 +53,8 @@ digits share the bucket and differ by an injective tweak on the permutation inpu
 permutations. Each permutation therefore serves one branch of every gate in its bucket, and no
 gate reads two labels through one permutation.
 
-The schedule follows `gc_rpm_proof.tex`.
+The schedule uses the bucketing method in `gc_rpm_proof.tex`.
+The entry changes the concrete schedule and feed-forward formula.
 A point permutation serves 91 gates.
 A curve permutation serves one gate.
 
@@ -56,7 +63,7 @@ The active collision proof includes this bias.
 
 ## Adaptive privacy
 
-The proof keeps both adaptive query phases and the original uniform random tape.
+The Kriterion obligation uses two adaptive query phases and the original uniform random tape.
 The proof covers valid and invalid inputs.
 
 - `ValidEndpointRatio.lean` bounds the valid source by the real transcript.
@@ -65,6 +72,44 @@ The proof covers valid and invalid inputs.
 - `AdaptiveSourceBound.lean` combines the source ratio with the ideal transcript bound.
 - `AdaptiveLossAccounting.lean` places the full error below the 100-bit envelope.
 - The large-budget case uses the bound of one on the decision advantage.
+
+## Paper correspondence
+
+The comparison uses BaBe.latex commit `e2dcf4d540b2708e13cd21090df759051119a116`.
+
+| Item | Paper | Entry |
+| --- | --- | --- |
+| Digits | 92 | 91 |
+| Point adaptor families in the count | 9 | 13 |
+| Slots per bucket | 3 | 3 hash slots and 2 separate pad slots |
+| Point permutations in the count | 6,858 | 16,510 |
+| Curve permutations in the count | 3,810 | 6,350 |
+| Block formula | `π(L XOR t) XOR (L XOR t)` | `π(L XOR t) XOR L` |
+
+[PaperConstruction.lean](Proof/PaperConstruction.lean) proves the exact block and byte relations.
+The field relation keeps the XOR inside the reduction modulo the field prime.
+A uniform output translation equates the block formulas for one fixed tweak.
+One shared translation cannot equate the formulas for two different tweaks and every label.
+The repository therefore proves this variant directly.
+It does not claim that the two shared-bucket constructions have identical distributions.
+
+| Paper component | Checked entry component |
+| --- | --- |
+| Point masks and output reconstruction | `PointDistribution.lean`, `OutputRowDistribution.lean` |
+| Field-mask substitutions | `MaskRandomizerDistribution.lean`, `CircuitMaskDistribution.lean` |
+| Bit-adaptor permutation programming | `Gate.lean`, `AdaptivePermutationRatio.lean` |
+| Curve check and EncPRF link | `InvalidGhostEndpoint.lean`, `EncPRFTranscript.lean` |
+| H-coefficient transcript comparison | `HCoefficient.lean`, `ConcreteSmallSourceRatio.lean` |
+| Full concrete error | `AdaptiveArithmetic.lean`, `AdaptiveLossAccounting.lean` |
+| Three oracle-query phases | `ThreePhasePrivacy.lean` |
+
+[ThreePhasePrivacy.lean](Proof/ThreePhasePrivacy.lean) defines queries before the public table, between the table and labels, and after the labels.
+Lean proves that the three-phase games have the distributions of the compiled two-phase games.
+Lean proves the 100-bit bound with total work `q0 + q1 + q2 + 1`.
+The circuit and auxiliary input are fixed independently of the oracle sample.
+The theorem does not permit oracle-dependent circuit selection.
+The ideal simulator can sample hidden coins early.
+It keeps the table private during the first phase and retains all oracle state updates.
 
 ## Simulator
 
@@ -75,6 +120,22 @@ The operation preserves the public table.
 
 The proof uses only `propext`, `Classical.choice`, and `Quot.sound`.
 The proof does not assume adaptive privacy.
+
+The paper also requires an efficient simulator.
+The Kriterion simulator type contains probability distributions and no execution-cost field.
+The computability of `Submission.solution` does not establish simulator efficiency.
+[SimulatorPrivacy.lean](Proof/SimulatorPrivacy.lean) proves the exact sparse simulator's three-phase privacy.
+[SimulatorFinitePrivacy.lean](Proof/SimulatorFinitePrivacy.lean) proves privacy with a finite retry limit.
+The finite sampler uses at most 256 attempts for each integer draw.
+Its complete game error is at most `(1813496 + q) / 2^256`.
+[SimulatorFiniteArithmetic.lean](Proof/SimulatorFiniteArithmetic.lean) proves that this error preserves the 100-bit bound.
+
+The executable oracle state stores sparse permutations, hash entries, and query records.
+The conditional completion distributions appear only in the proof.
+The executable simulator does not sample complete oracle functions.
+[SimulatorSampling.lean](Proof/SimulatorSampling.lean) checks the private sampler and its random-draw count.
+[SimulatorMachineCost.lean](Proof/SimulatorMachineCost.lean) checks sparse execution and storage bounds.
+The combined cost certificate for the cached implementation remains in progress.
 The verifier and benchmark use the computable `Submission.solution` entry.
 
 ## Source
