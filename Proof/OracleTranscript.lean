@@ -1,4 +1,4 @@
-import Cryptography.Primitives
+import Proof.Simulator
 
 namespace Kriterion.ArgoMAC.Security
 
@@ -6,19 +6,39 @@ open Cryptography
 
 universe uQuery uAnswer uResult uState uOther
 
-/-- This interpreter records the public query-answer pairs. -/
+/-- This projection reads each public answer from the state before its query. -/
 noncomputable def runOracleProgramWithTranscript
     {oracle : OracleSpec.{uQuery, uAnswer}} {Result : Type uResult}
-    {State : Type uState} (handler : OracleHandler oracle State) :
-    {budget : Nat} → OracleProgram oracle Result budget → State →
-      PMF (Result × State × List (Sigma oracle.Answer))
-  | _, .pure result, state => result.map fun value => (value, state, [])
-  | _, .query request next, state =>
-      let answered := handler request state
-      (runOracleProgramWithTranscript handler (next answered.1) answered.2).map
-        fun output => (output.1, output.2.1, ⟨request, answered.1⟩ :: output.2.2)
-  | _, .sample distribution next, state =>
-      distribution.bind fun value => runOracleProgramWithTranscript handler (next value) state
+    {State : Type uState} (handler : OracleHandler oracle State) {budget : Nat}
+    (program : OracleProgram oracle Result budget) (state : State) :
+    PMF (Result × State × List (Sigma oracle.Answer)) :=
+  (runOracleProgramWithTrace handler program state).map fun output =>
+    (output.1, output.2.1, output.2.2.map (fun step => ⟨step.1, (handler step.1 step.2).1⟩))
+
+@[simp] theorem runOracleProgramWithTranscript_pure
+    {oracle : OracleSpec.{uQuery, uAnswer}} {Result : Type uResult} {State : Type uState}
+    (handler : OracleHandler oracle State) {budget : Nat} (result : PMF Result) (state : State) :
+    runOracleProgramWithTranscript handler (.pure (budget := budget) result) state =
+      result.map (fun value => (value, state, [])) := by
+  simp [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def]
+
+@[simp] theorem runOracleProgramWithTranscript_query
+    {oracle : OracleSpec.{uQuery, uAnswer}} {Result : Type uResult} {State : Type uState}
+    (handler : OracleHandler oracle State) {budget : Nat} (request : oracle.Query)
+    (next : oracle.Answer request → OracleProgram oracle Result budget) (state : State) :
+    runOracleProgramWithTranscript handler (.query request next) state =
+      (runOracleProgramWithTranscript handler (next (handler request state).1)
+        (handler request state).2).map
+        (fun output => (output.1, output.2.1, ⟨request, (handler request state).1⟩ :: output.2.2)) := by
+  simp [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def]
+
+@[simp] theorem runOracleProgramWithTranscript_sample
+    {oracle : OracleSpec.{uQuery, uAnswer}} {Result Sample : Type uResult} {State : Type uState}
+    (handler : OracleHandler oracle State) {budget : Nat} (distribution : PMF Sample)
+    (next : Sample → OracleProgram oracle Result budget) (state : State) :
+    runOracleProgramWithTranscript handler (.sample distribution next) state =
+      distribution.bind (fun value => runOracleProgramWithTranscript handler (next value) state) := by
+  simp [runOracleProgramWithTranscript, PMF.map_bind]
 
 /-- The program has the same distribution after transcript erasure. -/
 theorem runOracleProgramWithTranscript_erase
@@ -26,19 +46,9 @@ theorem runOracleProgramWithTranscript_erase
     {State : Type uState} (handler : OracleHandler oracle State)
     {budget : Nat} (program : OracleProgram oracle Result budget) (state : State) :
     (runOracleProgramWithTranscript handler program state).map
-        (fun output => (output.1, output.2.1)) = program.run handler state := by
-  induction program generalizing state with
-  | pure result =>
-      rw [runOracleProgramWithTranscript, OracleProgram.run, PMF.map_comp]
-      rfl
-  | query request next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, OracleProgram.run, PMF.map_comp]
-      exact inductionHypothesis _ _
-  | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, OracleProgram.run, PMF.map_bind]
-      congr 1
-      funext value
-      exact inductionHypothesis value state
+      (fun output => (output.1, output.2.1)) = program.run handler state := by
+  simpa only [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def] using
+    runOracleProgramWithTrace_erase handler program state
 
 /-- A compatible oracle gives each recorded answer in order. -/
 def OracleTranscriptCompatible
@@ -59,15 +69,15 @@ theorem runOracleProgramWithTranscript_compatible
     OracleTranscriptCompatible handler state output.2.2 := by
   induction program generalizing state output with
   | pure result =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_pure, PMF.mem_support_map_iff] at member
       rcases member with ⟨value, _, rfl⟩
       trivial
   | query request next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_query, PMF.mem_support_map_iff] at member
       rcases member with ⟨tailOutput, tailMember, rfl⟩
       exact ⟨rfl, inductionHypothesis _ _ tailOutput tailMember⟩
   | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_bind_iff] at member
+      simp only [runOracleProgramWithTranscript_sample, PMF.mem_support_bind_iff] at member
       rcases member with ⟨value, _, tailMember⟩
       exact inductionHypothesis value state output tailMember
 
@@ -84,11 +94,11 @@ theorem runOracleProgramWithTranscript_replay
       (runOracleProgramWithTranscript other program otherState).support := by
   induction program generalizing state otherState output with
   | pure result =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member ⊢
+      simp only [runOracleProgramWithTranscript_pure, PMF.mem_support_map_iff] at member ⊢
       rcases member with ⟨value, valueMember, rfl⟩
       exact ⟨otherState, value, valueMember, rfl⟩
   | query request next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member ⊢
+      simp only [runOracleProgramWithTranscript_query, PMF.mem_support_map_iff] at member ⊢
       rcases member with ⟨tailOutput, tailMember, rfl⟩
       obtain ⟨sameAnswer, compatibleTail⟩ := compatible
       obtain ⟨finalState, finalMember⟩ := inductionHypothesis
@@ -98,7 +108,7 @@ theorem runOracleProgramWithTranscript_replay
       · simpa only [sameAnswer] using finalMember
       · simp only [sameAnswer]
   | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_bind_iff] at member ⊢
+      simp only [runOracleProgramWithTranscript_sample, PMF.mem_support_bind_iff] at member ⊢
       rcases member with ⟨value, valueMember, tailMember⟩
       obtain ⟨finalState, finalMember⟩ :=
         inductionHypothesis value state otherState output tailMember compatible
@@ -138,25 +148,25 @@ theorem runOracleProgramWithTranscript_mass_eq
   classical
   induction program generalizing state otherState transcript with
   | pure distribution =>
-      simp only [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def]
+      simp only [runOracleProgramWithTranscript_pure, PMF.map_comp, Function.comp_def]
   | query request next inductionHypothesis =>
       cases transcript with
       | nil =>
-          simp [runOracleProgramWithTranscript, PMF.map_comp, PMF.map_apply]
+          simp [runOracleProgramWithTranscript_query, PMF.map_comp, PMF.map_apply]
       | cons entry tail =>
           rcases entry with ⟨query, answer⟩
           by_cases sameQuery : query = request
           · subst query
             obtain ⟨sameAnswer, compatibleTail⟩ := compatible
             obtain ⟨otherAnswer, otherTail⟩ := otherCompatible
-            simpa only [runOracleProgramWithTranscript, PMF.map_comp, PMF.map_apply,
+            simpa only [runOracleProgramWithTranscript_query, PMF.map_comp, PMF.map_apply,
               Function.comp_apply, Prod.mk.injEq, List.cons.injEq, Sigma.mk.inj_iff,
               sameAnswer, otherAnswer, heq_eq_eq, true_and, and_true] using
               inductionHypothesis answer (handler request state).2
                 (other request otherState).2 tail compatibleTail otherTail
-          · simp [runOracleProgramWithTranscript, PMF.map_comp, PMF.map_apply, sameQuery]
+          · simp [runOracleProgramWithTranscript_query, PMF.map_comp, PMF.map_apply, sameQuery]
   | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.map_bind, PMF.bind_apply]
+      simp only [runOracleProgramWithTranscript_sample, PMF.map_bind, PMF.bind_apply]
       apply tsum_congr
       intro value
       rw [inductionHypothesis value state otherState transcript compatible otherCompatible]

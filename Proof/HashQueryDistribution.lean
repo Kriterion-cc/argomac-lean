@@ -89,15 +89,15 @@ theorem runOracleProgramWithTranscript_length_le
     output.2.2.length ≤ budget := by
   induction program generalizing state output with
   | pure result =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_pure, PMF.mem_support_map_iff] at member
       obtain ⟨value, _, rfl⟩ := member
       exact Nat.zero_le _
   | query request next ih =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_query, PMF.mem_support_map_iff] at member
       obtain ⟨tail, tailMember, rfl⟩ := member
       exact Nat.add_le_add_right (ih _ _ tail tailMember) 1
   | sample distribution next ih =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_bind_iff] at member
+      simp only [runOracleProgramWithTranscript_sample, PMF.mem_support_bind_iff] at member
       obtain ⟨value, _, tailMember⟩ := member
       exact ih value state output tailMember
 

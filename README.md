@@ -65,7 +65,11 @@ The active collision proof includes this bias.
 ## Adaptive privacy
 
 The proof keeps both adaptive query phases and the uniform random tape.
-VCV-io supplies the uniform sampler and eager random-oracle interpreter.
+VCV-io supplies the uniform sampler and shared oracle interpreter.
+The interpreter preserves arbitrary private samples and the indexed query budget.
+The proof uses one interpreter for ordinary runs, traced runs, and paired states.
+VCV-io state projections prove both coupling marginals.
+Regression theorems preserve the execution distribution and query order.
 The challenge library supplies the permutation counting and fresh programming lemmas.
 The proof covers valid and invalid inputs.
 

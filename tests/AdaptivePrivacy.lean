@@ -36,6 +36,8 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.OracleProgramTrace.length_le
 #print axioms ArgoMAC.Security.OracleProgramTrace.all_safe
 #print axioms ArgoMAC.Security.OracleProgramTrace.append_length_le
+#print axioms Cryptography.OracleProgram.run_project
+#print axioms ArgoMAC.Security.runOracleProgramWithTrace_project
 #print axioms ArgoMAC.Security.runOracleProgramWithTrace_erase
 #print axioms ArgoMAC.Security.runOracleProgramWithTrace_reached
 #print axioms ArgoMAC.Security.runOracleProgramWithTrace_length_le
@@ -82,22 +84,8 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.idealOracleHandler_preservesInvariant
 #print axioms ArgoMAC.Security.oracleProgram_run_stateEquiv
 #print axioms ArgoMAC.Security.oracleProgram_run_result_of_related
-#print axioms ArgoMAC.Security.runOracleProgramWithTrace_replay_of_related
-#print axioms ArgoMAC.Security.replayQueryTrace_append
-#print axioms ArgoMAC.Security.replayQueryTrace_length
-#print axioms ArgoMAC.Security.replayQueryTrace_queries
-#print axioms ArgoMAC.Security.runOracleProgramTraceCoupling_fst
-#print axioms ArgoMAC.Security.runOracleProgramTraceCoupling_snd
-#print axioms ArgoMAC.Security.runOracleProgramTraceCoupling_result_eq
-#print axioms ArgoMAC.Security.runOracleProgramTraceCoupling_states_related
-#print axioms ArgoMAC.Security.runOracleProgramTraceCoupling_queries_eq
-#print axioms ArgoMAC.Security.runOracleProgramTraceCoupling_disagreement_mass
 #print axioms ArgoMAC.Security.runOracleProgramRelatedTraceCoupling_fst
 #print axioms ArgoMAC.Security.runOracleProgramRelatedTraceCoupling_snd
-#print axioms ArgoMAC.Security.runOracleProgramsRelatedBridgeTraceCoupling_fst
-#print axioms ArgoMAC.Security.runOracleProgramsRelatedBridgeTraceCoupling_snd
-#print axioms ArgoMAC.Security.runOracleProgramsRelatedBridgeTraceCoupling_result_eq
-#print axioms ArgoMAC.Security.runOracleProgramsRelatedBridgeTraceCoupling_disagreement_mass
 #print axioms ArgoMAC.Security.independentPMFCoupling_fst
 #print axioms ArgoMAC.Security.independentPMFCoupling_snd
 #print axioms ArgoMAC.Security.boundedBridgeContinuation_fst
@@ -114,12 +102,6 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.realIdealOracleHandlers_related
 #print axioms ArgoMAC.Security.oracleProgram_real_ideal_result
 #print axioms ArgoMAC.Security.oracleProgram_real_initial_result
-#print axioms ArgoMAC.Security.runOracleProgramWithTrace_real_initial_replay
-#print axioms ArgoMAC.Security.realInitialTraceCoupling_fst
-#print axioms ArgoMAC.Security.realInitialTraceCoupling_snd
-#print axioms ArgoMAC.Security.realInitialTraceCoupling_result_eq
-#print axioms ArgoMAC.Security.realInitialTraceCoupling_states_related
-#print axioms ArgoMAC.Security.realInitialTraceCoupling_queries_eq
 #print axioms ArgoMAC.Security.programPermutation_apply
 #print axioms ArgoMAC.Security.programPermutation_symm
 #print axioms ArgoMAC.Security.programPermutation_preserves
@@ -300,3 +282,36 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.selectedGateMetadataSchedule_length
 #print axioms ArgoMAC.Security.selectedGateHashBadUnion_mass_le
 #print axioms ArgoMAC.Security.selectedGateHashBadUnion_toReal_le
+
+namespace TraceRegression
+
+open Cryptography ArgoMAC.Security
+
+universe uQuery uAnswer uResult uState
+
+/-- This reference preserves the query trace rules from before the VCV-io migration. -/
+private noncomputable def reference {oracle : OracleSpec.{uQuery, uAnswer}}
+    {Result : Type uResult} {State : Type uState} (handler : OracleHandler oracle State) :
+    {budget : Nat} → OracleProgram oracle Result budget → State →
+      PMF (Result × State × List (oracle.Query × State))
+  | _, .pure result, state => result.map fun value => (value, state, [])
+  | _, .query request next, state =>
+      let answer := handler request state
+      (reference handler (next answer.1) answer.2).map
+        fun output => (output.1, output.2.1, (request, state) :: output.2.2)
+  | _, .sample distribution next, state =>
+      distribution.bind fun value => reference handler (next value) state
+
+/-- VCV-io preserves every trace entry and its order for every program. -/
+theorem trace_eq_reference {oracle : OracleSpec.{uQuery, uAnswer}}
+    {Result : Type uResult} {State : Type uState} (handler : OracleHandler oracle State)
+    {budget : Nat} (program : OracleProgram oracle Result budget) (state : State) :
+    runOracleProgramWithTrace handler program state = reference handler program state := by
+  induction program generalizing state with
+  | pure distribution => simp [reference]
+  | query request next ih => simp [reference, ih]
+  | sample distribution next ih => simp [reference, ih]
+
+#print axioms trace_eq_reference
+
+end TraceRegression

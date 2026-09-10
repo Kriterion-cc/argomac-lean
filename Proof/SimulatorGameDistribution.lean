@@ -37,16 +37,16 @@ theorem circuitRunTranscript_oracle {Result : Type} {budget : Nat}
         runOracleProgramWithTranscript idealOracleHandler program state.oracle := by
   induction program generalizing state with
   | pure distribution =>
-      simp only [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def]
+      simp only [runOracleProgramWithTranscript_pure, PMF.map_comp, Function.comp_def]
   | query request next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def]
+      simp only [runOracleProgramWithTranscript_query, PMF.map_comp, Function.comp_def]
       have law := congrArg (fun distribution => distribution.map (fun output =>
         (output.1, output.2.1, ⟨request, (idealOracleHandler request state.oracle).1⟩ :: output.2.2)))
         (inductionHypothesis (idealOracleHandler request state.oracle).1
           (circuitSimulatorOracleHandler request state).2)
       simpa only [PMF.map_comp, Function.comp_def, circuitSimulatorOracleHandler] using law
   | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.map_bind]
+      simp only [runOracleProgramWithTranscript_sample, PMF.map_bind]
       apply congrArg distribution.bind
       funext value
       exact inductionHypothesis value state

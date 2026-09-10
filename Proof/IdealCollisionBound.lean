@@ -22,14 +22,14 @@ theorem runCircuitSimulatorWithTranscript
         (fun output => (output.1, {state with oracle := output.2.1}, output.2.2)) := by
   induction program generalizing state with
   | pure result =>
-      simp only [runOracleProgramWithTranscript, PMF.map_comp]
+      simp only [runOracleProgramWithTranscript_pure, PMF.map_comp]
       rfl
   | query request next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, circuitSimulatorOracleHandler]
+      simp only [runOracleProgramWithTranscript_query, circuitSimulatorOracleHandler]
       rw [inductionHypothesis, PMF.map_comp, PMF.map_comp]
       rfl
   | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.map_bind]
+      simp only [runOracleProgramWithTranscript_sample, PMF.map_bind]
       congr 1
       funext value
       exact inductionHypothesis value state
