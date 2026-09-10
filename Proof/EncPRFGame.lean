@@ -1,5 +1,6 @@
 import Proof.EncPRFTranscript
 import Proof.HashQueryDistribution
+import Proof.HCoefficient
 
 namespace Kriterion.ArgoMAC.Security
 

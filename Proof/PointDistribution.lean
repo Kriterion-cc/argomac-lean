@@ -38,14 +38,8 @@ instance offsetRandomnessNonempty [FieldCertificate] : Nonempty OffsetRandomness
 theorem uniform_map_equiv {Source Target : Type*}
     [Fintype Source] [Nonempty Source] [Fintype Target] [Nonempty Target]
     (equivalence : Source ≃ Target) :
-    (PMF.uniformOfFintype Source).map equivalence = PMF.uniformOfFintype Target := by
-  classical
-  apply PMF.ext
-  intro output
-  rw [PMF.map_apply]
-  simp only [PMF.uniformOfFintype_apply, ← equivalence.symm_apply_eq, eq_comm]
-  rw [Fintype.card_congr equivalence]
-  simp only [tsum_ite_eq]
+    (PMF.uniformOfFintype Source).map equivalence = PMF.uniformOfFintype Target :=
+  PMF.uniformOfFintype_map_of_bijective equivalence equivalence.bijective
 
 /-- The first coordinate of a uniform product is uniform. -/
 theorem uniform_map_fst {First Second : Type*}

@@ -110,17 +110,10 @@ theorem concreteRetainedFlags_mass_le [FieldCertificate] [GroupCertificate] [Fin
         243390420 / (2 : ENNReal) ^ 128 +
           (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
   rw [concreteRetainedFlags_split]
-  rw [PMF.toOuterMeasure_bind_apply]
-  calc
-    _ ≤ ∑' rowCoin, (PMF.uniformOfFintype RetainedRowCoin) rowCoin *
-        (243390420 / (2 : ENNReal) ^ 128 +
-          (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128) := by
-      apply ENNReal.tsum_le_tsum
-      intro rowCoin
-      apply mul_le_mul_right
-      exact retainedJointSourceFlags_mass_le adversary parameter auxiliary
-        (retainedCoinRows scalar rowCoin) rowCoin.2.2.value
-    _ = _ := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
+  apply Probability.bind_event_le
+  intro rowCoin _
+  exact retainedJointSourceFlags_mass_le adversary parameter auxiliary
+    (retainedCoinRows scalar rowCoin) rowCoin.2.2.value
 
 /-- This event tests the exact raw prescription and its complete prefix. -/
 def rawSourceBad (coin : SimulatorCoin) (source : CircuitMaskSample) (input : AffineInput)

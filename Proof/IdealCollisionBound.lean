@@ -22,14 +22,14 @@ theorem runCircuitSimulatorWithTranscript
         (fun output => (output.1, {state with oracle := output.2.1}, output.2.2)) := by
   induction program generalizing state with
   | pure result =>
-      simp only [runOracleProgramWithTranscript, PMF.map_comp]
+      simp only [runOracleProgramWithTranscript_pure, PMF.map_comp]
       rfl
   | query request next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, circuitSimulatorOracleHandler]
+      simp only [runOracleProgramWithTranscript_query, circuitSimulatorOracleHandler]
       rw [inductionHypothesis, PMF.map_comp, PMF.map_comp]
       rfl
   | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.map_bind]
+      simp only [runOracleProgramWithTranscript_sample, PMF.map_bind]
       congr 1
       funext value
       exact inductionHypothesis value state
@@ -1626,12 +1626,8 @@ theorem pointBranchCollision_fullTape_mass_le_blocks [Fintype Block]
 private theorem outerMeasure_bind_le {A B : Type*} (source : PMF A)
     (next : A → PMF B) (event : Set B) (bound : ENNReal)
     (pointwise : ∀ sample, (next sample).toOuterMeasure event ≤ bound) :
-    (source.bind next).toOuterMeasure event ≤ bound := by
-  rw [PMF.toOuterMeasure_bind_apply]
-  calc
-    _ ≤ ∑' sample, source sample * bound :=
-      ENNReal.tsum_le_tsum fun sample => mul_le_mul_right (pointwise sample) _
-    _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
+    (source.bind next).toOuterMeasure event ≤ bound :=
+  Probability.bind_event_le source next event bound (fun sample _ => pointwise sample)
 
 private theorem four_bind_event_le {A B C D Result : Type*}
     (first : PMF A) (second : A → PMF B) (third : A → B → PMF C)

@@ -319,21 +319,6 @@ private theorem idealPrequeryLabelCollisionFlag_resample {Extra : Type*}
   rw [PMF.bind_comm]
   rfl
 
-private theorem outerMeasure_bind_support_le {Source Target : Type*}
-    (source : PMF Source) (next : Source → PMF Target) (event : Set Target) (bound : ENNReal)
-    (pointwise : ∀ value ∈ source.support, (next value).toOuterMeasure event ≤ bound) :
-    (source.bind next).toOuterMeasure event ≤ bound := by
-  rw [PMF.toOuterMeasure_bind_apply]
-  calc
-    _ ≤ ∑' value, source value * bound := by
-      apply ENNReal.tsum_le_tsum
-      intro value
-      by_cases member : value ∈ source.support
-      · exact mul_le_mul_right (pointwise value member) _
-      · have zero : source value = 0 := by simpa only [PMF.mem_support_iff, not_not] using member
-        simp only [zero, zero_mul, le_refl]
-    _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
-
 private theorem idealCircuitPrefix_length_le
     (prestate : LabelPrefixState adversary.State)
     (member : prestate ∈ (idealCircuitPrefix adversary parameter scalar auxiliary).support) :
@@ -351,9 +336,9 @@ theorem idealPrequeryLabelCollisionFlag_mass_le [Fintype Block] {Extra : Type*}
       {flag | flag = true} ≤
         (182 * adversary.firstQueryBudget parameter : Nat) / (Fintype.card Block : ENNReal) := by
   rw [idealPrequeryLabelCollisionFlag_resample]
-  apply outerMeasure_bind_support_le
+  apply Probability.bind_event_le
   intro prestate member
-  apply outerMeasure_bind_support_le
+  apply Probability.bind_event_le
   intro selected _
   rw [PMF.toOuterMeasure_map_apply, Set.preimage_setOf_eq]
   simp only [decide_eq_true_eq]

@@ -1,5 +1,4 @@
 import Proof.OracleTranscript
-import Proof.HCoefficient
 import Construction.Garbling
 import Proof.Distribution
 
@@ -89,15 +88,15 @@ theorem runOracleProgramWithTranscript_length_le
     output.2.2.length ≤ budget := by
   induction program generalizing state output with
   | pure result =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_pure, PMF.mem_support_map_iff] at member
       obtain ⟨value, _, rfl⟩ := member
       exact Nat.zero_le _
   | query request next ih =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_query, PMF.mem_support_map_iff] at member
       obtain ⟨tail, tailMember, rfl⟩ := member
       exact Nat.add_le_add_right (ih _ _ tail tailMember) 1
   | sample distribution next ih =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_bind_iff] at member
+      simp only [runOracleProgramWithTranscript_sample, PMF.mem_support_bind_iff] at member
       obtain ⟨value, _, tailMember⟩ := member
       exact ih value state output tailMember
 
@@ -174,19 +173,12 @@ theorem uniform_hidden_query_hit_bound {Result : Type*}
   have swap : withUniformHidden (fun _ => transcripts) = transcripts.bind fun output =>
       (PMF.uniformOfFintype BaseField).map (fun hidden => (hidden, output)) :=
     PMF.bind_comm _ _ (fun hidden output => PMF.pure (hidden, output))
-  rw [swap, PMF.toOuterMeasure_bind_apply]
-  simp only [PMF.toOuterMeasure_map_apply]
-  calc
-    _ ≤ ∑' output, transcripts output * ((budget : ENNReal) / baseFieldModulus) := by
-      apply ENNReal.tsum_le_tsum
-      intro output
-      by_cases member : output ∈ transcripts.support
-      · apply mul_le_mul_right
-        exact (uniform_hidden_transcript_hit output.2).trans
-          (ENNReal.div_le_div_right (by exact_mod_cast lengthBound output member) _)
-      · simp only [PMF.mem_support_iff, not_not] at member
-        simp [member]
-    _ = _ := by rw [ENNReal.tsum_mul_right, transcripts.tsum_coe, one_mul]
+  rw [swap]
+  apply Probability.bind_event_le
+  intro output member
+  rw [PMF.toOuterMeasure_map_apply]
+  exact (uniform_hidden_transcript_hit output.2).trans
+    (ENNReal.div_le_div_right (by exact_mod_cast lengthBound output member) _)
 
 /-- An arbitrary hash replacement costs at most q/p for a program with a hidden uniform input. -/
 theorem replaceHashAt_event_bound {Result : Type*} {budget : Nat}
@@ -203,24 +195,15 @@ theorem replaceHashAt_event_bound {Result : Type*} {budget : Nat}
     {output | output.1 ∈ transcriptHashInputs output.2.2}
   have hit := uniform_hidden_query_hit_bound (hashTranscriptRun program randomness) budget
     (hashTranscriptRun_length_le program randomness)
-  have bound := hCoefficient_event real ideal bad event
-    ((budget : ℝ) / baseFieldModulus) 0 (by norm_num)
-    (by
-      have finite : (budget : ENNReal) / baseFieldModulus ≠ ⊤ :=
-        ENNReal.div_ne_top (ENNReal.natCast_ne_top _) (by norm_num [baseFieldModulus])
-      exact (ENNReal.toReal_mono finite hit).trans_eq (by simp))
-    (by
-      rintro ⟨hidden, result, transcript⟩ miss
-      have equal := replaceHashAt_transcript_mass program randomness hidden (answers hidden)
-        result transcript miss
-      change (1 - 0) * (withUniformHidden _ (hidden, result, transcript)).toReal ≤
-        (withUniformHidden _ (hidden, result, transcript)).toReal
-      rw [withUniformHidden_apply, withUniformHidden_apply]
-      rw [show hashTranscriptRun program (replaceHashAt randomness hidden (answers hidden))
-          (result, transcript) = hashTranscriptRun program randomness (result, transcript)
-        from equal]
-      simp)
-  simpa only [add_zero] using bound
+  have bound := Probability.identical_until_bad real ideal bad event (by
+    rintro ⟨hidden, result, transcript⟩ miss
+    change withUniformHidden _ (hidden, result, transcript) = withUniformHidden _ (hidden, result, transcript)
+    rw [withUniformHidden_apply, withUniformHidden_apply]
+    exact congrArg ((PMF.uniformOfFintype BaseField) hidden * ·)
+      (replaceHashAt_transcript_mass program randomness hidden (answers hidden) result transcript miss))
+  have finite : (budget : ENNReal) / baseFieldModulus ≠ ⊤ :=
+    ENNReal.div_ne_top (ENNReal.natCast_ne_top _) (by norm_num [baseFieldModulus])
+  exact bound.trans ((ENNReal.toReal_mono finite hit).trans_eq (by simp))
 
 /-- This equivalence swaps a hash value with its independent replacement. -/
 def hashResampleEquiv (hidden : BaseField) :
