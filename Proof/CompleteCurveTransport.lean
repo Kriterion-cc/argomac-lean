@@ -15,10 +15,7 @@ def completeCircuitSourceEquiv : CircuitMaskSample ≃
   invFun full := decodeFullSource full.1
   left_inv source := by
     simp only [decodeFullSource, circuitGoodHashSource]
-    have decode (pair : BaseField × HashLiftQuotient) :
-        fullSourceHashPair (goodHashLiftSource pair) = pair := by
-      simp only [fullSourceHashPair, goodHashLiftSource, Equiv.apply_symm_apply]
-    simp only [decode]
+    simp only [fullSourceHashPair_good]
     exact circuitMaskHashSplitEquiv.symm_apply_apply source
   right_inv full := by
     apply Subtype.ext

@@ -78,32 +78,17 @@ theorem actualSourcePrequeryFlag_resample (source : ActualPrefixSourceKernel adv
   rw [PMF.bind_comm]
   rfl
 
-private theorem bind_bound {Source Target : Type*}
-    (source : PMF Source) (next : Source → PMF Target) (event : Set Target) (bound : ENNReal)
-    (pointwise : ∀ value ∈ source.support, (next value).toOuterMeasure event ≤ bound) :
-    (source.bind next).toOuterMeasure event ≤ bound := by
-  rw [PMF.toOuterMeasure_bind_apply]
-  calc
-    _ ≤ ∑' value, source value * bound := by
-      apply ENNReal.tsum_le_tsum
-      intro value
-      by_cases member : value ∈ source.support
-      · exact mul_le_mul_left' (pointwise value member) _
-      · have zero : source value = 0 := by simpa only [PMF.mem_support_iff, not_not] using member
-        simp only [zero, zero_mul, le_refl]
-    _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
-
 /-- The actual adaptive source pays the full prequery loss once. -/
 theorem actualSourcePrequeryFlag_mass_le [Fintype Block]
     (source : ActualPrefixSourceKernel adversary) :
     (actualSourcePrequeryFlag adversary parameter auxiliary source).toOuterMeasure {flag | flag = true} ≤
       (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
   rw [actualSourcePrequeryFlag_resample]
-  apply bind_bound
+  apply Probability.bind_event_le
   intro coin _
-  apply bind_bound
+  apply Probability.bind_event_le
   intro selected member
-  apply bind_bound
+  apply Probability.bind_event_le
   intro sample _
   rw [PMF.toOuterMeasure_map_apply, Set.preimage_setOf_eq]
   simp only [decide_eq_true_eq]

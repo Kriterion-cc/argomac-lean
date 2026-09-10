@@ -188,7 +188,7 @@ theorem totalDraw_supported {A : Type} (attempts : Nat) (draw : Draw A) (value :
       simp only [totalDraw, BitCode.bind_law] at reached
       obtain ⟨index, _, same⟩ := (PMF.mem_support_bind_iff _ _ _).mp reached
       simp only [BitCode.law, PMF.mem_support_pure_iff] at same
-      letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
+      let : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
       exact (PMF.mem_support_map_iff _ _ _).mpr ⟨index, by simp, same.symm⟩
 
 /-- This total external phase always continues after its finite integer sampler. -/

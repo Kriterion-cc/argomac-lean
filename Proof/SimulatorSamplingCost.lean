@@ -58,7 +58,7 @@ theorem vector_law {A : Type} {draws : Nat} (code : Code (A × Nat) draws)
       rw [← same, PMF.map_comp]
       rfl
     simp_rw [mappedSame]
-    simpa only [vectorPushEquiv, Equiv.coe_fn_mk] using projected
+    simpa only [vectorPushEquiv, Equiv.coe_fn_mk, Function.comp_def] using projected
 
 theorem vector_bound {A : Type} {draws limit : Nat} (code : Code (A × Nat) draws)
     (bounded : Bounded code limit) (count : Nat) :
@@ -435,12 +435,12 @@ def pair {A B : Type} {first second l r : Nat} {left : Code A first} {right : Co
 def vector {A : Type} {draws limit : Nat} {reference : Code A draws}
     (recipe : FiniteRecipe reference limit) :
     (count : Nat) → FiniteRecipe (reference.vector count) (count * (limit + 3))
-  | 0 => by simpa only [Nat.zero_mul] using cast (Nat.zero_mul draws).symm (pure #v[] 0)
+  | 0 => by simpa only [Code.vector, Nat.zero_mul] using cast (Nat.zero_mul draws).symm (pure #v[] 0)
   | count + 1 => by
     have result := cast (Nat.succ_mul count draws).symm
       (map (pair recipe (vector recipe count)) (vectorPushEquiv A count) 1)
     convert result using 1
-    ring
+    all_goals first | rfl | ring
 
 /-- The integer primitive charges one result construction only after success. -/
 def draw (size : Nat) (positive : 0 < size) (bounded : size ≤ 2 ^ 256) :
@@ -472,7 +472,7 @@ def mapWork {A B : Type} {draws limit extra : Nat} {reference : Code A draws}
     rw [chargedBind_law]
     have law := (recipe.law attempts).bind (fun value => (pure (f value).1 (f value).2).law attempts)
     simpa only [Code.map_law, Code.law, PMF.pure_map, BitCode.law,
-      Nat.add_zero, PMF.map] using law
+      Nat.add_zero, PMF.map, Function.comp_def, pure] using law
   cost attempts Seed random seed :=
     chargedBind_cost (recipe.run attempts)
       (fun value => BitCode.pure (some (f value).1, (f value).2)) limit extra random
@@ -518,7 +518,7 @@ private def finiteGate (coefficients gates : Nat) :
         (((finiteQuotient.vector coordinateBitCount).vector gates).pair
           ((finiteField.vector coordinateBitCount).vector gates))))
   convert result using 1
-  ring
+  all_goals first | rfl | ring
 
 private def finiteKey : FiniteRecipe key 7 :=
   ((finiteBits 128 (by decide)).pair (finiteBits 128 (by decide))).map keyEquiv 1

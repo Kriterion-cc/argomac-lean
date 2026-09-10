@@ -85,7 +85,7 @@ theorem actualAdaptiveGateMaskRun_retarget [FieldCertificate] [GroupCertificate]
   simp only [PMF.bind_bind, PMF.bind_map] at same
   dsimp only [Function.comp_def] at same
   simp only [table, publicMaskTable_retarget] at same
-  simpa only [rows, selectedGateView_actualOutput] using same
+  simpa only [rows, selectedGateView_actualOutput, actualAdaptiveGateMaskRun] using same
 
 private theorem gate_bind_tagged {Input Sample Aux Output Observation : Type*}
     (samples : PMF Sample) (choose : Sample → PMF (Input × Aux))
@@ -301,7 +301,7 @@ private theorem fullGateSourceRun_good_pair [FieldCertificate] [GroupCertificate
   have complete : FullSourceComplete (fun gate => goodHashLiftSource (pair.1 gate)) :=
     fun gate => ⟨pair.1 gate, rfl⟩
   rw [fullGateSourceRun, if_pos complete]
-  simp only [decodeFullSource, fullSourceHashPair, goodHashLiftSource, Equiv.apply_symm_apply]
+  simp only [decodeFullSource, fullSourceHashPair_good]
 
 attribute [local instance] instNonemptyCircuitHashRest_1
 

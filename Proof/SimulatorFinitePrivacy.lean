@@ -63,7 +63,7 @@ theorem CutoffLaw.weaken {A : Type} {attempts first second : Nat}
     (law : CutoffLaw attempts first exact finite) (bounded : first ≤ second) :
     CutoffLaw attempts second exact finite := by
   refine ⟨fun value => ?_, law.2⟩
-  exact (mul_le_mul_right' (pow_le_pow_right_of_le_one'
+  exact (mul_le_mul_left (pow_le_pow_right_of_le_one'
     (tsub_le_self : retained attempts ≤ 1) bounded) _).trans (law.1 value)
 
 private theorem optionalPMF_apply {A B : Type} (source : PMF (Option A))
@@ -248,8 +248,7 @@ theorem finiteIdealOption_law [FieldCertificate] [GroupCertificate] {Aux : Type}
       (finiteIdealOption attempts adversary parameter scalar auxiliary) := by
   have law := (CutoffLaw.code attempts offline).bind (fun coin =>
     finiteContinuation_law attempts adversary parameter scalar auxiliary coin (initial initialMetadata))
-  convert law using 1
-  omega
+  convert law using 1 <;> first | omega | rfl
 
 
 /-- The finite output relation bounds the probability of a failed draw. -/
@@ -266,7 +265,7 @@ theorem CutoffLaw.failure {A : Type} {attempts count : Nat}
       _ ≤ _ := ENNReal.tsum_le_tsum law.1
   exact (ENNReal.eq_sub_of_add_eq' ENNReal.one_ne_top total).le.trans
     ((tsub_le_tsub_left lower 1).trans
-      (loss_pow_le _ (pow_le_one₀ (zero_le _) (by norm_num)) count))
+      (loss_pow_le _ (pow_le_one₀ zero_le (by norm_num)) count))
 
 /-- The finite output relation bounds the real probability lost at each output. -/
 theorem CutoffLaw.point_error {A : Type} {attempts count : Nat}
@@ -275,12 +274,12 @@ theorem CutoffLaw.point_error {A : Type} {attempts count : Nat}
     (exact value).toReal - (finite (some value)).toReal ≤
       (count : ℝ) * (2 : ℝ)⁻¹ ^ attempts := by
   have retainedLe : retained attempts ^ count ≤ 1 :=
-    pow_le_one₀ (zero_le _) (tsub_le_self : retained attempts ≤ 1)
+    pow_le_one₀ zero_le (tsub_le_self : retained attempts ≤ 1)
   have lower := ENNReal.toReal_mono (finite.apply_ne_top _) (law.1 value)
   have pointLe := ENNReal.toReal_mono ENNReal.one_ne_top (exact.coe_le_one value)
   have factorLe := ENNReal.toReal_mono ENNReal.one_ne_top retainedLe
   have loss := loss_pow_le ((2 : ENNReal)⁻¹ ^ attempts)
-    (pow_le_one₀ (zero_le _) (by norm_num)) count
+    (pow_le_one₀ zero_le (by norm_num)) count
   have realLoss := ENNReal.toReal_mono (by finiteness) loss
   change (1 - retained attempts ^ count).toReal ≤ _ at realLoss
   rw [ENNReal.toReal_sub_of_le retainedLe ENNReal.one_ne_top] at realLoss

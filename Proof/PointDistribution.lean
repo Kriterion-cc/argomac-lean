@@ -26,7 +26,7 @@ def offsetFunctionEquiv [FieldCertificate] : (Fin 90 → Point) ≃ OffsetRandom
     cases values with
     | mk offsets count =>
       simp only [OffsetRandomness.mk.injEq]
-      simpa only [count] using List.ofFn_get offsets
+      simpa [count, Fin.cast] using List.ofFn_get offsets
 
 instance offsetRandomnessFintype [FieldCertificate] : Fintype OffsetRandomness :=
   Fintype.ofEquiv (Fin 90 → Point) offsetFunctionEquiv
@@ -38,15 +38,8 @@ instance offsetRandomnessNonempty [FieldCertificate] : Nonempty OffsetRandomness
 theorem uniform_map_equiv {Source Target : Type*}
     [Fintype Source] [Nonempty Source] [Fintype Target] [Nonempty Target]
     (equivalence : Source ≃ Target) :
-    (PMF.uniformOfFintype Source).map equivalence = PMF.uniformOfFintype Target := by
-  classical
-  apply PMF.ext
-  intro output
-  rw [PMF.map_apply]
-  simp only [PMF.uniformOfFintype_apply, ← equivalence.symm_apply_eq, eq_comm]
-  rw [Fintype.card_congr equivalence]
-  exact (tsum_ite_eq (equivalence.symm output)
-    (Inv.inv (Fintype.card Target : ENNReal))).symm
+    (PMF.uniformOfFintype Source).map equivalence = PMF.uniformOfFintype Target :=
+  PMF.uniformOfFintype_map_of_bijective equivalence equivalence.bijective
 
 /-- The first coordinate of a uniform product is uniform. -/
 theorem uniform_map_fst {First Second : Type*}
@@ -60,14 +53,10 @@ theorem uniform_map_fst {First Second : Type*}
   rw [ENNReal.tsum_prod']
   push_cast
   rw [ENNReal.mul_inv] <;> try simp [Fintype.card_ne_zero]
-  rw [tsum_eq_single output]
-  · simp only [if_pos]
-    rw [mul_left_comm, ENNReal.mul_inv_cancel]
-    · simp
-    · exact_mod_cast Fintype.card_ne_zero
-    · simp
-  · intro other different
-    simp [Ne.symm different]
+  rw [mul_left_comm, ENNReal.mul_inv_cancel]
+  · simp
+  · exact_mod_cast Fintype.card_ne_zero
+  · simp
 
 /-- Each coordinate of a uniform point vector is uniform. -/
 theorem map_uniform_point_eval [FieldCertificate] {Index : Type*}
@@ -77,7 +66,7 @@ theorem map_uniform_point_eval [FieldCertificate] {Index : Type*}
   classical
   have h := congrArg (fun p => p.map Prod.fst)
     (uniform_map_equiv (Equiv.piSplitAt index (fun _ => Point)))
-  simpa only [PMF.map_comp, uniform_map_fst] using h
+  simpa only [PMF.map_comp, uniform_map_fst, Function.comp_def, Equiv.piSplitAt_apply] using h
 
 /-- This equivalence separates a point total from its free coordinates. -/
 def pointHornerSplitEquiv [FieldCertificate] [GroupCertificate]
@@ -102,7 +91,7 @@ theorem map_uniform_pointHorner [FieldCertificate] [GroupCertificate]
         (fun values => pointHorner beta (List.ofFn values)) = PMF.uniformOfFintype Point := by
   have h := congrArg (fun p => p.map Prod.fst)
     (uniform_map_equiv (pointHornerSplitEquiv count beta))
-  simpa only [PMF.map_comp, uniform_map_fst] using h
+  simpa only [PMF.map_comp, uniform_map_fst, Function.comp_def, pointHornerSplitEquiv, Equiv.coe_fn_mk] using h
 
 /-- The radix acts as a permutation of the point group. -/
 theorem radix_isUnit : IsUnit radix := by
@@ -163,7 +152,7 @@ theorem uniform_clampOffsets_identity_mass_le [FieldCertificate] [GroupCertifica
     _ ≤ tape.toOuterMeasure first + tape.toOuterMeasure (⋃ index, free index) :=
       MeasureTheory.measure_union_le _ _
     _ ≤ tape.toOuterMeasure first + ∑ index, tape.toOuterMeasure (free index) :=
-      add_le_add_left (MeasureTheory.measure_iUnion_fintype_le _ _) _
+      add_le_add le_rfl (MeasureTheory.measure_iUnion_fintype_le _ _)
     _ = (count + 2 : Nat) / (Fintype.card Point : ENNReal) := by
       simp only [firstMass, freeMass, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
         nsmul_eq_mul, Nat.cast_add, Nat.cast_one, Nat.cast_ofNat, div_eq_mul_inv]
@@ -200,11 +189,11 @@ theorem uniform_outputs_eq_simulatedOutputs [FieldCertificate] [GroupCertificate
 /-- The generator order gives a lower bound on the point count. -/
 theorem point_card_lower_bound [FieldCertificate] [GroupCertificate] :
     scalarFieldModulus ≤ Fintype.card Point := by
-  let generator : Point := .some
+  let generator : Point := .some 1 2
     ((curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
       ((equation_iff_onCurve { x := 1, y := 2 }).mpr generatorOnCurve))
   have nonzero : generator ≠ 0 := by
-    change WeierstrassCurve.Affine.Point.some _ ≠ .zero
+    change WeierstrassCurve.Affine.Point.some _ _ _ ≠ .zero
     intro equal
     cases equal
   haveI : Fact (Nat.Prime scalarFieldModulus) := ⟨scalarFieldPrime⟩

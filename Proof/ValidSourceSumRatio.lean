@@ -65,7 +65,7 @@ theorem restrictedTagMass_lower {Tag : Type} (factor target : ℝ≥0∞)
   · rw [if_pos good, if_pos (included tag good)]
     exact bound tag good
   · rw [if_neg good, mul_zero]
-    exact zero_le _
+    exact bot_le
 
 set_option maxRecDepth 4096 in
 /-- The complete good-tag sum is below the actual valid public event. -/

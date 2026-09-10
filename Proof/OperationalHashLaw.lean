@@ -111,10 +111,9 @@ theorem HashTable.query_joint {Key : Type} [Fintype Key] [DecidableEq Key]
       apply joint.trans
       simp only [query, found, Draw.distribution, PMF.bind_map,
         Function.comp_def, afterQuery, program]
-      rfl
 
 /-- The hash query specifies one input and returns one finite output. -/
-def hashSpec (Key : Type) (size : Nat) : OracleSpec where
+abbrev hashSpec (Key : Type) (size : Nat) : OracleSpec where
   Query := Key
   Answer := fun _ => Fin size
 
@@ -175,7 +174,8 @@ theorem hash_initial {Key : Type} [Fintype Key] [DecidableEq Key] {size : Nat}
     (fun distribution : PMF (Key → Fin size) => distribution.map
       (fun f => (([] : HashTable Key size), f)))
     (uniform_equiv (hashEmptyCompletionEquiv (Key := Key) size))
-  simpa only [hashCompletion, PMF.map_comp, Function.comp_def, hashEmptyCompletionEquiv] using law
+  simp only [hashCompletion, PMF.map_comp, Function.comp_def] at law ⊢
+  convert law using 1; rfl
 
 end
 end Kriterion.ArgoMAC.Security.OperationalOracle

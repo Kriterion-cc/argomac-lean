@@ -50,7 +50,7 @@ theorem fullGateGhostBad_reconstructed [FieldCertificate] [GroupCertificate] [Fi
       HiddenLinkBad
         (retained.2.2.1.1 + retained.2.2.1.2.value * (selected.1.x ^ 3 + 3 - selected.1.y ^ 2))
         (transcript.2.2.1 ++ transcript.2.2.2.2.2) hidden := by
-  simp only [fullGateGhostBad, fullGatePrefixBad_reconstructed, fullGateGhostResult_reconstructed]
+  simp only [fullGateGhostBad]; rw [fullGatePrefixBad_reconstructed retained full selected, fullGateGhostResult_reconstructed retained full selected]
 
 /-- A complete invalid good prefix remains good after the exact curve change. -/
 theorem fullGatePrefixGood_curveTransport [FieldCertificate] [GroupCertificate] {State : Type}

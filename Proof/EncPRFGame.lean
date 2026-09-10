@@ -1,5 +1,6 @@
 import Proof.EncPRFTranscript
 import Proof.HashQueryDistribution
+import Proof.HCoefficient
 
 namespace Kriterion.ArgoMAC.Security
 
@@ -92,7 +93,7 @@ theorem realEncPRFRun_mass {Result : Type} {budget : Nat}
         {sample | EncPRF.transformKey sample.2 ⟨sample.1.1, sample.1.2⟩ source = target ∧
           OracleTranscriptCompatible Garbling.oracleHandler
             {randomness with encPRFOracle := sample.2} transcript} := by
-  simpa only [realEncPRFRun, hashTranscriptRun, PMF.map_comp, Function.comp_def] using
+  simpa only [Nat.cast_ofNat,realEncPRFRun, hashTranscriptRun, PMF.map_comp, Function.comp_def] using
     selectedProgram_transcript_mass_factor Garbling.oracleHandler program
       (PMF.uniformOfFintype
         ((Block × Block) × PermutationOracle EncPRF.PermutationIndex Block))
@@ -145,8 +146,8 @@ theorem idealEncPRFRun_supported {Result : Type} {budget : Nat}
   simp only [idealEncPRFRun, PMF.mem_support_bind_iff, PMF.mem_support_map_iff,
     hashTranscriptRun] at member
   obtain ⟨target, _, observed, ⟨oracle, _, run, runMember, rfl⟩, rfl⟩ := member
-  exact ⟨runOracleProgramWithTranscript_length_le _ _ _ run runMember,
-    oracle, runOracleProgramWithTranscript_compatible _ _ _ run runMember⟩
+  exact ⟨runOracleProgramWithTranscript_length_le Garbling.oracleHandler (program target) {randomness with encPRFOracle := oracle} run runMember,
+    oracle, runOracleProgramWithTranscript_compatible Garbling.oracleHandler (program target) {randomness with encPRFOracle := oracle} run runMember⟩
 
 /-- Every good adaptive transcript has the shared whitening-query ratio. -/
 theorem encPRFRun_good_mass_ge {Result : Type} {budget : Nat}
@@ -179,10 +180,10 @@ theorem encPRFRun_good_mass_ge {Result : Type} {budget : Nat}
             encTranscriptFactor (encOracleTranscriptRecords transcript)) := by
         rw [idealEncPRFRun_mass target randomness program reference result transcript compatible]
         ac_rfl
-      _ ≤ _ := mul_le_mul_left' bound _
+      _ ≤ _ := mul_le_mul_right bound _
       _ = _ := (realEncPRFRun_mass source target randomness program reference result transcript compatible).symm
   · have zero : idealEncPRFRun randomness program output = 0 := by
-      simpa only [PMF.mem_support_iff, not_not] using member
+      simpa only [Nat.cast_ofNat,PMF.mem_support_iff, not_not] using member
     simp only [zero, mul_zero, zero_le]
 
 /-- The ideal transcript retains the uniform target-key marginal. -/
@@ -232,7 +233,7 @@ theorem encPRFRun_event_bound {Result : Type} {budget : Nat}
     (by
       have bad := ENNReal.toReal_mono (finite 508)
         (idealEncPRFRun_bad_mass_le source randomness program)
-      simpa only [ENNReal.toReal_div, ENNReal.toReal_natCast] using bad)
+      simpa only [Nat.cast_ofNat,ENNReal.toReal_div, ENNReal.toReal_natCast, ENNReal.toReal_ofNat] using bad)
     (by
       intro output good
       have distinct : ∀ index, Function.Injective (linkingPad source output.1 index) := by
@@ -246,7 +247,7 @@ theorem encPRFRun_event_bound {Result : Type} {budget : Nat}
       have loss := ENNReal.le_toReal_sub (a := 1) (finite (4 * budget))
       simp only [ENNReal.toReal_one, ENNReal.toReal_div, ENNReal.toReal_natCast] at loss
       exact (mul_le_mul_of_nonneg_right loss ENNReal.toReal_nonneg).trans ratio)
-  simpa only [Nat.cast_add, add_div] using bound
+  simpa only [Nat.cast_ofNat,Nat.cast_add, add_div] using bound
 
 end
 

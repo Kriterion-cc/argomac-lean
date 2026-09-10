@@ -89,7 +89,7 @@ theorem rowTableWithCost_value (arrays : RowArrays) :
     (rowTableWithCost arrays).1 = (rowArraysEquiv arrays).request.table := rfl
 
 theorem rowTableWithCost_count (arrays : RowArrays) :
-    (rowTableWithCost arrays).2 = 153 := rfl
+    (rowTableWithCost arrays).2 = 153 := by simp only [rowTableWithCost, xTableWithCost_count, yTableWithCost_count, zTableWithCost_count]
 
 /-- Each curve field allows three array or record reads and one field write. -/
 def curveTableWithCost (arrays : GateArrays 3 5) : CurveMembership.Table × Nat :=

@@ -67,7 +67,7 @@ theorem fixedOracleRoundTrip (randomness : ArgoMAC.Garbling.Randomness)
     let forward := ArgoMAC.Garbling.oracleHandler (.fixedForward index input) randomness
     ArgoMAC.Garbling.oracleHandler (.fixedInverse index forward.1) forward.2 =
       (input, randomness) := by
-  simp [ArgoMAC.Garbling.oracleHandler]
+  simp [ArgoMAC.Garbling.oracleHandler]; rfl
 
 theorem encPRFTransformsSelectedLabels
     (oracle : Cryptography.PermutationOracle ArgoMAC.EncPRF.PermutationIndex

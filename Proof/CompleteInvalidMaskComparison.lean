@@ -38,7 +38,7 @@ theorem fullCurveMaskEquiv_nonzero_sum_ge [FieldCertificate] [Fintype BaseField]
   simp only [nonzeroCompleteWeight]
   apply ENNReal.tsum_le_tsum
   intro hiddenKey
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   let sourceWeight := fun mask : BaseField =>
     ∑' full, (PMF.uniformOfFintype ((RawCircuitGate → FullHashLift) × CircuitHashRest)) full *
       if FullSourceComplete full.1 then

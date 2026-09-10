@@ -71,7 +71,7 @@ theorem actualIndependentCurveSource_mass_ge
   rw [actualIndependentSource_guardedKeyMass outputKeys pointRandomness bridgeKey r1 r2 mask
     randomness source lifts keys randomizers residues (inputSelectedLabelBit input)
     (inputMacCoordinateEquiv curveMac) (before ++ after)]
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   have bound := actualCurveProgrammedSource_guard_mass_ratio keys (circuitSourceSlope source)
     lifts (circuitSourceTable source) curve points input curveMac curveMac
     independentBucketWire (fun _ _ => 0) (inputSelectedLabelBit input)

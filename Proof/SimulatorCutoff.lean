@@ -17,7 +17,7 @@ theorem cutoffDraw_lower {A : Type} (attempts : Nat) (draw : Draw A) (value : A)
   | pure item =>
       have bounded : retained attempts ≤ 1 := tsub_le_self
       simpa only [Draw.distribution, cutoffDraw, BitCode.law, PMF.pure_apply, Option.some.injEq,
-        one_mul] using mul_le_mul_right' bounded ((PMF.pure item) value)
+        one_mul] using mul_le_mul_left bounded ((PMF.pure item) value)
   | uniform size positive next =>
       simpa only [cutoffDraw, Code.map_law, Code.law, Draw.distribution, pow_one] using
         ((Code.draw size positive).map next).cutoff_lower attempts value
@@ -117,7 +117,7 @@ theorem Program.cutoff_lower {oracle : OracleSpec.{0, 0}} {A State : Type} {budg
       simpa only [Program.cutoff, Program.sampledLaw, pow_add] using
         optional_bind_lower _ _ _ _ _ _ (first state) (fun answer => second answer.1 answer.2) value
   | weaken source bounded ih =>
-      exact (mul_le_mul_right' (pow_le_pow_right_of_le_one' (tsub_le_self : retained attempts ≤ 1)
+      exact (mul_le_mul_left (pow_le_pow_right_of_le_one' (tsub_le_self : retained attempts ≤ 1)
         bounded) _).trans (ih state value)
 
 /-- The finite simulator does not add mass to a successful joint output. -/
@@ -157,7 +157,7 @@ theorem Program.cutoff_failure {oracle : OracleSpec.{0, 0}} {A State : Type} {bu
       _ ≤ _ := ENNReal.tsum_le_tsum fun value => program.cutoff_lower sparse attempts state value
   exact (ENNReal.eq_sub_of_add_eq' ENNReal.one_ne_top total).le.trans
     ((tsub_le_tsub_left lower 1).trans
-      (loss_pow_le _ (pow_le_one₀ (zero_le _) (by norm_num)) budget))
+      (loss_pow_le _ (pow_le_one₀ zero_le (by norm_num)) budget))
 
 theorem optional_bit_bound {A B Seed : Type}
     (random : (width : Nat) → Seed → Fin (2 ^ width) × Seed)

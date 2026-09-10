@@ -89,7 +89,7 @@ theorem pipelineGateProgramRecords_residualCount [Fintype Block]
   rw [domains, circuitResidualQueryCount]
   apply residualFixedQueryDomain_card_congr
   intro record
-  simp only [fixedOracleTranscriptRecords_append, List.mem_append, historyMembers]
+  rw [fixedOracleTranscriptRecords_append before after]; simp only [List.mem_append, historyMembers]
 /-- The actual pipeline schedule supplies both count maps in the circuit ratio. -/
 theorem actualPipelineProgrammedSource_mass_ratio
     {Wire : Type} [Fintype Wire] [DecidableEq Wire]

@@ -161,7 +161,8 @@ theorem outputPointVector_eq [FieldCertificate] [GroupCertificate]
         ((outputKeys construction scalar offsets.1).get index).offset.point) =
       outputPointVector scalar (clampedPointOffsets construction offsets).1 point := by
   apply Vector.toList_inj.mp
-  simpa [outputPointVector] using RCBComplete.outputKeyPoints scalar offsets.1 offsets.2 point
+  simpa only [outputPointVector, Vector.toList_mk, List.toList_toArray,
+    clampedPointOffsets, RCBComplete.successfulOffsetRandomness] using RCBComplete.outputKeyPoints scalar offsets.1 offsets.2 point
 
 /-- This function represents mathematical point rows with the sampled scales. -/
 def mathematicalOutputRows [FieldCertificate] [GroupCertificate]
@@ -276,7 +277,8 @@ theorem mathematicalOutputRowView_reindex [FieldCertificate] [GroupCertificate]
             (construction.offsetEquiv scalar point sample.1).freeOffsetCount]⟩ :
         Vector Point outputMacCount) := by
     apply Vector.toList_inj.mp
-    simpa [outputPointVector] using
+    simpa only [outputPointVector, Vector.toList_mk, List.toList_toArray,
+    clampedPointOffsets, RCBComplete.successfulOffsetRandomness] using
       construction.outputs_eq_simulatedOutputs_reindex scalar point sample.1
   unfold mathematicalOutputRowView simulatedOutputRowView mathematicalOutputRows outputTargets
   rw [points]

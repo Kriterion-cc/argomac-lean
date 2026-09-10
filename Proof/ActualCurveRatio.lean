@@ -72,7 +72,7 @@ theorem actualCurveProgrammedSource_mass_ratio
   rw [domains]
   apply residualFixedQueryDomain_card_congr
   intro record
-  simp only [fixedOracleTranscriptRecords_append, List.mem_append, historyMembers]
+  rw [fixedOracleTranscriptRecords_append before after]; simp only [List.mem_append, historyMembers]
 
 /-- The actual curve records supply the exposed raw equations. -/
 theorem curveGateProgramRecords_referenceActive

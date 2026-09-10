@@ -25,7 +25,7 @@ def finiteKernel {Sparse Eager : Type} (kernel : Sparse → PMF Eager) :
         (finiteKernel kernel (Fin.tail state)).map (Fin.cons head))
 
 /-- A family request selects one local oracle. -/
-def indexedSpec (Index : Type) (oracle : OracleSpec) : OracleSpec where
+abbrev indexedSpec (Index : Type) (oracle : OracleSpec) : OracleSpec where
   Query := Index × oracle.Query
   Answer query := oracle.Answer query.2
 
@@ -142,7 +142,7 @@ theorem familyDraw_distribution {Index : Type} [DecidableEq Index] {size : Nat}
     (familyDraw query state).distribution = familySampled query state := by
   rcases query with ⟨index, action⟩
   cases action <;> simp only [familyDraw, familySampled, indexedSampled, programSampled,
-    Draw.map_distribution, PMF.map_comp] <;> rfl
+    Draw.map_distribution, PMF.map_comp]
 
 /-- The eager interpreter keeps each base permutation and its deferred swaps. -/
 def familyEager {Index : Type} [DecidableEq Index] {size : Nat} :=
@@ -243,8 +243,9 @@ theorem program_initial_denote (size : Nat) :
     (programCompletion (ProgrammedPermutation.empty size)).map
         (fun complete => complete.1.denote complete.2) =
       PMF.uniformOfFintype (Equiv.Perm (Fin size)) := by
-  simpa only [programCompletion, ProgrammedPermutation.empty, ProgrammedPermutation.denote,
-    swaps_nil, PMF.map_comp, Function.comp_def] using uniform_equiv (emptyCompletionEquiv size)
+  simp only [programCompletion, ProgrammedPermutation.empty, ProgrammedPermutation.denote,
+    swaps_nil, PMF.map_comp, Function.comp_def]
+  convert uniform_equiv (emptyCompletionEquiv size) using 1; rfl
 
 /-- The complete empty family denotes the exact independent uniform permutation family. -/
 theorem family_initial_denote {Index : Type} [Fintype Index] [DecidableEq Index] (size : Nat) :
@@ -273,8 +274,8 @@ theorem family_initial_denote {Index : Type} [Fintype Index] [DecidableEq Index]
   have mapped := congrArg (fun distribution : PMF (Fin (Fintype.card Index) → Equiv.Perm (Fin size)) =>
     distribution.map equiv) exactFinite
   simp only [PMF.map_comp, Function.comp_def] at mapped
-  simpa only [familyCompletion, indexedKernel, PMF.map_comp, Function.comp_def] using
-    mapped.trans (uniform_equiv equiv)
+  simp only [familyCompletion, indexedKernel, PMF.map_comp, Function.comp_def]
+  convert mapped.trans (uniform_equiv equiv) using 1; rfl
 
 end
 end Kriterion.ArgoMAC.Security.OperationalOracle

@@ -123,7 +123,7 @@ theorem totalDraw_law {A : Type} (attempts : Nat) (draw : Draw A) :
   cases draw with
   | pure value => exact (TotalLaw.exact attempts (PMF.pure value)).weaken (by decide : 0 ≤ 1)
   | uniform size positive next =>
-      simpa only [Draw.distribution, totalDraw, BitCode.bind_law, BitCode.law, Code.law, PMF.map] using
+      simpa only [Draw.distribution, totalDraw, BitCode.bind_law, BitCode.law, Code.law, PMF.map, Function.comp_def] using
         (totalInteger_law size positive attempts).map next
 
 theorem totalDraw_run {A Seed : Type}
@@ -174,7 +174,7 @@ theorem Program.total_law {oracle : OracleSpec.{0, 0}} {A State : Type} {budget 
       simpa only [Program.sampledLaw, Program.total, BitCode.bind_law, Nat.add_comm] using
         (totalDraw_law attempts (sparse request state)).bind (fun answer => ih answer.1 answer.2)
   | map f source ih =>
-      simpa only [Program.sampledLaw, Program.total, BitCode.bind_law, BitCode.law, PMF.map] using
+      simpa only [Program.sampledLaw, Program.total, BitCode.bind_law, BitCode.law, PMF.map, Function.comp_def] using
         (ih state).map (fun answer => (f answer.1, answer.2))
   | bind source next first second =>
       simpa only [Program.sampledLaw, Program.total, BitCode.bind_law] using

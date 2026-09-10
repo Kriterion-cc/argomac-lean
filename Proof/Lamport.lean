@@ -126,7 +126,7 @@ theorem selectedLabels_eq (key : InputMacKey) (input : AffineInput) :
   · have bitEq := appendGetLow (coordinateBits input.y) (coordinateBits input.x)
       index bound low
     rw [selectedLabelsEncodeLow key input index bound low]
-    rw [GarbledCircuit.selectLamportLabels, Vector.getElem_ofFn]
+    unfold GarbledCircuit.selectLamportLabels; rw [Vector.getElem_ofFn]
     change BitAdaptor.encode (key.x.get ⟨index, low⟩)
         ((coordinateBits input.x).getLsb ⟨index, low⟩) =
       if (coordinateBits input.y ++ coordinateBits input.x).getLsb ⟨index, bound⟩
@@ -138,7 +138,7 @@ theorem selectedLabels_eq (key : InputMacKey) (input : AffineInput) :
     have bitEq := appendGetHigh (coordinateBits input.y) (coordinateBits input.x)
       index bound high
     rw [selectedLabelsEncodeHigh key input index bound high]
-    rw [GarbledCircuit.selectLamportLabels, Vector.getElem_ofFn]
+    unfold GarbledCircuit.selectLamportLabels; rw [Vector.getElem_ofFn]
     change BitAdaptor.encode (key.y.get ⟨index - 254, by
           change index - 254 < 254
           omega⟩)

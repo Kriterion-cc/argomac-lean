@@ -61,9 +61,8 @@ theorem fullGateGhostRatio_event_bound [FieldCertificate] [GroupCertificate] [Te
     simp only [loss, ENNReal.toReal_div, ENNReal.toReal_pow, ENNReal.toReal_natCast,
       ENNReal.toReal_ofNat]
   rw [lossReal]
-  convert accounting using 1
-  simp only [queries, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat]
-  ring
+  convert accounting using 1 <;> first | rfl |
+    (simp only [queries, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat]; ring)
 
 
 /-- The actual decision advantage is the full-transcript decision event difference. -/

@@ -88,7 +88,7 @@ theorem encQueryLoss_budget_le [Fintype Block]
     (∑ index, ((4 * Fintype.card (EncQueryDomain (encOracleTranscriptRecords transcript) index) : Nat) : ℝ≥0∞) /
       Fintype.card Block) ≤ ((4 * budget : Nat) : ℝ≥0∞) / Fintype.card Block := by
   simp only [div_eq_mul_inv, ← Finset.sum_mul, ← Nat.cast_sum, ← Finset.mul_sum]
-  apply mul_le_mul_right'
+  apply mul_le_mul_left
   exact_mod_cast Nat.mul_le_mul_left 4 ((encExternalQueryCount_le transcript).trans lengthBound)
 
 /-- The actual handler changes only the EncPRF constraints when its EncPRF oracle changes. -/
@@ -117,6 +117,7 @@ theorem realTranscript_update_enc_iff (randomness : Garbling.Randomness)
         List.mem_cons, forall_eq_or_imp]
       all_goals try simp only [inverse] at compatible ⊢
       all_goals simp [compatible.1]
+      all_goals first | exact fun _ => Iff.rfl | exact fun _ => inverse _ _ _
 
 /-- A compatible reference fixes the answer at each distinct EncPRF domain. -/
 theorem encTranscriptMatches_iff_domains
@@ -267,7 +268,7 @@ theorem encKeyTranscript_uniformTarget_mass_ge [Fintype Block]
   have loss := tsub_le_tsub_left (encQueryLoss_budget_le transcript budget lengthBound) 1
   apply le_trans _ bound
   rw [mul_assoc]
-  exact mul_le_mul_right' loss _
+  exact mul_le_mul_left loss _
 
 /-- This equivalence turns the shared-key count into the actual two-key oracle source. -/
 def encWhiteningSourceEquiv :
@@ -324,7 +325,7 @@ theorem encFreshHashTranscript_mass_ge [Fintype Block]
     _ ≤ _ := by
       apply ENNReal.tsum_le_tsum
       intro difference
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       exact encKeyTranscript_uniformTarget_mass_ge source target difference randomness transcript
         compatible padsDistinct budget lengthBound fits
 

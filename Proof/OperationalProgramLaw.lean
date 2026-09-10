@@ -11,7 +11,7 @@ inductive ProgramAction (size : Nat) where
   | program (input target : Fin size)
 
 /-- Programming returns the target value after it updates the oracle. -/
-def programSpec (size : Nat) : OracleSpec where
+abbrev programSpec (size : Nat) : OracleSpec where
   Query := ProgramAction size
   Answer := fun _ => Fin size
 

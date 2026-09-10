@@ -87,10 +87,11 @@ theorem retainedLinkedTagMass_sum_le [FieldCertificate] [GroupCertificate] [Fint
   rw [ordered]
   apply ENNReal.tsum_le_tsum
   intro nonfixed
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   have bound := retainedRealSource_fullTag_sum_le
     {rest with encPRFOracle := nonfixed.1, hashOracle := nonfixed.2} outputKeys table input mac transcript
-  simpa only [retainedFullTable_nonfixed] using bound
+  simp only [retainedFullTable_nonfixed] at bound
+  exact bound
 
 private theorem scalar_density_guard (density inverse weight : ℝ≥0∞) (kept : Prop) [Decidable kept]
     (cancel : density * inverse = 1) :

@@ -12,7 +12,7 @@ open Cryptography
 noncomputable section
 
 /-- A sum request selects one of two oracle components. -/
-def sumSpec (left right : OracleSpec) : OracleSpec where
+abbrev sumSpec (left right : OracleSpec) : OracleSpec where
   Query := left.Query ⊕ right.Query
   Answer
     | .inl query => left.Answer query

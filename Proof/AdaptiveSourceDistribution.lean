@@ -179,9 +179,11 @@ def fullSourceHashPair (lift : FullHashLift) : BaseField × HashLiftQuotient :=
   | .inl good => goodHashLiftEquiv good
   | .inr _ => (0, defaultHashLiftQuotient)
 
-private theorem fullSourceHashPair_good (pair : BaseField × HashLiftQuotient) :
+theorem fullSourceHashPair_good (pair : BaseField × HashLiftQuotient) :
     fullSourceHashPair (goodHashLiftSource pair) = pair := by
-  simp only [fullSourceHashPair, goodHashLiftSource, Equiv.apply_symm_apply]
+  unfold fullSourceHashPair goodHashLiftSource
+  rw [hashLiftSplitEquiv.apply_symm_apply]
+  exact goodHashLiftEquiv.apply_symm_apply pair
 
 /-- This condition says that every full hash value belongs to a complete field fiber. -/
 def FullSourceComplete (hash : RawCircuitGate → FullHashLift) : Prop :=

@@ -229,7 +229,7 @@ theorem uniformEncPads_collision_mass_le [Fintype Block] :
         (fun pads => pads index) = PMF.uniformOfFintype (Bool → Block) := by
     have law := congrArg (fun distribution => distribution.map Prod.fst)
       (map_uniformOfFintype_equivBetween (Equiv.piSplitAt index (fun _ => Bool → Block)))
-    simpa only [PMF.map_comp, map_uniform_prod_fst] using law
+    simpa only [Function.comp_def, Equiv.piSplitAt_apply, PMF.map_comp, map_uniform_prod_fst] using law
   rw [show {pads : EncPRF.PermutationIndex → Bool → Block |
       ∃ index, pads index false = pads index true} =
       ⋃ index, {pads | pads index false = pads index true} by ext pads; simp]

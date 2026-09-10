@@ -55,7 +55,10 @@ theorem fullGatePrefixSamples_bind [FieldCertificate] [GroupCertificate] {Prefix
   simp only [fullGatePrefixSamples, fullAdaptiveGateSource, PMF.bind_bind, PMF.bind_map, Function.comp_def]
   apply congrArg (randomTape witness parameter).bind
   funext randomness
-  apply congrArg (PMF.uniformOfFintype ((RawCircuitGate → FullHashLift) × CircuitMaskTables)).bind
+  apply congrArg₂ PMF.bind
+  · apply congrArg (fun finite => @PMF.uniformOfFintype
+      ((RawCircuitGate → FullHashLift) × CircuitMaskTables) finite inferInstance)
+    exact Subsingleton.elim _ _
   funext tag
   by_cases complete : FullSourceComplete tag.1
   · simp only [fullGatePrefixKernel, fullGateSourceRun, complete, if_true, retainedGateSourceRun]
@@ -85,7 +88,10 @@ theorem fullGatePrefixBad_map [FieldCertificate] [GroupCertificate] {Aux : Type}
     Function.comp_def]
   apply congrArg (randomTape witness parameter).bind
   funext randomness
-  apply congrArg (PMF.uniformOfFintype ((RawCircuitGate → FullHashLift) × CircuitMaskTables)).bind
+  apply congrArg₂ PMF.bind
+  · apply congrArg (fun finite => @PMF.uniformOfFintype
+      ((RawCircuitGate → FullHashLift) × CircuitMaskTables) finite inferInstance)
+    exact Subsingleton.elim _ _
   funext tag
   by_cases complete : FullSourceComplete tag.1
   · simp only [fullRetainedBadObserver, complete, if_true, fullGatePrefixBad, not_true_eq_false,

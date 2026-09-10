@@ -34,8 +34,8 @@ def pointMaskRandomizerEquiv : Randomness ≃
   left_inv rows := by
     apply Vector.ext
     intro index valid
-    simpa only [Vector.getElem_ofFn] using congrArg (fun value : RowRandomness => value)
-      (rowMaskRandomizerEquiv.symm_apply_apply (rows.get ⟨index, valid⟩))
+    simpa only [Vector.getElem_ofFn, Prod.eta, Vector.get, Fin.cast, Vector.getElem_toArray] using
+      rowMaskRandomizerEquiv.symm_apply_apply (rows.get ⟨index, valid⟩)
   right_inv pair := by
     simp only [Vector.get_ofFn, Equiv.apply_symm_apply]
 
@@ -232,13 +232,11 @@ theorem sharedMaskSource_observation_eq [FieldCertificate] [GroupCertificate]
   have law := congrArg (fun distribution => distribution.bind
     (fun source : MaskRetainedTape × CircuitMaskSample => observe source.1 source.2))
     (map_uniformOfFintype_equivBetween sharedMaskSourceEquiv)
-  dsimp only at law
   rw [PMF.bind_map, uniform_product_bind (A := Garbling.Randomness),
     uniform_product_bind (A := MaskRetainedTape)] at law
   have retained := congrArg (fun distribution => distribution.bind
     (fun value => (PMF.uniformOfFintype CircuitMaskSample).bind (observe value)))
     (map_randomTape_maskRetained witness parameter)
-  dsimp only at retained
   rw [PMF.bind_map] at retained
   dsimp only [Function.comp_def] at law retained
   exact law.trans retained.symm
@@ -257,7 +255,6 @@ theorem sharedHashSource_observation_eq [FieldCertificate] [GroupCertificate]
   have law := congrArg (fun distribution => distribution.bind
     (fun source : MaskRetainedTape × Hash × CircuitHashRest => observe source.1 source.2))
     (map_uniformOfFintype_equivBetween (sharedHashSourceEquiv Hash))
-  dsimp only at law
   rw [PMF.bind_map, uniform_product_bind (A := Garbling.Randomness),
     uniform_product_bind (A := MaskRetainedTape)] at law
   conv_rhs at law => rw [PMF.bind_comm]

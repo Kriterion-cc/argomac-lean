@@ -19,7 +19,7 @@ private theorem uniform_function_eval {Index Value : Type*}
       PMF.uniformOfFintype Value := by
   have law := congrArg (fun distribution => distribution.map Prod.fst)
     (map_uniformOfFintype_equivBetween (Equiv.piSplitAt index (fun _ => Value)))
-  simpa only [PMF.map_comp, map_uniform_prod_fst] using law
+  simpa only [PMF.map_comp, map_uniform_prod_fst, Function.comp_def, Equiv.piSplitAt_apply] using law
 
 /-- Each actual source label is uniform under the complete input-key law. -/
 theorem uniform_inputKeyLabel [Fintype Block] (index : EncPRF.PermutationIndex) (bit : Bool) :
@@ -27,11 +27,9 @@ theorem uniform_inputKeyLabel [Fintype Block] (index : EncPRF.PermutationIndex) 
       PMF.uniformOfFintype Block := by
   have evaluated := congrArg (fun distribution => distribution.map (fun labels => labels bit))
     (uniform_function_eval (Value := Bool → Block) index)
-  dsimp only at evaluated
   rw [PMF.map_comp, uniform_function_eval] at evaluated
   have law := congrArg (fun distribution => distribution.map (fun labels => labels index bit))
     (map_uniformOfFintype_equivBetween inputKeyLabelEquiv)
-  dsimp only at law
   rw [PMF.map_comp] at law
   exact law.trans evaluated
 
@@ -140,12 +138,10 @@ private theorem uniform_inputKeyLabel_xor_mass [Fintype Block]
         (Fintype.card Block : ENNReal)⁻¹ := by
   have law := congrArg (fun distribution => distribution.map (fun label => label ^^^ shift))
     (uniform_inputKeyLabel index bit)
-  dsimp only at law
   have shifted := map_uniformOfFintype_equivBetween (Pipeline.tweakEquiv shift)
   change (PMF.uniformOfFintype Block).map (fun label => label ^^^ shift) = _ at shifted
   rw [PMF.map_comp, shifted] at law
   have mass := congrArg (fun distribution : PMF Block => distribution.toOuterMeasure {target}) law
-  dsimp only at mass
   rw [PMF.toOuterMeasure_map_apply, PMF.toOuterMeasure_apply_singleton,
     PMF.uniformOfFintype_apply] at mass
   exact mass
@@ -212,7 +208,7 @@ theorem uniform_simulatorCoin_rekey :
         (PMF.uniformOfFintype InputMacKey).map coin.rekey := by
   have same := congrArg (fun distribution => distribution.map Prod.fst)
     (map_uniformOfFintype_equivBetween simulatorCoinKeySwap)
-  simp only [PMF.map_comp, map_uniform_prod_fst] at same
+  simp only [PMF.map_comp, map_uniform_prod_fst, Function.comp_def, Equiv.piSplitAt_apply] at same
   rw [uniform_prod_eq_bind, PMF.map_bind] at same
   simp only [PMF.map_comp, Function.comp_def, simulatorCoinKeySwap, Equiv.coe_fn_mk] at same
   simp only [PMF.map] at same
@@ -323,21 +319,6 @@ private theorem idealPrequeryLabelCollisionFlag_resample {Extra : Type*}
   rw [PMF.bind_comm]
   rfl
 
-private theorem outerMeasure_bind_support_le {Source Target : Type*}
-    (source : PMF Source) (next : Source → PMF Target) (event : Set Target) (bound : ENNReal)
-    (pointwise : ∀ value ∈ source.support, (next value).toOuterMeasure event ≤ bound) :
-    (source.bind next).toOuterMeasure event ≤ bound := by
-  rw [PMF.toOuterMeasure_bind_apply]
-  calc
-    _ ≤ ∑' value, source value * bound := by
-      apply ENNReal.tsum_le_tsum
-      intro value
-      by_cases member : value ∈ source.support
-      · exact mul_le_mul_left' (pointwise value member) _
-      · have zero : source value = 0 := by simpa only [PMF.mem_support_iff, not_not] using member
-        simp only [zero, zero_mul, le_refl]
-    _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
-
 private theorem idealCircuitPrefix_length_le
     (prestate : LabelPrefixState adversary.State)
     (member : prestate ∈ (idealCircuitPrefix adversary parameter scalar auxiliary).support) :
@@ -355,9 +336,9 @@ theorem idealPrequeryLabelCollisionFlag_mass_le [Fintype Block] {Extra : Type*}
       {flag | flag = true} ≤
         (182 * adversary.firstQueryBudget parameter : Nat) / (Fintype.card Block : ENNReal) := by
   rw [idealPrequeryLabelCollisionFlag_resample]
-  apply outerMeasure_bind_support_le
+  apply Probability.bind_event_le
   intro prestate member
-  apply outerMeasure_bind_support_le
+  apply Probability.bind_event_le
   intro selected _
   rw [PMF.toOuterMeasure_map_apply, Set.preimage_setOf_eq]
   simp only [decide_eq_true_eq]

@@ -57,7 +57,7 @@ theorem invalidProgram_private_run (coin : OfflineCoin) (oracle : SimulatorState
   exact invalidProgram_run (privateState coin oracle) input
 
 /-- The online operation budget includes internal reads and all programming attempts. -/
-def onlineBudget [FieldCertificate] (output : Option Point) : Nat := if output.isSome then 905765 else 3810
+abbrev onlineBudget [FieldCertificate] (output : Option Point) : Nat := if output.isSome then 905765 else 3810
 
 /-- This oracle program samples private online coins before it executes the selected path. -/
 noncomputable def encodeProgram [FieldCertificate] [GroupCertificate]
@@ -81,7 +81,7 @@ theorem encodeProgram_law [FieldCertificate] [GroupCertificate]
         concreteCircuitSimulator, circuitSimulator, PMF.pure_map]
       rfl
   | some point =>
-      simp only [encodeProgram, ThreePhase.run_append, OracleProgram.run, PMF.bind_map,
+      simp only [encodeProgram, ThreePhase.run_append, OracleProgram.run_pure, PMF.bind_map,
         Program.toOracle_run, validProgram_private_run,
         concreteCircuitSimulator, circuitSimulator, PMF.map_comp, Function.comp_def]
       rw [online_uniform]

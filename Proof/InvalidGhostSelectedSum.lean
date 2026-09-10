@@ -39,30 +39,30 @@ theorem retainedGhostWeight_selected_sum_le [FieldCertificate] [GroupCertificate
     apply le_trans ?_ (bound.trans ?_)
     · apply ENNReal.tsum_le_tsum
       intro oldMask
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       apply ENNReal.tsum_le_tsum
       intro hidden
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       apply ENNReal.tsum_le_tsum
       intro oldKey
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       apply ENNReal.tsum_le_tsum
       intro full
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       by_cases complete : FullSourceComplete full.1
       · rw [if_pos complete]
       · rw [if_neg complete, retainedGhostWeight_incomplete scalar _ fallback _ full selected output hidden complete,
           mul_zero]
     · apply ENNReal.tsum_le_tsum
       intro hidden
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       apply ENNReal.tsum_le_tsum
       intro mask
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       apply ENNReal.tsum_le_tsum
       intro full
-      apply mul_le_mul_left'
-      split_ifs <;> first | exact le_rfl | exact zero_le _
+      apply mul_le_mul_right
+      split_ifs <;> first | exact le_rfl | exact bot_le
   · have different : output.2.1.1 ≠ selected.1 := by
       intro same
       exact selectedInvalid (same ▸ invalid)

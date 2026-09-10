@@ -12,7 +12,7 @@ noncomputable section
 def initialMetadata : Metadata := ⟨[], [], [], [], none, false⟩
 
 /-- This handler interprets external bounded sparse draws. -/
-def externalHandler (query : Garbling.OracleQuery) (state : SparseState) :
+abbrev externalHandler (query : Garbling.OracleQuery) (state : SparseState) :
     PMF (Garbling.OracleAnswer query × SparseState) := (externalDraw query state).distribution
 
 /-- The external joint law applies to every adaptive adversary program. -/
@@ -50,14 +50,14 @@ theorem external_private_run {Result : Type} {budget : Nat}
         (fun output => (output.1, privateState coin output.2)) := by
   induction program generalizing oracle with
   | pure distribution =>
-      simp only [OracleProgram.run, PMF.map_comp]
+      simp only [OracleProgram.run_pure, PMF.map_comp]
       rfl
   | query request next inductionHypothesis =>
-      change (next (idealOracleHandler request oracle).1).run circuitSimulatorOracleHandler
+      rw [OracleProgram.run_query, OracleProgram.run_query]; change (next (idealOracleHandler request oracle).1).run circuitSimulatorOracleHandler
         (privateState coin (idealOracleHandler request oracle).2) = _
       exact inductionHypothesis _ _
   | sample distribution next inductionHypothesis =>
-      simp only [OracleProgram.run, PMF.map_bind, inductionHypothesis]
+      simp only [OracleProgram.run_sample, PMF.map_bind, inductionHypothesis]
 
 /-- The online simulator changes only the oracle field of its private state. -/
 theorem simulateEncode_rebuild [FieldCertificate] [GroupCertificate]
@@ -138,7 +138,7 @@ theorem continuation_law [FieldCertificate] [GroupCertificate] {Aux : Type}
       (completion output.2).map (fun _ => output.1) = PMF.pure output.1 :=
     PMF.map_const _ _
   simp_rw [finish] at last
-  simpa only [PMF.map] using last
+  simpa only [PMF.map, Function.comp_def] using last
 
 /-- The operational ideal game samples private coins and uses bounded sparse oracle operations. -/
 def operationalIdealGame [FieldCertificate] [GroupCertificate] {Aux : Type}
@@ -148,7 +148,7 @@ def operationalIdealGame [FieldCertificate] [GroupCertificate] {Aux : Type}
 /-- This eager game uses the same operational program with the original uniform oracle coin. -/
 def eagerIdealGame [FieldCertificate] [GroupCertificate] {Aux : Type}
     (adversary : ThreePhase.Adversary Aux) (parameter : Nat) (scalar : NonZeroScalar) (auxiliary : Aux) : PMF Bool :=
-  letI : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
+  let : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
   offline.law.bind (fun coin => (PMF.uniformOfFintype SimulatorOracleCoin).bind
     (fun oracles => eagerContinuation adversary parameter scalar auxiliary coin (withOracles initialMetadata oracles)))
 
@@ -168,11 +168,11 @@ theorem privateState_table (coin : OfflineCoin) (oracle : SimulatorState) :
 
 /-- The offline sample splits into the exact private coin and original oracle coin. -/
 theorem stateTape_split (parameter : Nat) (topology : Garbling.Topology) :
-    letI : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
+    let : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
     simulatorStateTape parameter topology =
       (PMF.uniformOfFintype SimulatorOracleCoin).bind (fun oracles =>
         offline.law.map (fun coin => privateState coin (withOracles initialMetadata oracles))) := by
-  letI : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
+  let : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
   unfold simulatorStateTape
   rw [← offline_with_oracles, PMF.map_bind]
   simp only [PMF.map_comp]
@@ -183,7 +183,7 @@ theorem eager_eq_original [FieldCertificate] [GroupCertificate] {Aux : Type}
     (adversary : ThreePhase.Adversary Aux) (parameter : Nat) (scalar : NonZeroScalar) (auxiliary : Aux) :
     eagerIdealGame adversary parameter scalar auxiliary =
       ThreePhase.idealGame adversary parameter scalar auxiliary := by
-  letI : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
+  let : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
   unfold ThreePhase.idealGame
   rw [stateTape_split]
   simp only [PMF.bind_bind, PMF.bind_map, Function.comp_def]

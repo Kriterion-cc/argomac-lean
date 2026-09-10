@@ -27,7 +27,7 @@ private theorem validPhase_relative_bound (ghost prefixMass first second publicM
   subst second
   apply phase_relative_bound ghost first publicMass real factor phase
     (ghostBound.trans_eq prefixEq) _ realEq
-  exact (mul_le_mul_right' coefficient first).trans sourceBound
+  exact (mul_le_mul_left coefficient first).trans sourceBound
 
 private theorem uniformWeighted_eq {A : Type*} (first second : Fintype A)
     (firstNonempty secondNonempty : Nonempty A) (left right : A → ℝ≥0∞)

@@ -10,6 +10,8 @@ theorem uniform_product {A B : Type} [Fintype A] [Fintype B] [Nonempty A] [Nonem
     (PMF.uniformOfFintype A).bind (fun a => (PMF.uniformOfFintype B).map (fun b => (a, b))) =
       PMF.uniformOfFintype (A × B) := by
   classical
+  letI : DecidableEq A := Classical.decEq A
+  letI : DecidableEq B := Classical.decEq B
   apply PMF.ext
   rintro ⟨a, b⟩
   simp only [PMF.bind_apply, PMF.map_apply, PMF.uniformOfFintype_apply, Prod.mk.injEq,
@@ -30,12 +32,8 @@ theorem uniform_product {A B : Type} [Fintype A] [Fintype B] [Nonempty A] [Nonem
 
 /-- A finite bijection preserves the uniform law. -/
 theorem uniform_equiv {A B : Type} [Fintype A] [Fintype B] [Nonempty A] [Nonempty B]
-    (equiv : A ≃ B) : (PMF.uniformOfFintype A).map equiv = PMF.uniformOfFintype B := by
-  classical
-  ext value
-  rw [PMF.map_apply]
-  simp only [PMF.uniformOfFintype_apply, ← equiv.symm_apply_eq, eq_comm]
-  rw [tsum_ite_eq, Fintype.card_congr equiv]
+    (equiv : A ≃ B) : (PMF.uniformOfFintype A).map equiv = PMF.uniformOfFintype B :=
+  PMF.uniformOfFintype_map_of_bijective equiv equiv.bijective
 
 /-- A product representation identifies each conditional fiber exactly. -/
 def productFiberEquiv {A B C : Type} (equiv : A ≃ B × C) (value : B) :
@@ -186,7 +184,7 @@ theorem SparsePermutation.forward_joint {size : Nat}
     simp only [forward, knownInput] at known ⊢
     simp only [dif_pos known, Draw.distribution, PMF.pure_bind]
     simp_rw [same]
-    simp only [afterForward, knownInput, dif_pos known]
+    simp [afterForward, knownInput, known]
   · have room : state.used < size := by
       have := (state.input.symm x).isLt
       unfold knownInput at known
@@ -247,9 +245,9 @@ theorem SparsePermutation.inverse_joint {size : Nat}
       have target := congrArg
         (fun distribution : PMF answer.2.reverse.Completion => distribution.map
           (fun π => (answer.1, answer.2.reverse, π.val)))
-        (uniform_equiv answer.2.reverse.reverse_completionEquiv)
-      simpa only [reverse_reverse, PMF.map_comp, Function.comp_def,
-        reverse_completionEquiv] using target
+        (uniform_equiv answer.2.reverse_completionEquiv.symm)
+      simp only [PMF.map_comp, Function.comp_def] at target
+      convert target using 1 <;> rfl
 
 /-- This interpreter samples each oracle transition when a query reaches it. -/
 def runSampled {oracle : OracleSpec} {Result State : Type}
@@ -276,10 +274,10 @@ theorem adaptive_joint_law {oracle : OracleSpec} {Result Sparse Eager : Type}
         (completion output.2).map (fun eagerState => (output.1, eagerState))) := by
   induction program generalizing state with
   | pure distribution =>
-      simp only [OracleProgram.run, runSampled, PMF.bind_map, Function.comp_def]
+      simp only [OracleProgram.run_pure, runSampled, PMF.bind_map, Function.comp_def]
       exact PMF.bind_comm _ _ _
   | query request next inductionHypothesis =>
-      simp only [OracleProgram.run, runSampled, PMF.bind_bind]
+      simp only [OracleProgram.run_query, runSampled, PMF.bind_bind]
       have transformed := congrArg
         (fun distribution : PMF (oracle.Answer request × Eager) =>
           distribution.bind (fun answer => (next answer.1).run eager answer.2)) (step request state)
@@ -287,12 +285,12 @@ theorem adaptive_joint_law {oracle : OracleSpec} {Result Sparse Eager : Type}
       rw [transformed]
       simp_rw [inductionHypothesis]
   | sample distribution next inductionHypothesis =>
-      simp only [OracleProgram.run, runSampled, PMF.bind_bind]
+      simp only [OracleProgram.run_sample, runSampled, PMF.bind_bind]
       rw [PMF.bind_comm]
       simp_rw [inductionHypothesis]
 
 /-- The bit selects a forward or inverse query on one finite permutation. -/
-def permutationSpec (size : Nat) : OracleSpec where
+abbrev permutationSpec (size : Nat) : OracleSpec where
   Query := Bool × Fin size
   Answer := fun _ => Fin size
 
@@ -322,9 +320,9 @@ theorem permutation_step {size : Nat} (query : (permutationSpec size).Query)
         (permutationCompletion answer.2).map (fun eagerState => (answer.1, eagerState))) := by
   rcases query with ⟨direction, value⟩
   cases direction
-  · simpa only [permutationCompletion, permutationEager, permutationSampled,
+  · simpa [permutationCompletion, permutationEager, permutationSampled, permutationSpec,
       PMF.map_comp, Function.comp_def] using state.inverse_joint value
-  · simpa only [permutationCompletion, permutationEager, permutationSampled,
+  · simpa [permutationCompletion, permutationEager, permutationSampled, permutationSpec,
       PMF.map_comp, Function.comp_def] using state.forward_joint value
 
 /-- Sparse sampling matches the full eager joint distribution for every adaptive program. -/
@@ -352,8 +350,8 @@ theorem permutation_initial (size : Nat) :
     (fun distribution : PMF (Equiv.Perm (Fin size)) => distribution.map
       (fun π => (SparsePermutation.empty size, π)))
     (uniform_equiv (emptyCompletionEquiv size))
-  simpa only [permutationCompletion, PMF.map_comp, Function.comp_def,
-    emptyCompletionEquiv] using law
+  simpa [permutationCompletion, PMF.map_comp, Function.comp_def,
+    emptyCompletionEquiv, Equiv.coe_fn_mk] using law
 
 end
 end Kriterion.ArgoMAC.Security.OperationalOracle

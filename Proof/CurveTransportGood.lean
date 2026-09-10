@@ -51,7 +51,8 @@ theorem curveSourceMask_offsets (oldMask newMask : BaseField) (input : AffineInp
           (sourceGatePrescription source pointKey curveKey oldLifts _).offset slot
         change (sourceGatePrescription changed newPointKey newCurveKey newLifts _).offset slot =
           (sourceGatePrescription changed newPointKey newCurveKey newLifts _).offset slot at equal
-        simpa only [curveSourceMask_pointOffset] using equal
+        simp only [circuitBucketUse, circuitBucketGate] at equal ⊢
+        cases slot <;> exact equal
 
 
 set_option maxRecDepth 2048 in

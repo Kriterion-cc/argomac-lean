@@ -61,7 +61,7 @@ theorem encFreshHash_weightedSource_mass_ge [Fintype Block]
   · rw [if_pos good]
     have bound := encFreshHashTranscript_mass_ge source target randomness transcript compatible
       good budget lengthBound fits
-    have weighted := mul_le_mul_left' bound (weight target)
+    have weighted := mul_le_mul_right bound (weight target)
     convert weighted using 1
     · ac_rfl
   · simp only [if_neg good, mul_zero, zero_le]

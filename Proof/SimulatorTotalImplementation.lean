@@ -155,7 +155,6 @@ theorem internal_total {A : Type} {budget : Nat}
   | pure => rfl
   | query request next ih =>
       simp only [Program.internal, Program.total, combinedDraw, ih]
-      rfl
   | map f source ih => simp only [Program.internal, Program.total, ih]
   | bind source next first second => simp only [Program.internal, Program.total, first, second]
   | weaken source bounded ih => exact ih state
@@ -286,7 +285,7 @@ theorem labels_law [FieldCertificate] [GroupCertificate]
       ((selected cache.coin cache.tables input output sample.1).map Prod.fst) state).symm
   rw [reference] at law
   simpa only [labels, encode, BitCode.bind_law, BitCode.law, PMF.bind_bind,
-    PMF.pure_bind, PMF.map] using law
+    PMF.pure_bind, PMF.map, Function.comp_def] using law
 
 /-- Each external phase executes one total sparse-and-bit resource interpreter. -/
 def external {A : Type} {budget : Nat} (attempts : Nat)

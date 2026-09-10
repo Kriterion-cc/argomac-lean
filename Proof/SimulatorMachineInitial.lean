@@ -72,10 +72,10 @@ theorem decode_as_oracleCoin (metadata : Metadata) (complete : OracleCompletion)
 
 /-- The empty sparse completion has the exact uniform oracle-coin distribution. -/
 theorem initial_completion (metadata : Metadata) :
-    letI : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
+    let : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
     completion (initial metadata) =
       (PMF.uniformOfFintype SimulatorOracleCoin).map (withOracles metadata) := by
-  letI : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
+  let : Nonempty SimulatorOracleCoin := ⟨defaultSimulatorCoin.oracles⟩
   let family : PMF (OracleIndex → Equiv.Perm (Fin (2 ^ 128))) := PMF.uniformOfFintype _
   let hash : PMF (BaseField → Fin (2 ^ 256)) := PMF.uniformOfFintype _
   have familyLaw := family_initial_denote (Index := OracleIndex) (2 ^ 128)

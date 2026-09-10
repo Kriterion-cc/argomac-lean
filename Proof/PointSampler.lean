@@ -58,12 +58,12 @@ attribute [local irreducible] pointCode pointFintype
 /-- Each x-coordinate has at most two points. The identity adds one point. -/
 theorem point_card_upper_bound [FieldCertificate] :
     Fintype.card Point ≤ 2 * baseFieldModulus + 1 := by
-  calc
-    Fintype.card Point ≤ Fintype.card (Option (BaseField × Bool)) :=
-      Fintype.card_le_of_injective pointCode pointCode_injective
-    _ = 2 * baseFieldModulus + 1 := by
-      rw [Fintype.card_option, Fintype.card_prod, ZMod.card, Fintype.card_bool]
-      omega
+  have size {α : Type} [Fintype α] :
+      Fintype.card (Option (α × Bool)) = 2 * Fintype.card α + 1 := by
+    rw [Fintype.card_option, Fintype.card_prod, Fintype.card_bool]
+    omega
+  exact (Fintype.card_le_of_injective pointCode pointCode_injective).trans_eq
+    ((size (α := BaseField)).trans (congrArg (fun count => 2 * count + 1) (ZMod.card _)))
 
 /-- The certified group has exactly one scalar-field dimension. -/
 theorem point_card_eq_scalar [FieldCertificate] [GroupCertificate] :
@@ -168,12 +168,12 @@ theorem binaryPointMul_eq [FieldCertificate] (rounds scalar : Nat) (point : Poin
 
 /-- This point is the standard BN254 generator `(1,2)`. -/
 def standardGenerator [FieldCertificate] : Point :=
-  .some ((curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
+  .some 1 2 ((curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
     ((equation_iff_onCurve { x := 1, y := 2 }).mpr generatorOnCurve))
 
 private theorem standardGenerator_ne_zero [FieldCertificate] : standardGenerator ≠ 0 := by
-  intro equal
-  cases equal
+  change WeierstrassCurve.Affine.Point.some _ _ _ ≠ .zero
+  intro equal; cases equal
 
 /-- Scalar multiplication gives every group point exactly once. -/
 theorem scalarGenerator_bijective [FieldCertificate] [GroupCertificate] :

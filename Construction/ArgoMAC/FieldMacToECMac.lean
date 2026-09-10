@@ -10,7 +10,7 @@ namespace Kriterion.ArgoMAC.FieldMacToECMac
 
 open BN254
 
-def outputMacCount : Nat := 91
+abbrev outputMacCount : Nat := 91
 
 /-- The evaluator computes one homogeneous row before batch inversion. -/
 structure HomogeneousValue where

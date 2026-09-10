@@ -34,7 +34,6 @@ theorem Program.internal_sampledLaw {A : Type} {budget : Nat}
   | pure => rfl
   | query request next ih =>
     simp only [internal, sampledLaw, combinedDraw, ih]
-    rfl
   | map f source ih => simp only [internal, sampledLaw, ih]
   | bind source next first second => simp only [internal, sampledLaw, first, second]
   | weaken source bounded ih => exact ih state

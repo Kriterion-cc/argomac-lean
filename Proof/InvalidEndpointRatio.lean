@@ -13,9 +13,9 @@ theorem phase_relative_bound (ghost mass publicMass real factor phase : ℝ≥0�
     (realEq : real = phase * publicMass) : factor * ghost ≤ real := by
   rw [realEq]
   calc
-    factor * ghost ≤ factor * (phase * mass) := mul_le_mul_left' ghostBound factor
+    factor * ghost ≤ factor * (phase * mass) := mul_le_mul_right ghostBound factor
     _ = phase * (factor * mass) := by ac_rfl
-    _ ≤ phase * publicMass := mul_le_mul_left' sourceBound phase
+    _ ≤ phase * publicMass := mul_le_mul_right sourceBound phase
 
 set_option maxRecDepth 4096 in
 /-- The real transcript equals its common phase factor and actual retained public event. -/

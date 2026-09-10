@@ -29,7 +29,7 @@ theorem TotalLaw.weaken {A : Type} {attempts first second : Nat}
     {exact total : PMF A} (law : TotalLaw attempts first exact total)
     (bounded : first ≤ second) : TotalLaw attempts second exact total := by
   intro value
-  exact (mul_le_mul_right' (pow_le_pow_right_of_le_one'
+  exact (mul_le_mul_left (pow_le_pow_right_of_le_one'
     (tsub_le_self : retained attempts ≤ 1) bounded) _).trans (law value)
 
 /-- Adaptive composition adds the draw budgets. -/
@@ -67,12 +67,12 @@ theorem TotalLaw.point_error {A : Type} {attempts count : Nat}
     (exact value).toReal - (total value).toReal ≤
       (count : ℝ) * (2 : ℝ)⁻¹ ^ attempts := by
   have retainedLe : retained attempts ^ count ≤ 1 :=
-    pow_le_one₀ (zero_le _) (tsub_le_self : retained attempts ≤ 1)
+    pow_le_one₀ zero_le (tsub_le_self : retained attempts ≤ 1)
   have lower := ENNReal.toReal_mono (total.apply_ne_top _) (law value)
   have pointLe := ENNReal.toReal_mono ENNReal.one_ne_top (exact.coe_le_one value)
   have factorLe := ENNReal.toReal_mono ENNReal.one_ne_top retainedLe
   have loss := loss_pow_le ((2 : ENNReal)⁻¹ ^ attempts)
-    (pow_le_one₀ (zero_le _) (by norm_num)) count
+    (pow_le_one₀ zero_le (by norm_num)) count
   have realLoss := ENNReal.toReal_mono (by finiteness) loss
   change (1 - retained attempts ^ count).toReal ≤ _ at realLoss
   rw [ENNReal.toReal_sub_of_le retainedLe ENNReal.one_ne_top] at realLoss

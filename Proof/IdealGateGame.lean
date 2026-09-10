@@ -87,7 +87,7 @@ theorem targetGateSourceRun_eq_simulatorOracleCoinTranscript [FieldCertificate] 
   simpa only [targetGateSourceRun, targetGateObserve, gateSourceChoose, gateSourceObserve,
     simulatorOracleCoinTranscript, sampledTwoPhaseTranscript, twoPhaseTranscript,
     PMF.bind_map, PMF.bind_bind, PMF.map_bind, PMF.map_comp, Function.comp_def,
-    simulatorSourceEquiv, SimulatorCoin.state, CircuitSimulatorState.table,
+    simulatorSourceEquiv, Equiv.coe_fn_mk, SimulatorCoin.state, CircuitSimulatorState.table,
     CircuitSimulatorState.labels, CircuitSimulatorState.selectedCurve, CircuitSimulatorState.selectedPoints,
     publicMaskTable, initialSourceOracle, sourceInputLabels, checkedScalarMultiplication,
     Option.map_map] using law

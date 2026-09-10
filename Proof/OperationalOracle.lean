@@ -1,8 +1,8 @@
-import Proof.ProgrammingDistribution
+import Cryptography.Permutation
 import Mathlib.Tactic
 
 namespace Kriterion.ArgoMAC.Security.OperationalOracle
-
+open Cryptography
 /-- A step draws at most one uniform bounded integer. -/
 inductive Draw (A : Type) where
   | pure (value : A)
@@ -301,20 +301,20 @@ theorem compatible_fresh_uniform {A : Type*} [Fintype A] [DecidableEq A]
     ((programCompatiblePermutationEquiv s t e x freshInput y freshOutput).trans
       (Equiv.prodComm _ _))
   have projected := congrArg (fun p : PMF (tᶜ : Set A) => p.map Subtype.val) law
-  simpa only [PMF.map_comp] using projected
+  simpa [PMF.map_comp, programCompatiblePermutationEquiv, Function.comp_def] using projected
 
 /-- The sparse prefixes define the exact partial assignment. -/
 def SparsePermutation.assignment {size : Nat} (state : SparsePermutation size) :
     {x : Fin size // state.knownInput x} ≃ {y : Fin size // state.knownOutput y} where
   toFun x := ⟨state.output (state.input.symm x.val), by
-    simpa only [knownOutput, Equiv.symm_apply_apply] using x.property⟩
+    simpa only [knownOutput, knownInput, Equiv.symm_apply_apply] using x.property⟩
   invFun y := ⟨state.input (state.output.symm y.val), by
-    simpa only [knownInput, Equiv.symm_apply_apply] using y.property⟩
+    simpa only [knownInput, knownOutput, Equiv.symm_apply_apply] using y.property⟩
   left_inv x := by simp
   right_inv y := by simp
 
 /-- This type contains the eager permutations consistent with the sparse state. -/
-def SparsePermutation.Completion {size : Nat} (state : SparsePermutation size) :=
+abbrev SparsePermutation.Completion {size : Nat} (state : SparsePermutation size) :=
   {π : Equiv.Perm (Fin size) //
     ∀ x : {x : Fin size // state.knownInput x}, π x = state.assignment x}
 
@@ -484,7 +484,7 @@ theorem SparsePermutation.inverse_reverse_forward {size : Nat}
       (fun pair => (pair.1, pair.2.reverse)) := by
   unfold inverse forward
   dsimp only [reverse, input, output]
-  split <;> rfl
+  split <;> simp_all [Draw.map, extend, suffix]; rfl
 
 /-- Every inverse query has the eager conditional answer law. -/
 theorem SparsePermutation.inverse_distribution {size : Nat}
@@ -631,7 +631,7 @@ theorem ProgrammedPermutation.queryComparisons_le {size : Nat}
   exact Nat.add_le_add_right state.base.lookupComparisons_le _
 
 /-- The hash table stores only the inputs that a run reaches. -/
-def HashTable (Key : Type) (size : Nat) := List (Key × Fin size)
+abbrev HashTable (Key : Type) (size : Nat) := List (Key × Fin size)
 
 /-- A hash query reuses an answer or draws one new bounded integer. -/
 def HashTable.query {Key : Type} [DecidableEq Key] {size : Nat}
@@ -650,7 +650,7 @@ theorem HashTable.program_lookup {Key : Type} [DecidableEq Key]
     (table.program key value).lookup query =
       Function.update (fun k => table.lookup k) key (some value) query := by
   by_cases same : key = query
-  · subst query; simp [program]
+  · subst query; simp [program, List.lookup]
   · have different : (query == key) = false := by simp [Ne.symm same]
     simp [program, List.lookup, different, Ne.symm same]
 
@@ -670,7 +670,7 @@ theorem HashTable.query_length_le {Key : Type} [DecidableEq Key] {size : Nat}
     exact Nat.le_refl _
 
 /-- This type contains the eager functions consistent with the hash table. -/
-def HashTable.Completion {Key : Type} [DecidableEq Key]
+abbrev HashTable.Completion {Key : Type} [DecidableEq Key]
     (table : HashTable Key size) :=
   {f : Key → Fin size // ∀ key value, table.lookup key = some value → f key = value}
 

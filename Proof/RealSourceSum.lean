@@ -102,7 +102,7 @@ theorem retainedRealSource_mass [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
       (inputSelectedLabelBit input) (inputMacCoordinateEquiv mac, hidden)
       (fun _ => (⟨0, 0⟩ : BitAdaptor.Key)) (circuitSourceSlope source) lifts (circuitSourceTable source)
   simp_rw [gates] at mass
-  simpa only [linkedHiddenSourceMass, sourceGatePrescription, sourceRest_transcriptCompatible] using mass
+  simpa only [linkedHiddenSourceMass, sourceGatePrescription, sourceRest_transcriptCompatible, GarblingSourceRest.oracleCoin] using mass
 
 
 set_option maxRecDepth 4096 in

@@ -89,7 +89,7 @@ private theorem bind_bound {Source Target : Type*}
   rw [PMF.toOuterMeasure_bind_apply]
   calc
     _ ≤ ∑' value, source value * bound :=
-      ENNReal.tsum_le_tsum (fun value => mul_le_mul_left' (pointwise value) _)
+      ENNReal.tsum_le_tsum (fun value => mul_le_mul_right (pointwise value) _)
     _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
 
 theorem retainedBirthdayFlag_mass_le [Fintype Block] (rows : Rows) :

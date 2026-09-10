@@ -16,10 +16,10 @@ theorem weightedSubtypeMass_lower {Source : Type}
   rw [← ENNReal.tsum_mul_left]
   apply le_trans (ENNReal.tsum_le_tsum fun source => ?_)
     (ENNReal.summable.tsum_le_tsum_of_inj Subtype.val Subtype.val_injective
-      (fun _ _ => zero_le _) (fun _ => le_rfl) ENNReal.summable)
+      (fun _ _ => bot_le) (fun _ => le_rfl) ENNReal.summable)
   calc
     factor * (weights source.1 * sourceMass source) = weights source.1 * (factor * sourceMass source) := by ac_rfl
-    _ ≤ _ := mul_le_mul_left' (bound source) (weights source.1)
+    _ ≤ _ := mul_le_mul_right (bound source) (weights source.1)
 
 
 set_option maxRecDepth 4096 in

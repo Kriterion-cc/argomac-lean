@@ -27,7 +27,7 @@ import Proof.Linking
 import Proof.OffCurveDistribution
 import Proof.OutputRowDistribution
 import Proof.ProgrammingBridge
-import Proof.ProgrammingDistribution
+import Cryptography.Permutation
 import Proof.PublicSample
 import Proof.PublicDistribution
 import Proof.QueryCounts

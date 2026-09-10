@@ -44,20 +44,66 @@ private theorem command_bound (prepared : Prepared) (input : AffineInput)
   apply (scheduleCommands_length _).trans
   rw [Prepared.scheduleWithCost_value, pipelineGateSchedule_length_value]
 
+private def checkedCommands (compiled : {value : List FixedCommand × Nat // value.1.length ≤ 905256}) :
+    Program spec Unit 905256 := .weaken (commands compiled.1.1) compiled.2
+
+private theorem checkedCommands_run
+    (compiled : {value : List FixedCommand × Nat // value.1.length ≤ 905256}) (oracle : SimulatorState) :
+    (checkedCommands compiled).run handler oracle = ((), executeFixedCommands oracle compiled.1.1) := by
+  simp only [checkedCommands, Program.run_weaken, commands_run]
+
+/-- This helper keeps the linked value abstract while it checks the command index. -/
+private def validTail (input : AffineInput) (labels : Garbling.Labels × Nat) (prepared : Prepared × Nat)
+    (hashCost : Nat) (linked : InputMac × Nat) : Program spec (Garbling.Labels × Nat) 905256 :=
+  let schedule := prepared.1.scheduleWithCost input labels.1.inputMac linked.1
+  let compiled : {value : List FixedCommand × Nat // value.1.length ≤ 905256} :=
+    ⟨scheduleCommandsWithCost schedule.1, command_bound prepared.1 input labels.1.inputMac linked.1⟩
+  .map (fun _ => (labels.1, labels.2 + prepared.2 + hashCost + linked.2 + schedule.2 + compiled.1.2))
+    (checkedCommands compiled)
+
+private theorem validTail_run (input : AffineInput) (labels : Garbling.Labels × Nat)
+    (prepared : Prepared × Nat) (hashCost : Nat) (linked : InputMac × Nat) (oracle : SimulatorState) :
+    ((validTail input labels prepared hashCost linked).run handler oracle).1.1 = labels.1 ∧
+      ((validTail input labels prepared hashCost linked).run handler oracle).2 =
+        programGateSchedule oracle (pipelineGateSchedule prepared.1.curve.request prepared.1.points input
+          labels.1.inputMac linked.1) := by
+  simp only [validTail, Program.run_map, checkedCommands_run, scheduleCommandsWithCost_value,
+    scheduleCommands_correct, Prepared.scheduleWithCost_value]; exact ⟨trivial, trivial⟩
+
+private def validCached (input : AffineInput) (labels : Garbling.Labels × Nat) (prepared : Prepared × Nat) :
+    Program spec (Garbling.Labels × Nat) 905765 :=
+  let hash := hashWithCost prepared.1.curve input
+  .bind (LinkCost.linkWithCost hash.1 input labels.1.inputMac) (validTail input labels prepared hash.2)
+
+private theorem bind_result {A B State : Type} {first second : Nat}
+    (h : OracleHandler spec State) (source : Program spec A first)
+    (next : A → Program spec B second) (state target : State) (answer : A)
+    (sourceLaw : source.run h state = (answer, target)) :
+    (Program.bind source next).run h state = (next answer).run h target :=
+  (Program.run_bind h source next state).trans
+    (congrArg (fun result : A × State => (next result.1).run h result.2) sourceLaw)
+
+private theorem validCached_run (input : AffineInput) (labels : Garbling.Labels × Nat)
+    (prepared : Prepared × Nat) (oracle : SimulatorState) :
+    ((validCached input labels prepared).run handler oracle).1.1 = labels.1 ∧
+      ((validCached input labels prepared).run handler oracle).2 =
+        programGateSchedule oracle (pipelineGateSchedule prepared.1.curve.request prepared.1.points input
+          labels.1.inputMac (linkedPointInputMac oracle prepared.1.curve.request input labels.1.inputMac)) := by
+  have linkLaw := LinkCost.linkWithCost_run prepared.1.curve.request input labels.1.inputMac
+    (hashWithCost prepared.1.curve input).1 (hashWithCost_value _ _) oracle
+  have runLaw := bind_result handler _ (validTail input labels prepared (hashWithCost prepared.1.curve input).2)
+    oracle oracle (linkedPointInputMac oracle prepared.1.curve.request input labels.1.inputMac, 6110) linkLaw
+  have tailLaw := validTail_run input labels prepared (hashWithCost prepared.1.curve input).2
+    (linkedPointInputMac oracle prepared.1.curve.request input labels.1.inputMac, 6110) oracle
+  exact ⟨(congrArg (fun result => result.1.1) runLaw).trans tailLaw.1,
+    (congrArg Prod.snd runLaw).trans tailLaw.2⟩
+
 /-- The cached encoder constructs its labels and selected schedules once. -/
 def valid [FieldCertificate] [GroupCertificate]
     (coin : OfflineCoin) (tables : SimulatorTables (privateView coin))
     (input : AffineInput) (point : Point) (free : Vector Point 90)
-    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    Program spec (Garbling.Labels × Nat) 905765 :=
-  let labels := labelsWithCost coin.2.1 input
-  let prepared := prepareWithCost (privateView coin) tables input point free scales
-  let hash := hashWithCost prepared.1.curve input
-  .bind (LinkCost.linkWithCost hash.1 input labels.1.inputMac) fun linked =>
-    let schedule := prepared.1.scheduleWithCost input labels.1.inputMac linked.1
-    let compiled := scheduleCommandsWithCost schedule.1
-    .map (fun _ => (labels.1, labels.2 + prepared.2 + hash.2 + linked.2 + schedule.2 + compiled.2))
-      (.weaken (second := 905256) (commands compiled.1) (command_bound prepared.1 input labels.1.inputMac linked.1))
+    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) : Program spec (Garbling.Labels × Nat) 905765 :=
+  validCached input (labelsWithCost coin.2.1 input) (prepareWithCost (privateView coin) tables input point free scales)
 
 /-- The cached encoder has exactly the original eager label and oracle result. -/
 theorem valid_run [FieldCertificate] [GroupCertificate]
@@ -68,13 +114,16 @@ theorem valid_run [FieldCertificate] [GroupCertificate]
         (privateView coin).labels input ∧
       ((valid coin tables input point free scales).run handler oracle).2 =
         ((privateState coin oracle).programForOutput input point free scales.get).oracle := by
-  simp only [valid, Program.run_bind, LinkCost.linkWithCost_run _ _ _ _
-    (hashWithCost_value _ _), Program.run_map, Program.run_weaken, commands_run,
-    scheduleCommandsWithCost_value, scheduleCommands_correct, Prepared.scheduleWithCost_value, prepareWithCost_curve,
-    prepareWithCost_points, (labelsWithCost_spec coin input).1,
+  have law := validCached_run input (labelsWithCost coin.2.1 input)
+    (prepareWithCost (privateView coin) tables input point free scales) oracle
+  have curve : (privateState coin oracle).selectedCurve input = (privateView coin).selectedCurve input := rfl
+  have points : (privateState coin oracle).selectedPoints input point free scales.get =
+      (privateView coin).selectedPoints input point free scales.get := rfl
+  have labels : (privateState coin oracle).labels input = (privateView coin).labels input := rfl
+  have state : (privateState coin oracle).oracle = oracle := rfl
+  simpa only [valid, prepareWithCost_curve, prepareWithCost_points, (labelsWithCost_spec coin input).1,
     CircuitSimulatorState.programForOutput, CircuitSimulatorState.selectedSchedule,
-    linkedPipelineGateSchedule]
-  exact ⟨trivial, rfl⟩
+    linkedPipelineGateSchedule, curve, points, labels, state] using law
 
 /-- The cached arithmetic cost is independent of the oracle answers. -/
 theorem valid_local_bound [FieldCertificate] [GroupCertificate] {State : Type}
@@ -89,7 +138,7 @@ theorem valid_local_bound [FieldCertificate] [GroupCertificate] {State : Type}
     ((prepareWithCost (privateView coin) tables input point free scales).1.scheduleWithCost
       input (labelsWithCost coin.2.1 input).1.inputMac linked).1
   simp only [Prepared.scheduleWithCost_value, pipelineGateSchedule_length_value] at compiled
-  simp only [valid, Program.run_bind, Program.run_map]
+  simp only [valid, validCached, validTail, Program.run_bind, Program.run_map]
   rw [LinkCost.linkWithCost_cost, Prepared.scheduleWithCost_count, (labelsWithCost_spec coin input).2]
   have current := compiled ((LinkCost.linkWithCost
     (hashWithCost (prepareWithCost (privateView coin) tables input point free scales).1.curve input).1
@@ -121,10 +170,11 @@ theorem invalid_run (coin : OfflineCoin) (tables : SimulatorTables (privateView 
     ((invalid coin tables input).run handler oracle).1.1 = (privateView coin).labels input ∧
       ((invalid coin tables input).run handler oracle).2 =
         ((invalidProgram (privateView coin) input).run handler oracle).2 := by
-  simp only [invalid, Program.run_map, Program.run_weaken, commands_run,
+  simp only [invalid, invalidProgram, Program.run_map, Program.run_weaken]
+  simp only [commands_run,
     scheduleCommandsWithCost_value, scheduleCommands_correct, curveScheduleWithCost_value,
     prepareCurveWithCost_value, (labelsWithCost_spec coin input).1,
-    invalidProgram, CircuitSimulatorState.selectedCurve]
+    CircuitSimulatorState.selectedCurve]
   exact ⟨trivial, trivial⟩
 
 /-- The invalid encoder has the same fixed local bound under every handler. -/
@@ -213,11 +263,11 @@ theorem encoding_run [FieldCertificate] [GroupCertificate]
       (encodeProgram coin input output).run handler oracle := by
   cases output with
   | none =>
-      simp only [encoding, OracleProgram.run, Program.toOracle_run, selected_run, encodeProgram]
+      simp only [encoding, OracleProgram.run_sample, Program.toOracle_run, selected_run, encodeProgram]
       simp
   | some point =>
-      simp only [encoding, OracleProgram.run, Program.toOracle_run, selected_run,
-        encodeProgram, ThreePhase.run_append, PMF.bind_map, Function.comp_def]
+      simp only [encoding, OracleProgram.run_sample, Program.toOracle_run, selected_run,
+        encodeProgram, ThreePhase.run_append, OracleProgram.run_pure, PMF.bind_map, Function.comp_def]
 
 /-- The finite online sampler keeps its prefix counter before the decision projection. -/
 def onlineCutoff [FieldCertificate] (attempts : Nat) : BitCode (Option SimulatorSamplingCost.OnlineCoin) :=
@@ -329,16 +379,16 @@ theorem encodeWithCost_work [FieldCertificate] [GroupCertificate] {Seed : Type}
       51184061 + 905765 * (10 * (capacity + 905765) + 16) := by
   have sampled := SimulatorSamplingCost.onlineFinite.cost attempts Seed random seed
   simp only [encodeWithCost]
+  generalize ((SimulatorSamplingCost.onlineFinite.run attempts).run random seed) = sampledRun at sampled ⊢
   split
   · simp only
-    omega
+    exact sampled.trans ((by decide : 184061 ≤ 51184061).trans (Nat.le_add_right _ _))
   · rename_i sample same
     simp only
     have sparse := (Cost.executeCutoffCost_budget random attempts
       (fixedProgram cache input output sample) state
-      ((SimulatorSamplingCost.onlineFinite.run attempts).run random seed).1.2 depth capacity bound depthBound)
-    have upper := sparse
-    omega
+      sampledRun.1.2 depth capacity bound depthBound)
+    exact Nat.add_le_add (Nat.add_le_add_right sampled 51000000) sparse
 
 /-- The actual cached encoder has a strict fair-bit limit on every success or failure path. -/
 theorem encode_bits [FieldCertificate] [GroupCertificate] {Seed : Type}
@@ -354,8 +404,7 @@ theorem encode_bits [FieldCertificate] [GroupCertificate] {Seed : Type}
     (fun sample seed =>
       (((selected coin tables input output sample).map Prod.fst).sparse_cutoff_bits random attempts state seed).trans
         (Nat.mul_le_mul_right _ budget)) seed
-  convert result using 1
-  ring
+  convert result using 1 <;> first | ring | rfl
 
 /-- The counted runtime has the actual encoder's strict bit bound. -/
 theorem encodeWithCost_bits [FieldCertificate] [GroupCertificate] {Seed : Type}
@@ -577,7 +626,7 @@ theorem continuation_exact [FieldCertificate] [GroupCertificate] {Aux : Type}
   have finish (output : Bool × SparseState) :
       (completion output.2).map (fun _ => output.1) = PMF.pure output.1 := PMF.map_const _ _
   simp_rw [finish] at last
-  simpa only [PMF.map] using last
+  simpa only [PMF.map, Function.comp_def] using last
 
 /-- The array sampler supplies the actual cached simulator state. -/
 def exactGame [FieldCertificate] [GroupCertificate] {Aux : Type}
@@ -667,8 +716,7 @@ theorem finiteOption_law [FieldCertificate] [GroupCertificate] {Aux : Type}
     finiteContinuation_law attempts adversary parameter scalar auxiliary prepared.1 prepared.2 (initial initialMetadata))
   unfold finiteOption
   rw [SimulatorSamplingCost.eraseCost_law]
-  convert law using 1
-  omega
+  convert law using 1 <;> first | omega | rfl
 
 /-- The concrete implementation returns false after a failed finite sampler. -/
 def game [FieldCertificate] [GroupCertificate] {Aux : Type}

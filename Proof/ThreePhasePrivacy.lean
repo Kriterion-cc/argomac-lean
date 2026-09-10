@@ -45,11 +45,11 @@ def append {oracle : OracleSpec} {First Result : Type} {second : Nat}
     (program : OracleProgram oracle Result budget) (state : State) :
     (raise extra program).run handler state = program.run handler state := by
   induction program generalizing state with
-  | pure distribution => simp only [raise, OracleProgram.run]
+  | pure distribution => simp only [raise, OracleProgram.run_pure]
   | query request next inductionHypothesis =>
-      simp only [raise, run_castBudget, OracleProgram.run, inductionHypothesis]
+      simp only [raise, run_castBudget, OracleProgram.run_query, inductionHypothesis]
   | sample distribution next inductionHypothesis =>
-      simp only [raise, OracleProgram.run, inductionHypothesis]
+      simp only [raise, OracleProgram.run_sample, inductionHypothesis]
 
 @[simp] theorem run_append {oracle : OracleSpec} {First Result State : Type}
     (handler : OracleHandler oracle State) {first second : Nat}
@@ -59,11 +59,11 @@ def append {oracle : OracleSpec} {First Result : Type} {second : Nat}
       (program.run handler state).bind (fun selected => (next selected.1).run handler selected.2) := by
   induction program generalizing state with
   | pure distribution =>
-      simp only [append, run_castBudget, OracleProgram.run, run_raise, PMF.bind_map, Function.comp_def]
+      simp only [append, run_castBudget, OracleProgram.run_sample, OracleProgram.run_pure, run_raise, PMF.bind_map, Function.comp_def]
   | query request continuation inductionHypothesis =>
-      simp only [append, run_castBudget, OracleProgram.run, inductionHypothesis]
+      simp only [append, run_castBudget, OracleProgram.run_query, inductionHypothesis]
   | sample distribution continuation inductionHypothesis =>
-      simp only [append, OracleProgram.run, inductionHypothesis, PMF.bind_bind]
+      simp only [append, OracleProgram.run_sample, inductionHypothesis, PMF.bind_bind]
 
 /-- This adversary has a separate phase before it receives the public circuit. -/
 structure Adversary (Aux : Type) where
@@ -132,14 +132,14 @@ theorem run_preserves {oracle : OracleSpec} {Result State View : Type}
     view output.2 = view state := by
   induction program generalizing state with
   | pure distribution =>
-      simp only [OracleProgram.run, PMF.mem_support_map_iff] at member
+      simp only [OracleProgram.run_pure, PMF.mem_support_map_iff] at member
       obtain ⟨value, _, equal⟩ := member
       cases equal
       rfl
   | query request next inductionHypothesis =>
-      exact (inductionHypothesis _ _ member).trans (preserves request state)
+      rw [OracleProgram.run_query] at member; exact (inductionHypothesis _ _ member).trans (preserves request state)
   | sample distribution next inductionHypothesis =>
-      simp only [OracleProgram.run, PMF.mem_support_bind_iff] at member
+      simp only [OracleProgram.run_sample, PMF.mem_support_bind_iff] at member
       obtain ⟨value, _, member⟩ := member
       exact inductionHypothesis value state member
 

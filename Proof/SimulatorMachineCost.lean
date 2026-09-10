@@ -400,7 +400,7 @@ theorem runDraw_support {A Seed : Type}
   cases draw with
   | pure value => simp only [runDraw, Draw.distribution, PMF.mem_support_pure_iff]
   | uniform size positive next =>
-      letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
+      let : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
       apply (PMF.mem_support_map_iff _ _ _).mpr
       exact ⟨(random size positive seed).1, PMF.mem_support_uniformOfFintype _, rfl⟩
 

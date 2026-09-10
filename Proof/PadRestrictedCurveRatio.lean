@@ -76,7 +76,7 @@ theorem actualCurveProgrammedSource_guard_mass_ratio
     rw [domains]
     apply residualFixedQueryDomain_card_congr
     intro record
-    simp only [fixedOracleTranscriptRecords_append, List.mem_append, historyMembers]
+    rw [fixedOracleTranscriptRecords_append before after]; simp only [List.mem_append, historyMembers]
   simp_rw [residualCounts]
   have fixed := (realOracleTranscriptCompatible_iff randomness (before ++ after)).mp compatible
   have bound := independentCircuit_guard_mass_ge keys slopes lifts tables exposed wire shift
@@ -88,8 +88,9 @@ theorem actualCurveProgrammedSource_guard_mass_ratio
       (partialActiveDomains gates exposed publicLabel) index))
     (fun index => exposed (rawLabelBucket index) (rawSlotBranch index.slot)) Fintype.card_pos
     priorFits residualFits
-  apply (mul_le_mul_left' factor _).trans
+  apply (mul_le_mul_right factor _).trans
   convert bound using 1
+  all_goals try rfl
   congr 1
   ext sample
   simp only [Set.mem_setOf_eq, realOracleTranscriptCompatible_iff,

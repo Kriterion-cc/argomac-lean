@@ -20,11 +20,18 @@ root entry.
 
 ## Build
 
-The construction and the proof import the challenge library. That library is
-`examples/bn254-scalar-multiplication/formal` in the Kriterion repository, and
-`challenge.yaml` pins its commit. To build this repository, place that library beside
-these files and declare it as the Lean library `Kriterion`. Kriterion does this for
-every submission it verifies.
+The construction and proof import the pinned Kriterion challenge library.
+The library uses Lean 4.33.1, Mathlib 4.33.1, and VCV-io.
+Kriterion includes this repository as a submodule.
+You can run the full build from its challenge directory:
+
+```sh
+cd examples/bn254-scalar-multiplication
+lake exe cache get
+lake build
+```
+
+The verifier generates the same library and entry layout for each submission.
 
 ## Status
 
@@ -39,7 +46,8 @@ It does not define an asymptotic family for every security parameter.
 
 | Field | Where |
 | --- | --- |
-| `randomnessFromSeed` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
+| `randomness` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
+| `ciphertextSize` | `Construction/ArgoMAC/Encoding.lean` proves the complete public encoding has 9,699,931 bytes. |
 | `perfectCorrectness` | `Proof/RCBComplete.lean` with the termination instance in `Proof/Base7Termination.lean`. |
 | `lamportCompatible` | `Proof/Lamport.lean`. |
 | `adaptivePrivacy` | `Proof/ConcreteSmallSourceRatio.lean` proves the universal 100-bit bound. `Submission.adaptivePrivacy` supplies the challenge field. |
@@ -64,6 +72,16 @@ The active collision proof includes this bias.
 ## Adaptive privacy
 
 The Kriterion obligation uses two adaptive query phases and the original uniform random tape.
+VCV-io supplies uniform sampling, oracle execution, public query logs, and query bounds.
+The interpreter preserves arbitrary private samples.
+VCV-io state projections transport related oracle states.
+Its logger records public answers and omits private samples.
+Its logger erasure rule preserves the output distribution.
+The proof uses VCV-io total variation, identical-until-bad, and conditional event bounds.
+Regression theorems preserve the execution distribution and every ordered public transcript.
+The refactor removes the unused bounded bridge and its security wrappers.
+The source-ratio and correlated permutation arguments remain specific to ArgoMAC.
+The challenge library supplies the permutation counting and fresh programming lemmas.
 The proof covers valid and invalid inputs.
 
 - `ValidEndpointRatio.lean` bounds the valid source by the real transcript.
@@ -166,7 +184,7 @@ The checked bounds have these forms:
 These bounds apply to the fixed BN254 instance.
 They give a strict polynomial bound in the query budget under the stated primitive model.
 They do not establish an asymptotic security family or a Lean instruction-count bound.
-The verifier and benchmark use the computable `Submission.solution` entry.
+The verifier and byte metric use the computable `Submission.solution` entry.
 
 ## Source
 

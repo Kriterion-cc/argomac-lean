@@ -78,7 +78,7 @@ theorem Code.cutoff_lower {A : Type} {count : Nat} (attempts : Nat)
   | draw size positive =>
       simp only [Code.cutoff, Code.law, PMF.uniformOfFintype_apply, Fintype.card_fin, pow_one]
       rw [cutoff_success_submass size positive]
-      exact mul_le_mul_right' (tsub_le_tsub_left
+      exact mul_le_mul_left (tsub_le_tsub_left
         (pow_le_pow_left' (rejection_le_half size positive) attempts) 1) _
   | @bind A B first second source next ihSource ihNext =>
       simp only [Code.cutoff, Code.law, BitCode.bind_law, option_law]
@@ -102,7 +102,7 @@ theorem Code.cutoff_upper {A : Type} {count : Nat} (attempts : Nat)
   | draw size positive =>
       simp only [Code.cutoff, Code.law, PMF.uniformOfFintype_apply, Fintype.card_fin]
       rw [cutoff_success_submass size positive]
-      exact (mul_le_mul_right' (tsub_le_self : (1 : ENNReal) - rejection size ^ attempts ≤ 1) _).trans_eq
+      exact (mul_le_mul_left (tsub_le_self : (1 : ENNReal) - rejection size ^ attempts ≤ 1) _).trans_eq
         (one_mul _)
   | @bind A B first second source next ihSource ihNext =>
       simp only [Code.cutoff, Code.law, BitCode.bind_law, option_law]
@@ -148,7 +148,7 @@ theorem loss_pow_le (loss : ENNReal) (bounded : loss ≤ 1) (count : Nat) :
     1 - (1 - loss) ^ count ≤ count * loss := by
   have finite : loss ≠ ⊤ := ne_top_of_le_ne_top ENNReal.one_ne_top bounded
   have retainedBound : (1 : ENNReal) - loss ≤ 1 := tsub_le_self
-  have powerBound : ((1 : ENNReal) - loss) ^ count ≤ 1 := pow_le_one₀ (zero_le _) retainedBound
+  have powerBound : ((1 : ENNReal) - loss) ^ count ≤ 1 := pow_le_one₀ zero_le retainedBound
   apply (ENNReal.toReal_le_toReal
     (ne_top_of_le_ne_top ENNReal.one_ne_top tsub_le_self)
     (ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) finite)).mp
@@ -166,12 +166,12 @@ theorem loss_pow_le (loss : ENNReal) (bounded : loss ≤ 1) (count : Nat) :
 theorem Code.cutoff_failure_linear {A : Type} {count : Nat} (attempts : Nat) (code : Code A count) :
     (code.cutoff attempts).law none ≤ count * (2 : ENNReal)⁻¹ ^ attempts :=
   (code.cutoff_failure attempts).trans
-    (loss_pow_le _ (pow_le_one₀ (zero_le _) (by norm_num)) count)
+    (loss_pow_le _ (pow_le_one₀ zero_le (by norm_num)) count)
 
 /-- The concrete offline sampler has a strict finite bit limit and a checked failure bound. -/
 theorem offline_cutoff_failure :
     (offline.cutoff 256).law none ≤ 907550 / (2 : ENNReal) ^ 256 := by
-  simpa only [ENNReal.inv_pow, div_eq_mul_inv] using offline.cutoff_failure_linear 256
+  simpa only [ENNReal.inv_pow, div_eq_mul_inv, Nat.cast_ofNat] using offline.cutoff_failure_linear 256
 
 end SimulatorSampling
 end Kriterion.ArgoMAC.Security

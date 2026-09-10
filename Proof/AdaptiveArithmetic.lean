@@ -22,18 +22,8 @@ theorem adaptiveErrorEnvelope_has100Bits :
   intro queries
   have countBound : adaptiveConstantCount + adaptiveQueryCount * queries ≤
       permutationWork queries * 2 ^ 28 := by
-    cases queries with
-    | zero =>
-        norm_num [adaptiveConstantCount, adaptiveQueryCount, Pipeline.pointDigitAdaptorsPerOutput,
-          Pipeline.curveDigitAdaptorCount, Pipeline.digitsPerBucket,
-          FieldMacToECMac.outputMacCount, coordinateBitCount, bitAdaptorEvaluationCountValue,
-          permutationWork]
-    | succ queries =>
-        rw [permutationWork, Nat.max_eq_left (by omega : 1 ≤ queries + 1)]
-        norm_num [adaptiveConstantCount, adaptiveQueryCount, Pipeline.pointDigitAdaptorsPerOutput,
-          Pipeline.curveDigitAdaptorCount, Pipeline.digitsPerBucket,
-          FieldMacToECMac.outputMacCount, coordinateBitCount, bitAdaptorEvaluationCountValue]
-        omega
+    change 246408450 + 824 * queries ≤ max queries 1 * 268435456
+    omega
   change (((adaptiveConstantCount + adaptiveQueryCount * queries : Nat) : ℝ) /
       (2 : ℝ) ^ 128) * (2 : ℝ) ^ 100 ≤ ((permutationWork queries : Nat) : ℝ)
   calc
@@ -80,13 +70,8 @@ theorem circuitHashRounding_le_blocks :
 
 /-- Every Boolean decision advantage is at most one. -/
 theorem decisionAdvantage_le_one (real ideal : PMF Bool) : advantage real ideal ≤ 1 := by
-  have first := ENNReal.toReal_mono ENNReal.one_ne_top (real.coe_le_one true)
-  have second := ENNReal.toReal_mono ENNReal.one_ne_top (ideal.coe_le_one true)
-  simp only [ENNReal.toReal_one] at first second
-  unfold advantage
-  rw [abs_le]
-  constructor <;> linarith [ENNReal.toReal_nonneg (a := real true),
-    ENNReal.toReal_nonneg (a := ideal true)]
+  simpa only [advantage, PMF.probOutput_eq_apply] using
+    (abs_probOutput_toReal_sub_le_tvDist real ideal).trans (tvDist_le_one real ideal)
 
 /-- Large query budgets satisfy the work metric from the unit advantage bound. -/
 theorem largeBudget_has100Bits (real ideal : PMF Bool) (queries : Nat)
@@ -135,10 +120,9 @@ theorem adaptiveLossSum_le_envelope (before queries : Nat) (beforeLe : before �
         queries / (2 : ℝ) ^ 128 + (508 + 4 * queries) / 2 ^ 128 + 1 / 2 ^ 128 + 2 * (301752 / 2 ^ 128) +
         1 / 2 ^ 128 := by linarith [circuitHashRounding_le_blocks, fieldMaskLoss_le_block]
     _ ≤ adaptiveErrorEnvelope queries := by
-      norm_num [adaptiveErrorEnvelope, adaptiveConstantCount, adaptiveQueryCount,
-        Pipeline.pointDigitAdaptorsPerOutput, Pipeline.curveDigitAdaptorCount,
-        Pipeline.digitsPerBucket, FieldMacToECMac.outputMacCount, coordinateBitCount,
-        bitAdaptorEvaluationCountValue, blockBits]
+      change _ ≤ ((246408450 + 824 * queries : Nat) : ℝ) / (2 : ℝ) ^ 128
+      push_cast
+      norm_num
       linarith [Nat.cast_nonneg (α := ℝ) queries]
 
 end Kriterion.ArgoMAC.Security

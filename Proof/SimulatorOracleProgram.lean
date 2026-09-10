@@ -10,7 +10,7 @@ inductive Request where
   | read (query : Garbling.OracleQuery)
   | program (command : FixedCommand)
 
-def spec : OracleSpec where
+abbrev spec : OracleSpec where
   Query := Request
   Answer
     | .read query => Garbling.OracleAnswer query
@@ -196,11 +196,11 @@ noncomputable def Program.toOracle {oracle : OracleSpec.{0, 0}} {A : Type} {budg
     (handler : OracleHandler oracle State) (program : Program oracle A budget) (state : State) :
     program.toOracle.run handler state = PMF.pure (program.run handler state) := by
   induction program generalizing state with
-  | pure value => simp only [toOracle, OracleProgram.run, PMF.pure_map]; rfl
-  | query request next inductionHypothesis => exact inductionHypothesis _ _
+  | pure value => simp only [toOracle, OracleProgram.run_pure, PMF.pure_map]; rfl
+  | query request next ih => simpa only [toOracle, OracleProgram.run_query, Program.run] using ih _ _
   | map f source inductionHypothesis =>
     simp only [toOracle, ThreePhase.run_castBudget, ThreePhase.run_append, inductionHypothesis,
-      PMF.pure_bind, OracleProgram.run, PMF.pure_map]
+      PMF.pure_bind, OracleProgram.run_pure, PMF.pure_map]
     rfl
   | bind source next first second =>
     simp only [toOracle, ThreePhase.run_append, first, PMF.pure_bind, second]

@@ -57,7 +57,7 @@ theorem gateSourceChoose_length_le {Aux : Type}
     selected.2.2.2.length ≤ adversary.firstQueryBudget parameter := by
   simp only [gateSourceChoose, PMF.mem_support_map_iff] at member
   obtain ⟨result, member, rfl⟩ := member
-  simpa only using runOracleProgramWithTranscript_length_le _ _ _ result member
+  exact runOracleProgramWithTranscript_length_le idealOracleHandler (adversary.chooseInput parameter table auxiliary) (initialSourceOracle data) result member
 
 /-- The source continuation keeps the prefix and obeys the second query budget. -/
 theorem gateSourceObserve_length_le {Aux : Type}
@@ -75,7 +75,7 @@ theorem gateSourceObserve_length_le {Aux : Type}
   simp only [gateSourceObserve, PMF.mem_support_map_iff] at member
   obtain ⟨result, member, rfl⟩ := member
   rw [List.length_append]
-  simpa only using Nat.add_le_add prefixBound (runOracleProgramWithTranscript_length_le _ _ _ result member)
+  exact Nat.add_le_add prefixBound (runOracleProgramWithTranscript_length_le idealOracleHandler (adversary.decide parameter table (sourceInputLabels data selected.1) auxiliary selected.2.1) (programSelectedGateView selected.2.2.1 selected.1 (sourceInputLabels data selected.1).inputMac view) result member)
 
 
 /-- Every supported full-source continuation obeys the original total query budget. -/

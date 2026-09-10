@@ -29,7 +29,8 @@ theorem map_uniform_outputSourceOracleRest :
       PMF.uniformOfFintype SourceOracleRest := by
   have law := congrArg (fun distribution => distribution.map Prod.snd)
     (map_uniformOfFintype_equivBetween outputOracleRestEquiv)
-  simpa only [PMF.map_comp, map_uniform_prod_snd] using law
+  rw [PMF.map_comp, map_uniform_prod_snd] at law
+  exact law
 
 /-- This source keeps the exact simulator coin and the unused nonzero curve mask. -/
 def simulatorSourceEquiv : (SourceOracleRest × PublicSample) ≃ SimulatorCoin × NonZeroBase where
@@ -151,7 +152,7 @@ theorem idealGateSourceRun_eq_targetGateSourceRun [FieldCertificate] [GroupCerti
   have shifted := sourceSelectedCurveShift_run choose (targetGateObserve scalar observe)
   apply Eq.trans _ shifted
   simpa only [idealGateSourceRun, targetGateObserve, sourceSelectedCurveShift, retargetGateView,
-    outputSourceOracleRest, Option.map_map, Function.comp_def] using joint
+    outputSourceOracleRest, Option.map_map, Function.comp_def, Equiv.coe_fn_mk] using joint
 
 end
 

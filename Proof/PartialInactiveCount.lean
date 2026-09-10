@@ -188,7 +188,7 @@ theorem partialRawShared_residual_mass_ge :
           (partialRawLabels exposed publicLabel wire shift sample.2)) sample.1 ∧
             PermutationTranscriptMatches sample.1 history} := by
   classical
-  apply (mul_le_mul_right'
+  apply (mul_le_mul_left
     (partialRawRetained_mass_ge gates exposed wire shift reference history) _).trans
   rw [uniform_prod_eq_bind, PMF.toOuterMeasure_bind_apply, PMF.toOuterMeasure_apply,
     ← ENNReal.tsum_mul_right]
@@ -261,7 +261,7 @@ theorem partialCircuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKey
   classical
   simp_rw [div_eq_mul_inv]
   rw [← Finset.sum_mul]
-  apply mul_le_mul_right'
+  apply mul_le_mul_left
   simp only [← Nat.cast_sum]
   apply Nat.cast_le.mpr
   calc

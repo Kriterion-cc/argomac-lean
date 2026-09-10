@@ -88,7 +88,7 @@ def lowerDraw (query : lowerSpec.Query) (oracles : OracleData) :
 theorem lowerDraw_distribution (query : lowerSpec.Query) (oracles : OracleData) :
     (lowerDraw query oracles).distribution = lowerSampled query oracles := by
   cases query <;> simp only [lowerDraw, Draw.map_distribution, familyDraw_distribution,
-    lowerSampled, sumSampled, hashSampled] <;> rfl
+    lowerSampled, sumSampled, hashSampled]
 
 /-- The lower oracle supplies the full conditional state law for each request. -/
 theorem lower_step (query : lowerSpec.Query) (oracles : OracleData) :
@@ -325,9 +325,10 @@ theorem sparse_step (request : spec.Query) (state : SparseState) :
           distribution.map (fun answer =>
             (lowerAnswer (.read query) answer.1, decode state.metadata answer.2)))
         (lower_step (lowerRequest (.read query)) state.oracles)
+      rw [← lowerDraw_distribution (lowerRequest (.read query)) state.oracles] at law
       simp only [PMF.map_comp, PMF.map_bind, Function.comp_def] at law
-      simp_rw [decode_read] at law
-      simpa only [completion, sparseHandler, sparseDraw, Draw.map_distribution, lowerDraw_distribution,
+      rw [funext (fun complete => decode_read state.metadata complete query)] at law
+      simpa only [completion, sparseHandler, sparseDraw, Draw.map_distribution,
         PMF.bind_map, PMF.map_comp, Function.comp_def] using law
   | program command =>
       by_cases fresh : freshPermutationPairCheck state.metadata.fixedTranscript
@@ -336,6 +337,7 @@ theorem sparse_step (request : spec.Query) (state : SparseState) :
           (fun distribution : PMF (lowerSpec.Answer (lowerRequest (.program command)) × OracleCompletion) =>
             distribution.map (fun answer => ((), decode (state.metadata.program command) answer.2)))
           (lower_step (lowerRequest (.program command)) state.oracles)
+        rw [← lowerDraw_distribution (lowerRequest (.program command)) state.oracles] at law
         simp only [PMF.map_comp, PMF.map_bind, Function.comp_def, decode_program] at law
         have eager (complete : OracleCompletion) :
             handler (.program command) (decode state.metadata complete) =
@@ -347,7 +349,7 @@ theorem sparse_step (request : spec.Query) (state : SparseState) :
         simp only [completion, PMF.map_comp, Function.comp_def]
         simp_rw [eager]
         simpa only [completion, sparseHandler, sparseDraw, if_pos fresh,
-          Draw.map_distribution, lowerDraw_distribution, PMF.bind_map, PMF.map_comp, Function.comp_def] using law
+          Draw.map_distribution, PMF.bind_map, PMF.map_comp, Function.comp_def] using law
       · have eager (complete : OracleCompletion) :
             handler (.program command) (decode state.metadata complete) =
               ((), decode state.metadata.markBad complete) := by

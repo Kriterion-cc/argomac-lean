@@ -35,15 +35,21 @@ theorem curveBucketCountValue : curveBucketCount = 6350 := by decide
 
 inductive CurveAdaptor
   | y4 | y6 | x3 | x5 | x7
-deriving DecidableEq, Fintype
+deriving DecidableEq
+
+instance : Fintype CurveAdaptor := ⟨{.y4, .y6, .x3, .x5, .x7}, fun value => by cases value <;> simp⟩
 
 inductive PointCoordinate
   | x | y | z
-deriving DecidableEq, Fintype
+deriving DecidableEq
+
+instance : Fintype PointCoordinate := ⟨{.x, .y, .z}, fun value => by cases value <;> simp⟩
 
 inductive PointAdaptor
   | y6 | y8 | y10 | x7 | x9
-deriving DecidableEq, Fintype
+deriving DecidableEq
+
+instance : Fintype PointAdaptor := ⟨{.y6, .y8, .y10, .x7, .x9}, fun value => by cases value <;> simp⟩
 
 inductive FixedKeyLocation
   | curve (adaptor : CurveAdaptor)

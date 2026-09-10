@@ -26,15 +26,15 @@ theorem runTranscript_finalState {oracle : OracleSpec.{0, 0}} {State Result : Ty
     output.2.1 = transcriptFinalState handler state output.2.2 := by
   induction program generalizing state output with
   | pure distribution =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_pure, PMF.mem_support_map_iff] at member
       obtain ⟨value, _, rfl⟩ := member
       rfl
   | query request next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_map_iff] at member
+      simp only [runOracleProgramWithTranscript_query, PMF.mem_support_map_iff] at member
       obtain ⟨value, valueMember, rfl⟩ := member
       exact inductionHypothesis _ _ value valueMember
   | sample distribution next inductionHypothesis =>
-      simp only [runOracleProgramWithTranscript, PMF.mem_support_bind_iff] at member
+      simp only [runOracleProgramWithTranscript_sample, PMF.mem_support_bind_iff] at member
       obtain ⟨value, _, valueMember⟩ := member
       exact inductionHypothesis value state output valueMember
 
