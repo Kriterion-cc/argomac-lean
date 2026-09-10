@@ -156,3 +156,7 @@ import Proof.RealSourceProjection
 import Proof.InvalidEndpointRatio
 import Proof.InvalidGhostEndpoint
 import Proof.ConcreteSmallSourceRatio
+import Proof.PaperConstruction
+import Proof.ThreePhasePrivacy
+import Proof.SimulatorExecution
+import Proof.SimulatorSampling
