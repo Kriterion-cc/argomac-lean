@@ -88,7 +88,7 @@ The comparison uses BaBe.latex commit `e2dcf4d540b2708e13cd21090df759051119a116`
 
 [PaperConstruction.lean](Proof/PaperConstruction.lean) proves the exact block and byte relations.
 The field relation keeps the XOR inside the reduction modulo the field prime.
-A uniform output translation equates the block formulas for one fixed tweak.
+An output translation of a uniform permutation equates the block formulas for one fixed tweak.
 One shared translation cannot equate the formulas for two different tweaks and every label.
 The repository therefore proves this variant directly.
 It does not claim that the two shared-bucket constructions have identical distributions.
@@ -125,9 +125,10 @@ The paper also requires an efficient simulator.
 The Kriterion simulator type contains probability distributions and no execution-cost field.
 The computability of `Submission.solution` does not establish simulator efficiency.
 [SimulatorPrivacy.lean](Proof/SimulatorPrivacy.lean) proves the exact sparse simulator's three-phase privacy.
-[SimulatorFinitePrivacy.lean](Proof/SimulatorFinitePrivacy.lean) proves privacy with a finite retry limit.
+[SimulatorFinitePrivacy.lean](Proof/SimulatorFinitePrivacy.lean) checks the aborting comparison experiment.
+[SimulatorTotalImplementation.lean](Proof/SimulatorTotalImplementation.lean) proves privacy for the total finite implementation.
 The finite sampler uses at most 256 attempts for each integer draw.
-Its complete game error is at most `(1813496 + q) / 2^256`.
+Its error relative to the exact ideal game is at most `(1813496 + q) / 2^256`.
 [SimulatorFiniteArithmetic.lean](Proof/SimulatorFiniteArithmetic.lean) proves that this error preserves the 100-bit bound.
 
 The executable oracle state stores sparse permutations, hash entries, and query records.
@@ -135,7 +136,36 @@ The conditional completion distributions appear only in the proof.
 The executable simulator does not sample complete oracle functions.
 [SimulatorSampling.lean](Proof/SimulatorSampling.lean) checks the private sampler and its random-draw count.
 [SimulatorMachineCost.lean](Proof/SimulatorMachineCost.lean) checks sparse execution and storage bounds.
-The combined cost certificate for the cached implementation remains in progress.
+The executable implementation uses retained arrays and finite retry sampling.
+[SimulatorTotalImplementation.lean](Proof/SimulatorTotalImplementation.lean) connects its exact game to the original ideal game.
+Its finite game preserves the 100-bit privacy bound.
+The cost theorem starts with empty sparse oracles.
+It derives the state bounds after all three query phases.
+It includes fallback private draws and fallback external queries.
+
+The cost model counts source-level primitives.
+Field operations and group operations each count as one primitive.
+The local counters also count word, index, array, list, record, and comparison operations.
+The rejection counter charges four control operations per sampled bit block.
+The total encoder records its completed local work.
+An integer draw selects zero if every attempt fails.
+The simulator then continues execution.
+The model excludes proof erasure, Lean compiler allocation, serialization, and the adversary's private computation.
+
+For total adversary query budget `q`, define `n = q + 905765`, `D = 1813496 + q`, and `B = D * 257 * 256`.
+The checked bounds have these forms:
+
+| Resource | Bound |
+| --- | --- |
+| Private local work | 53,997,367 local operations |
+| Sparse oracle work | `n * (10 * n + 16)` |
+| Supplied fair bits | `B` |
+| Rejection-control allowance | `4 * B` |
+| Fallback selection allowance | `D` |
+
+These bounds apply to the fixed BN254 instance.
+They give a strict polynomial bound in the query budget under the stated primitive model.
+They do not establish an asymptotic security family or a Lean instruction-count bound.
 The verifier and benchmark use the computable `Submission.solution` entry.
 
 ## Source
