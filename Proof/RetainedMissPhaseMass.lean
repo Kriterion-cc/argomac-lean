@@ -55,8 +55,8 @@ theorem retainedPrefixGood_mass [FieldCertificate] [GroupCertificate] {Aux : Typ
             (retainedSourceRows scalar retained) selected.1 (decodeFullSource full)) selected.1)
           retained.2.2.2) output := by
   by_cases complete : FullSourceComplete full.1
-  · simp only [retainedPrefixCoin, fullGatePrefixBad_reconstructed, complete,
-      not_true_eq_false, false_or]
+  · simp only [retainedPrefixCoin]; simp_rw [fullGatePrefixBad_reconstructed (State := adversary.State) retained full]
+    simp only [complete, not_true_eq_false, false_or]
     simp only [fullGatePrefixKernel_reconstructed scalar _ fallback retained full _ complete]
     exact gateSourceGood_mass adversary parameter auxiliary
       (circuitMaskSourceTable retained.2.2.1.1 retained.2.2.1.2.value
@@ -65,8 +65,8 @@ theorem retainedPrefixGood_mass [FieldCertificate] [GroupCertificate] {Aux : Typ
         (retainedSourceRows scalar retained) input (decodeFullSource full)) input)
       (simulatorSourceEquiv (retained.2.2, defaultSimulatorCoin.tableSample)).1
       (decodeFullSource full) output
-  · simp only [retainedPrefixCoin, fullGatePrefixBad_reconstructed, complete,
-      not_false_eq_true, true_or, if_true, sourceGoodMass, Set.mem_setOf_eq, mul_zero, tsum_zero]
+  · simp only [retainedPrefixCoin]; simp_rw [fullGatePrefixBad_reconstructed (State := adversary.State) retained full]
+    simp only [complete, not_false_eq_true, true_or, if_true, sourceGoodMass, Set.mem_setOf_eq, mul_zero, tsum_zero]
 
 /-- The table guard lets both adversary factors use the observed table. -/
 theorem gateSourcePhases_mass_factor_at {Aux : Type}

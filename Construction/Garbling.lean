@@ -49,7 +49,7 @@ def OracleAnswer : OracleQuery → Type
   | .hash _ => Block × Block
 
 /-- This specification is the public ArgoMAC oracle surface. -/
-def oracleSpec : OracleSpec := {
+abbrev oracleSpec : OracleSpec := {
   Query := OracleQuery
   Answer := OracleAnswer
 }

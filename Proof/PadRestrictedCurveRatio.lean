@@ -76,7 +76,7 @@ theorem actualCurveProgrammedSource_guard_mass_ratio
     rw [domains]
     apply residualFixedQueryDomain_card_congr
     intro record
-    simp only [fixedOracleTranscriptRecords_append, List.mem_append, historyMembers]
+    rw [fixedOracleTranscriptRecords_append before after]; simp only [List.mem_append, historyMembers]
   simp_rw [residualCounts]
   have fixed := (realOracleTranscriptCompatible_iff randomness (before ++ after)).mp compatible
   have bound := independentCircuit_guard_mass_ge keys slopes lifts tables exposed wire shift

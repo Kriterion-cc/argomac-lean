@@ -146,8 +146,8 @@ theorem idealEncPRFRun_supported {Result : Type} {budget : Nat}
   simp only [idealEncPRFRun, PMF.mem_support_bind_iff, PMF.mem_support_map_iff,
     hashTranscriptRun] at member
   obtain ⟨target, _, observed, ⟨oracle, _, run, runMember, rfl⟩, rfl⟩ := member
-  exact ⟨runOracleProgramWithTranscript_length_le _ _ _ run runMember,
-    oracle, runOracleProgramWithTranscript_compatible _ _ _ run runMember⟩
+  exact ⟨runOracleProgramWithTranscript_length_le Garbling.oracleHandler (program target) {randomness with encPRFOracle := oracle} run runMember,
+    oracle, runOracleProgramWithTranscript_compatible Garbling.oracleHandler (program target) {randomness with encPRFOracle := oracle} run runMember⟩
 
 /-- Every good adaptive transcript has the shared whitening-query ratio. -/
 theorem encPRFRun_good_mass_ge {Result : Type} {budget : Nat}
