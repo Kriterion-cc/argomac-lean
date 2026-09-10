@@ -1,6 +1,7 @@
 import Proof.SimulatorPrefixCost
 import Proof.SimulatorCutoff
 import Proof.SimulatorFiniteArithmetic
+import Proof.SimulatorSamplingCost
 
 open Kriterion.ArgoMAC Kriterion.ArgoMAC.Security
 open Kriterion.ArgoMAC.Security.SimulatorMachine
@@ -58,6 +59,18 @@ private def failedPrefix :=
   (result.1.1.isNone, result.1.2, result.2)
 
 /-- The failed second draw retains the first request charge and all fair-bit reads. -/
-example : failedPrefix = (true, 3, 2, 31, 385) := by decide
+#eval show IO Unit from do
+  unless failedPrefix == (true, 3, 2, 31, 385) do
+    throw (IO.userError "The sparse prefix cost check failed.")
 #print axioms Cost.executeCutoffCost_correct
 #print axioms Cost.executeCutoffCost_budget
+
+private def twoPrivateDraws :=
+  let draw := SimulatorSamplingCost.FiniteRecipe.draw 3 (by decide) (by decide)
+  (draw.pair draw).run 2
+
+/-- The private sampler keeps the first draw charge after the second draw fails. -/
+example : (twoPrivateDraws.run failingBits 0) = (((none, 1), 3), 6) := by decide
+
+/-- Two sampled blocks incur eight rejection-control operations. -/
+example : (SimulatorRejectionCost.runWithCost bitSource (cutoff 3 2) 0).2 = (2, 8) := by decide
