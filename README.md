@@ -143,7 +143,6 @@ The paper also requires an efficient simulator.
 The Kriterion simulator type contains probability distributions and no execution-cost field.
 The computability of `Submission.solution` does not establish simulator efficiency.
 [SimulatorPrivacy.lean](Proof/SimulatorPrivacy.lean) proves the exact sparse simulator's three-phase privacy.
-[SimulatorFinitePrivacy.lean](Proof/SimulatorFinitePrivacy.lean) checks the aborting comparison experiment.
 [SimulatorTotalImplementation.lean](Proof/SimulatorTotalImplementation.lean) proves privacy for the total finite implementation.
 The finite sampler uses at most 256 attempts for each integer draw.
 Its error relative to the exact ideal game is at most `(1813496 + q) / 2^256`.

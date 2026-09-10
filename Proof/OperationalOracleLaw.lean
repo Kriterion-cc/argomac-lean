@@ -289,49 +289,6 @@ theorem adaptive_joint_law {oracle : OracleSpec} {Result Sparse Eager : Type}
       rw [PMF.bind_comm]
       simp_rw [inductionHypothesis]
 
-/-- The bit selects a forward or inverse query on one finite permutation. -/
-abbrev permutationSpec (size : Nat) : OracleSpec where
-  Query := Bool × Fin size
-  Answer := fun _ => Fin size
-
-/-- The eager handler also records the sparse state that each answer reaches. -/
-def permutationEager {size : Nat} :
-    OracleHandler (permutationSpec size) (SparsePermutation size × Equiv.Perm (Fin size))
-  | (true, x), (state, π) => (π x, state.afterForward x (π x), π)
-  | (false, y), (state, π) => (π.symm y, state.afterInverse y (π.symm y), π)
-
-/-- The sampled handler uses only the sparse permutation. -/
-def permutationSampled {size : Nat} :
-    ∀ query : (permutationSpec size).Query,
-      SparsePermutation size → PMF ((permutationSpec size).Answer query × SparsePermutation size)
-  | (true, x), state => (state.forward x).distribution
-  | (false, y), state => (state.inverse y).distribution
-
-/-- The completion kernel keeps the sparse state with its conditional eager permutation. -/
-def permutationCompletion {size : Nat} (state : SparsePermutation size) :
-    PMF (SparsePermutation size × Equiv.Perm (Fin size)) :=
-  (PMF.uniformOfFintype state.Completion).map (fun π => (state, π.val))
-
-/-- The concrete one-query law covers both directions without an extra coupling premise. -/
-theorem permutation_step {size : Nat} (query : (permutationSpec size).Query)
-    (state : SparsePermutation size) :
-    (permutationCompletion state).map (permutationEager query) =
-      (permutationSampled query state).bind (fun answer =>
-        (permutationCompletion answer.2).map (fun eagerState => (answer.1, eagerState))) := by
-  rcases query with ⟨direction, value⟩
-  cases direction
-  · simpa [permutationCompletion, permutationEager, permutationSampled, permutationSpec,
-      PMF.map_comp, Function.comp_def] using state.inverse_joint value
-  · simpa [permutationCompletion, permutationEager, permutationSampled, permutationSpec,
-      PMF.map_comp, Function.comp_def] using state.forward_joint value
-
-/-- Sparse sampling matches the full eager joint distribution for every adaptive program. -/
-theorem permutation_adaptive_joint {size : Nat} {Result : Type} {budget : Nat}
-    (program : OracleProgram (permutationSpec size) Result budget) (state : SparsePermutation size) :
-    (permutationCompletion state).bind (fun eagerState => program.run permutationEager eagerState) =
-      (runSampled permutationSampled program state).bind (fun output =>
-        (permutationCompletion output.2).map (fun eagerState => (output.1, eagerState))) :=
-  adaptive_joint_law permutationEager permutationSampled permutationCompletion permutation_step program state
 
 /-- The empty sparse state permits every eager permutation. -/
 def emptyCompletionEquiv (size : Nat) :
@@ -341,17 +298,6 @@ def emptyCompletionEquiv (size : Nat) :
   left_inv _ := rfl
   right_inv _ := rfl
 
-/-- The initial sparse completion is the exact full uniform eager oracle. -/
-theorem permutation_initial (size : Nat) :
-    permutationCompletion (SparsePermutation.empty size) =
-      (PMF.uniformOfFintype (Equiv.Perm (Fin size))).map
-        (fun π => (SparsePermutation.empty size, π)) := by
-  have law := congrArg
-    (fun distribution : PMF (Equiv.Perm (Fin size)) => distribution.map
-      (fun π => (SparsePermutation.empty size, π)))
-    (uniform_equiv (emptyCompletionEquiv size))
-  simpa [permutationCompletion, PMF.map_comp, Function.comp_def,
-    emptyCompletionEquiv, Equiv.coe_fn_mk] using law
 
 end
 end Kriterion.ArgoMAC.Security.OperationalOracle

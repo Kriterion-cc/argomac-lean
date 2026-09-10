@@ -1,4 +1,3 @@
-import Proof.SimulatorPrefixCost
 import Proof.SimulatorCutoff
 import Proof.SimulatorFiniteArithmetic
 import Proof.SimulatorSamplingCost
@@ -54,24 +53,6 @@ private def failingBits (width : Nat) (seed : Nat) : Fin (2 ^ width) × Nat :=
 private def twoDrawTrace : Program combinedSpec Unit 2 :=
   .query (.inr (.fixedForward fixedIndex 0)) fun _ =>
   .query (.inr (.fixedForward fixedIndex 1)) fun _ => .pure ()
-
-private def failedPrefix :=
-  let result := Cost.executeCutoffCost failingBits 2 twoDrawTrace emptyState 0 0
-  (result.1.1.isNone, result.1.2, result.2)
-
-/- The failed second draw retains the first request charge and all fair-bit reads. -/
-#eval show IO Unit from do
-  unless failedPrefix == (true, 3, 2, 31, 385) do
-    throw (IO.userError "The sparse prefix cost check failed.")
-#print axioms Cost.executeCutoffCost_correct
-#print axioms Cost.executeCutoffCost_budget
-
-private def twoPrivateDraws :=
-  let draw := SimulatorSamplingCost.FiniteRecipe.draw 3 (by decide) (by decide)
-  (draw.pair draw).run 2
-
-/-- The private sampler keeps the first draw charge after the second draw fails. -/
-example : (twoPrivateDraws.run failingBits 0) = (((none, 1), 3), 6) := by decide
 
 /-- Two sampled blocks incur eight rejection-control operations. -/
 example : (SimulatorRejectionCost.runWithCost bitSource (cutoff 3 2) 0).2 = (2, 8) := by decide

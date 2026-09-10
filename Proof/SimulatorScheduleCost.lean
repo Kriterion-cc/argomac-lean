@@ -307,286 +307,6 @@ theorem retargetDataWithCost_bound (old : Vector BaseField coordinateBitCount)
     retargetVectorWithCost_count, makeLiftsWithCost_count, coordinateBitCount]
   omega
 
-/-- This computation copies the request record after it materializes the changed targets. -/
-def curveRetargetWithCost (request : CurveGateRequest) (input : AffineInput) (target : BaseField)
-    (x3 : TableView request.x3Targets)
-    (x5 : TableView request.x5Targets)
-    (x7 : TableView request.x7Targets)
-    (y4 : TableView request.y4Targets)
-    (y6 : TableView request.y6Targets)
-    (quotients : TableView request.x7Quotients) : CurveGateRequest × Nat :=
-  let data := retargetDataWithCost x7.data quotients.data target
-    (curveResultExpr request input x3 x5 x7 y4 y6)
-  ({ request with x7Targets := data.targets.get, x7Lifts := data.lifts.get }, data.work + 64)
-
-theorem curveRetargetWithCost_value (request : CurveGateRequest) (input : AffineInput) (target : BaseField)
-    (x3 : TableView request.x3Targets)
-    (x5 : TableView request.x5Targets)
-    (x7 : TableView request.x7Targets)
-    (y4 : TableView request.y4Targets)
-    (y6 : TableView request.y6Targets)
-    (quotients : TableView request.x7Quotients) :
-    (curveRetargetWithCost request input target x3 x5 x7 y4 y6 quotients).1 = request.retarget input target := by
-  simp only [curveRetargetWithCost, retargetDataWithCost, FieldExpr.run]
-  rw [curveResultExpr_value, arrayBitsWithCost_value, x7.get_eq]
-  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
-    x7.get_eq, quotients.get_eq]
-  rfl
-
-theorem curveRetargetWithCost_bound (request : CurveGateRequest) (input : AffineInput) (target : BaseField)
-    (x3 : TableView request.x3Targets)
-    (x5 : TableView request.x5Targets)
-    (x7 : TableView request.x7Targets)
-    (y4 : TableView request.y4Targets)
-    (y6 : TableView request.y6Targets)
-    (quotients : TableView request.x7Quotients) :
-    (curveRetargetWithCost request input target x3 x5 x7 y4 y6 quotients).2 ≤ 12000 := by
-  have bound := curveResultExpr_bound request input x3 x5 x7 y4 y6
-  rw [FieldExpr.run_work] at bound
-  simp only [curveRetargetWithCost, retargetDataWithCost_bound]
-  omega
-
-/-- This computation copies the request record after it materializes the changed targets. -/
-def xRetargetWithCost (request : BiquadraticXRequest) (input : AffineInput) (target : BaseField)
-    (y6 : TableView request.y6Targets)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) : BiquadraticXRequest × Nat :=
-  let data := retargetDataWithCost x9.data quotients.data target
-    (xResultExpr request input y6 y8 y10 x9)
-  ({ request with x9Targets := data.targets.get, x9Lifts := data.lifts.get }, data.work + 64)
-
-theorem xRetargetWithCost_value (request : BiquadraticXRequest) (input : AffineInput) (target : BaseField)
-    (y6 : TableView request.y6Targets)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) :
-    (xRetargetWithCost request input target y6 y8 y10 x9 quotients).1 = request.retarget input target := by
-  simp only [xRetargetWithCost, retargetDataWithCost, FieldExpr.run]
-  rw [xResultExpr_value, arrayBitsWithCost_value, x9.get_eq]
-  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
-    x9.get_eq, quotients.get_eq]
-  rfl
-
-theorem xRetargetWithCost_bound (request : BiquadraticXRequest) (input : AffineInput) (target : BaseField)
-    (y6 : TableView request.y6Targets)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) :
-    (xRetargetWithCost request input target y6 y8 y10 x9 quotients).2 ≤ 11000 := by
-  have bound := xResultExpr_bound request input y6 y8 y10 x9
-  rw [FieldExpr.run_work] at bound
-  simp only [xRetargetWithCost, retargetDataWithCost_bound]
-  omega
-
-/-- This computation copies the request record after it materializes the changed targets. -/
-def yRetargetWithCost (request : BiquadraticYRequest) (input : AffineInput) (target : BaseField)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x7 : TableView request.x7Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) : BiquadraticYRequest × Nat :=
-  let data := retargetDataWithCost x9.data quotients.data target
-    (yResultExpr request input y8 y10 x7 x9)
-  ({ request with x9Targets := data.targets.get, x9Lifts := data.lifts.get }, data.work + 64)
-
-theorem yRetargetWithCost_value (request : BiquadraticYRequest) (input : AffineInput) (target : BaseField)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x7 : TableView request.x7Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) :
-    (yRetargetWithCost request input target y8 y10 x7 x9 quotients).1 = request.retarget input target := by
-  simp only [yRetargetWithCost, retargetDataWithCost, FieldExpr.run]
-  rw [yResultExpr_value, arrayBitsWithCost_value, x9.get_eq]
-  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
-    x9.get_eq, quotients.get_eq]
-  rfl
-
-theorem yRetargetWithCost_bound (request : BiquadraticYRequest) (input : AffineInput) (target : BaseField)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x7 : TableView request.x7Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) :
-    (yRetargetWithCost request input target y8 y10 x7 x9 quotients).2 ≤ 11000 := by
-  have bound := yResultExpr_bound request input y8 y10 x7 x9
-  rw [FieldExpr.run_work] at bound
-  simp only [yRetargetWithCost, retargetDataWithCost_bound]
-  omega
-
-/-- This computation copies the request record after it materializes the changed targets. -/
-def zRetargetWithCost (request : BiquadraticZRequest) (input : AffineInput) (target : BaseField)
-    (y6 : TableView request.y6Targets)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x7 : TableView request.x7Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) : BiquadraticZRequest × Nat :=
-  let data := retargetDataWithCost x9.data quotients.data target
-    (zResultExpr request input y6 y8 y10 x7 x9)
-  ({ request with x9Targets := data.targets.get, x9Lifts := data.lifts.get }, data.work + 64)
-
-theorem zRetargetWithCost_value (request : BiquadraticZRequest) (input : AffineInput) (target : BaseField)
-    (y6 : TableView request.y6Targets)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x7 : TableView request.x7Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) :
-    (zRetargetWithCost request input target y6 y8 y10 x7 x9 quotients).1 = request.retarget input target := by
-  simp only [zRetargetWithCost, retargetDataWithCost, FieldExpr.run]
-  rw [zResultExpr_value, arrayBitsWithCost_value, x9.get_eq]
-  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
-    x9.get_eq, quotients.get_eq]
-  rfl
-
-theorem zRetargetWithCost_bound (request : BiquadraticZRequest) (input : AffineInput) (target : BaseField)
-    (y6 : TableView request.y6Targets)
-    (y8 : TableView request.y8Targets)
-    (y10 : TableView request.y10Targets)
-    (x7 : TableView request.x7Targets)
-    (x9 : TableView request.x9Targets)
-    (quotients : TableView request.x9Quotients) :
-    (zRetargetWithCost request input target y6 y8 y10 x7 x9 quotients).2 ≤ 12000 := by
-  have bound := zResultExpr_bound request input y6 y8 y10 x7 x9
-  rw [FieldExpr.run_work] at bound
-  simp only [zRetargetWithCost, retargetDataWithCost_bound]
-  omega
-
-/-- These arrays supply every target read during the Curve request update. -/
-structure CurveTables (request : CurveGateRequest) where
-  x3 : TableView request.x3Targets
-  x5 : TableView request.x5Targets
-  x7 : TableView request.x7Targets
-  y4 : TableView request.y4Targets
-  y6 : TableView request.y6Targets
-  quotients : TableView request.x7Quotients
-
-/-- These arrays supply every target read during the X request update. -/
-structure XTables (request : BiquadraticXRequest) where
-  y6 : TableView request.y6Targets
-  y8 : TableView request.y8Targets
-  y10 : TableView request.y10Targets
-  x9 : TableView request.x9Targets
-  quotients : TableView request.x9Quotients
-
-/-- These arrays supply every target read during the Y request update. -/
-structure YTables (request : BiquadraticYRequest) where
-  y8 : TableView request.y8Targets
-  y10 : TableView request.y10Targets
-  x7 : TableView request.x7Targets
-  x9 : TableView request.x9Targets
-  quotients : TableView request.x9Quotients
-
-/-- These arrays supply every target read during the Z request update. -/
-structure ZTables (request : BiquadraticZRequest) where
-  y6 : TableView request.y6Targets
-  y8 : TableView request.y8Targets
-  y10 : TableView request.y10Targets
-  x7 : TableView request.x7Targets
-  x9 : TableView request.x9Targets
-  quotients : TableView request.x9Quotients
-
-/-- These arrays supply one complete point-row update. -/
-structure RowTables (request : BiquadraticRowRequest) where
-  x : XTables request.x
-  y : YTables request.y
-  z : ZTables request.z
-
-/-- This computation updates all three coordinates and copies the three result fields. -/
-def rowRetargetWithCost (request : BiquadraticRowRequest) (input : AffineInput)
-    (target : FieldMacToECMac.HomogeneousValue) (tables : RowTables request) :
-    BiquadraticRowRequest × Nat :=
-  let x := xRetargetWithCost request.x input target.x tables.x.y6 tables.x.y8
-    tables.x.y10 tables.x.x9 tables.x.quotients
-  let y := yRetargetWithCost request.y input target.y tables.y.y8 tables.y.y10
-    tables.y.x7 tables.y.x9 tables.y.quotients
-  let z := zRetargetWithCost request.z input target.z tables.z.y6 tables.z.y8
-    tables.z.y10 tables.z.x7 tables.z.x9 tables.z.quotients
-  (⟨x.1, y.1, z.1⟩, x.2 + y.2 + z.2 + 6)
-
-theorem rowRetargetWithCost_value (request : BiquadraticRowRequest) (input : AffineInput)
-    (target : FieldMacToECMac.HomogeneousValue) (tables : RowTables request) :
-    (rowRetargetWithCost request input target tables).1 = request.retarget input target := by
-  simp only [rowRetargetWithCost, xRetargetWithCost_value, yRetargetWithCost_value,
-    zRetargetWithCost_value, BiquadraticRowRequest.retarget]
-
-theorem rowRetargetWithCost_bound (request : BiquadraticRowRequest) (input : AffineInput)
-    (target : FieldMacToECMac.HomogeneousValue) (tables : RowTables request) :
-    (rowRetargetWithCost request input target tables).2 ≤ 34006 := by
-  have x := xRetargetWithCost_bound request.x input target.x tables.x.y6 tables.x.y8
-    tables.x.y10 tables.x.x9 tables.x.quotients
-  have y := yRetargetWithCost_bound request.y input target.y tables.y.y8 tables.y.y10
-    tables.y.x7 tables.y.x9 tables.y.quotients
-  have z := zRetargetWithCost_bound request.z input target.z tables.z.y6 tables.z.y8
-    tables.z.y10 tables.z.x7 tables.z.x9 tables.z.quotients
-  simp only [rowRetargetWithCost]
-  omega
-
-/-- This record stores a row together with its explicit input arrays. -/
-structure MaterializedRow where
-  request : BiquadraticRowRequest
-  tables : RowTables request
-
-/-- The vector traversal counts two input reads, one result write, and one projection pass. -/
-def pointRowsRetargetWithCost {count : Nat} (rows : Vector MaterializedRow count)
-    (input : AffineInput) (targets : Vector FieldMacToECMac.HomogeneousValue count) :
-    Vector BiquadraticRowRequest count × Nat :=
-  let outputs := Vector.ofFn (fun index =>
-    let row := rows.get index
-    let result := rowRetargetWithCost row.request input (targets.get index) row.tables
-    (result.1, result.2 + 3))
-  (outputs.map Prod.fst, (outputs.toList.map Prod.snd).sum + 2 * count)
-
-theorem pointRowsRetargetWithCost_value {count : Nat} (rows : Vector MaterializedRow count)
-    (input : AffineInput) (targets : Vector FieldMacToECMac.HomogeneousValue count) :
-    (pointRowsRetargetWithCost rows input targets).1 =
-      Vector.ofFn (fun index => (rows.get index).request.retarget input (targets.get index)) := by
-  apply Vector.ext
-  intro index valid
-  simp only [pointRowsRetargetWithCost, Vector.getElem_map, Vector.getElem_ofFn,
-    rowRetargetWithCost_value]
-
-theorem pointRowsRetargetWithCost_bound {count : Nat} (rows : Vector MaterializedRow count)
-    (input : AffineInput) (targets : Vector FieldMacToECMac.HomogeneousValue count) :
-    (pointRowsRetargetWithCost rows input targets).2 ≤ 34011 * count := by
-  have each : ∀ value ∈ (Vector.ofFn (fun index =>
-      let row := rows.get index
-      let result := rowRetargetWithCost row.request input (targets.get index) row.tables
-      (result.1, result.2 + 3))).toList.map Prod.snd, value ≤ 34009 := by
-    intro value member
-    simp only [Vector.toList_ofFn, List.mem_map, List.mem_ofFn] at member
-    obtain ⟨pair, ⟨index, rfl⟩, rfl⟩ := member
-    have bound := rowRetargetWithCost_bound (rows.get index).request input
-      (targets.get index) (rows.get index).tables
-    omega
-  have total := List.sum_le_card_nsmul _ _ each
-  simp only [List.length_map, Vector.length_toList, nsmul_eq_mul, Nat.cast_id] at total
-  simp only [pointRowsRetargetWithCost]
-  omega
-
-/-- This view ties a materialized row vector to the original request vector. -/
-structure PointTables (requests : PointGateRequests) where
-  rows : Vector MaterializedRow FieldMacToECMac.outputMacCount
-  requests_eq : rows.map MaterializedRow.request = requests
-
-private theorem pointRowsRetargetWithCost_original (requests : PointGateRequests)
-    (tables : PointTables requests) (input : AffineInput)
-    (targets : Vector FieldMacToECMac.HomogeneousValue FieldMacToECMac.outputMacCount) :
-    (pointRowsRetargetWithCost tables.rows input targets).1 =
-      retargetPointGateRequests requests input targets := by
-  rw [pointRowsRetargetWithCost_value]
-  unfold retargetPointGateRequests
-  congr 1
-  funext index
-  have same := congrArg (fun rows => rows.get index) tables.requests_eq
-  simp only [Vector.get_map] at same
-  rw [same]
-
 /-- This wrapper preserves the output-array cost and its exact vector size. -/
 def outputTargetsVectorWithCost [FieldCertificate] [GroupCertificate]
     (point : Point) (free : Vector Point 90)
@@ -613,54 +333,6 @@ theorem outputTargetsVectorWithCost_bound [FieldCertificate] [GroupCertificate]
   have scalar := outputTargetsWithCost_scalarOperations point free scales
   simp only [outputTargetsVectorWithCost]
   omega
-
-/-- This computation executes the complete selected-point retarget operation. -/
-def selectedPointsWithCost [FieldCertificate] [GroupCertificate]
-    (state : CircuitSimulatorState) (tables : PointTables state.points)
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
-    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) : PointGateRequests × Nat :=
-  let targets := outputTargetsVectorWithCost point free scales
-  let rows := pointRowsRetargetWithCost tables.rows input targets.1
-  (rows.1, targets.2 + rows.2)
-
-theorem selectedPointsWithCost_value [FieldCertificate] [GroupCertificate]
-    (state : CircuitSimulatorState) (tables : PointTables state.points)
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
-    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (selectedPointsWithCost state tables input point free scales).1 =
-      state.selectedPoints input point free scales.get := by
-  simp only [selectedPointsWithCost, outputTargetsVectorWithCost_value]
-  exact pointRowsRetargetWithCost_original state.points tables input _
-
-theorem selectedPointsWithCost_bound [FieldCertificate] [GroupCertificate]
-    (state : CircuitSimulatorState) (tables : PointTables state.points)
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
-    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (selectedPointsWithCost state tables input point free scales).2 ≤ 3234867 := by
-  have targets := outputTargetsVectorWithCost_bound point free scales
-  have rows := pointRowsRetargetWithCost_bound tables.rows input
-    (outputTargetsVectorWithCost point free scales).1
-  simp only [FieldMacToECMac.outputMacCount] at rows
-  simp only [selectedPointsWithCost]
-  omega
-
-/-- This computation executes the complete selected-curve retarget operation. -/
-def selectedCurveWithCost (state : CircuitSimulatorState)
-    (tables : CurveTables state.curve) (input : AffineInput) : CurveGateRequest × Nat :=
-  curveRetargetWithCost state.curve input state.bridgeKey tables.x3 tables.x5 tables.x7
-    tables.y4 tables.y6 tables.quotients
-
-theorem selectedCurveWithCost_value (state : CircuitSimulatorState)
-    (tables : CurveTables state.curve) (input : AffineInput) :
-    (selectedCurveWithCost state tables input).1 = state.selectedCurve input :=
-  curveRetargetWithCost_value state.curve input state.bridgeKey tables.x3 tables.x5 tables.x7
-    tables.y4 tables.y6 tables.quotients
-
-theorem selectedCurveWithCost_bound (state : CircuitSimulatorState)
-    (tables : CurveTables state.curve) (input : AffineInput) :
-    (selectedCurveWithCost state tables input).2 ≤ 12000 :=
-  curveRetargetWithCost_bound state.curve input state.bridgeKey tables.x3 tables.x5 tables.x7
-    tables.y4 tables.y6 tables.quotients
 
 /-- These arrays supply a gate target and its canonical lift quotient. -/
 structure GateInputs {count : Nat} (targetSource : Fin count → BaseField)
@@ -930,8 +602,12 @@ def prepareCurveWithCost (request : CurveGateRequest) (input : AffineInput)
 
 theorem prepareCurveWithCost_value (request : CurveGateRequest) (input : AffineInput)
     (target : BaseField) (tables : CurveScheduleTables request) :
-    (prepareCurveWithCost request input target tables).1.request = request.retarget input target :=
-  curveRetargetWithCost_value request input target tables.x3.targets tables.x5.targets tables.x7.targets tables.y4.targets tables.y6.targets tables.x7.quotients
+    (prepareCurveWithCost request input target tables).1.request = request.retarget input target := by
+  simp only [prepareCurveWithCost, retargetDataWithCost, FieldExpr.run]
+  rw [curveResultExpr_value, arrayBitsWithCost_value, tables.x7.targets.get_eq]
+  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
+    tables.x7.targets.get_eq, tables.x7.quotients.get_eq]
+  rfl
 
 theorem prepareCurveWithCost_bound (request : CurveGateRequest) (input : AffineInput)
     (target : BaseField) (tables : CurveScheduleTables request) :
@@ -966,8 +642,12 @@ def prepareXWithCost (request : BiquadraticXRequest) (input : AffineInput)
 
 theorem prepareXWithCost_value (request : BiquadraticXRequest) (input : AffineInput)
     (target : BaseField) (tables : XScheduleTables request) :
-    (prepareXWithCost request input target tables).1.request = request.retarget input target :=
-  xRetargetWithCost_value request input target tables.y6.targets tables.y8.targets tables.y10.targets tables.x9.targets tables.x9.quotients
+    (prepareXWithCost request input target tables).1.request = request.retarget input target := by
+  simp only [prepareXWithCost, retargetDataWithCost, FieldExpr.run]
+  rw [xResultExpr_value, arrayBitsWithCost_value, tables.x9.targets.get_eq]
+  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
+    tables.x9.targets.get_eq, tables.x9.quotients.get_eq]
+  rfl
 
 theorem prepareXWithCost_bound (request : BiquadraticXRequest) (input : AffineInput)
     (target : BaseField) (tables : XScheduleTables request) :
@@ -1002,8 +682,12 @@ def prepareYWithCost (request : BiquadraticYRequest) (input : AffineInput)
 
 theorem prepareYWithCost_value (request : BiquadraticYRequest) (input : AffineInput)
     (target : BaseField) (tables : YScheduleTables request) :
-    (prepareYWithCost request input target tables).1.request = request.retarget input target :=
-  yRetargetWithCost_value request input target tables.y8.targets tables.y10.targets tables.x7.targets tables.x9.targets tables.x9.quotients
+    (prepareYWithCost request input target tables).1.request = request.retarget input target := by
+  simp only [prepareYWithCost, retargetDataWithCost, FieldExpr.run]
+  rw [yResultExpr_value, arrayBitsWithCost_value, tables.x9.targets.get_eq]
+  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
+    tables.x9.targets.get_eq, tables.x9.quotients.get_eq]
+  rfl
 
 theorem prepareYWithCost_bound (request : BiquadraticYRequest) (input : AffineInput)
     (target : BaseField) (tables : YScheduleTables request) :
@@ -1039,8 +723,12 @@ def prepareZWithCost (request : BiquadraticZRequest) (input : AffineInput)
 
 theorem prepareZWithCost_value (request : BiquadraticZRequest) (input : AffineInput)
     (target : BaseField) (tables : ZScheduleTables request) :
-    (prepareZWithCost request input target tables).1.request = request.retarget input target :=
-  zRetargetWithCost_value request input target tables.y6.targets tables.y8.targets tables.y10.targets tables.x7.targets tables.x9.targets tables.x9.quotients
+    (prepareZWithCost request input target tables).1.request = request.retarget input target := by
+  simp only [prepareZWithCost, retargetDataWithCost, FieldExpr.run]
+  rw [zResultExpr_value, arrayBitsWithCost_value, tables.x9.targets.get_eq]
+  rw [makeLiftsWithCost_get_fun, retargetVectorWithCost_value, vector_get_ofFn,
+    tables.x9.targets.get_eq, tables.x9.quotients.get_eq]
+  rfl
 
 theorem prepareZWithCost_bound (request : BiquadraticZRequest) (input : AffineInput)
     (target : BaseField) (tables : ZScheduleTables request) :

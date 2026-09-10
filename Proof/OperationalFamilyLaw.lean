@@ -160,14 +160,6 @@ theorem family_step {Index : Type} [Fintype Index] [DecidableEq Index] {size : N
         (familyCompletion answer.2).map (fun eagerState => (answer.1, eagerState))) :=
   indexedKernel_step programEager programSampled programCompletion program_step query state
 
-/-- The full family law permits adaptive reads and programming across all indices. -/
-theorem family_adaptive_joint {Index : Type} [Fintype Index] [DecidableEq Index]
-    {size : Nat} {Result : Type} {budget : Nat}
-    (program : OracleProgram (familySpec Index size) Result budget) (state : FamilyState Index size) :
-    (familyCompletion state).bind (fun eagerState => program.run familyEager eagerState) =
-      (runSampled familySampled program state).bind (fun output =>
-        (familyCompletion output.2).map (fun eagerState => (output.1, eagerState))) :=
-  adaptive_joint_law familyEager familySampled familyCompletion family_step program state
 
 /-- Mapping each local completion commutes with the independent family kernel. -/
 theorem finiteKernel_map {Sparse Eager View : Type} (kernel : Sparse → PMF Eager)

@@ -1,4 +1,4 @@
-import Proof.SimulatorExternalCost
+import Proof.SimulatorPrivacy
 import Proof.SimulatorMachineLift
 import Proof.SimulatorTotalSampling
 
@@ -77,106 +77,6 @@ theorem withBits_bound {A : Type} (code : BitCode A) (limit : Nat)
   have bits := congrArg Prod.snd same
   rw [← bits]
   exact bounded Tape tapeSource tape
-
-/-- This interpreter samples each external query once and retains both resource fields. -/
-noncomputable def runWithResources {A : Type} (attempts : Nat) :
-    {budget : Nat} → OracleProgram Garbling.oracleSpec A budget → SparseState → Nat →
-      PMF ((Option (A × SparseState) × Nat) × Nat)
-  | _, .pure distribution, state, _ => distribution.map (fun value => ((some (value, state), 0), 0))
-  | _, .sample distribution next, state, depth =>
-      distribution.bind (fun value => runWithResources attempts (next value) state depth)
-  | _, .query request next, state, depth =>
-      let charge := Cost.combinedCharge depth (.inr request) state
-      (withBits (cutoffDraw attempts (externalDraw request state))).law.bind fun sampled =>
-        match sampled.1 with
-        | none => PMF.pure ((none, charge), sampled.2)
-        | some answer => (runWithResources attempts (next answer.1) answer.2 (depth + 1)).map
-            (fun result => ((result.1.1, charge + result.1.2), sampled.2 + result.2))
-
-/-- The sparse projection equals the existing failure-preserving interpreter. -/
-theorem runWithResources_sparse {A : Type} {budget : Nat} (attempts : Nat)
-    (program : OracleProgram Garbling.oracleSpec A budget) (state : SparseState) (depth : Nat) :
-    (runWithResources attempts program state depth).map Prod.fst =
-      ExternalCost.runWithCost attempts program state depth := by
-  induction program generalizing state depth with
-  | pure distribution => simp only [runWithResources, ExternalCost.runWithCost, PMF.map_comp, Function.comp_def]
-  | sample distribution next ih =>
-      simp only [runWithResources, ExternalCost.runWithCost, PMF.map_bind, ih]
-  | query request next ih =>
-      simp only [runWithResources, ExternalCost.runWithCost, PMF.map_bind]
-      rw [← withBits_law (cutoffDraw attempts (externalDraw request state)), PMF.bind_map]
-      apply congrArg (PMF.bind (withBits (cutoffDraw attempts (externalDraw request state))).law)
-      funext sampled
-      cases sampled with
-      | mk answer bits =>
-          cases answer with
-          | none => simp only [PMF.pure_map, Function.comp_def]
-          | some answer =>
-              simp only [PMF.map_comp, Function.comp_def]
-              have same := congrArg (fun law => law.map
-                (fun result => (result.1, Cost.combinedCharge depth (.inr request) state + result.2)))
-                (ih answer.1 answer.2 (depth + 1))
-              simpa only [PMF.map_comp, Function.comp_def] using same
-
-/-- The joint interpreter has exactly the original external-phase output law. -/
-theorem runWithResources_law {A : Type} {budget : Nat} (attempts : Nat)
-    (program : OracleProgram Garbling.oracleSpec A budget) (state : SparseState) (depth : Nat) :
-    (runWithResources attempts program state depth).map (fun result => result.1.1) =
-      runCutoff externalDraw attempts program state := by
-  change (runWithResources attempts program state depth).map (Prod.fst ∘ Prod.fst) = _
-  rw [← PMF.map_comp, runWithResources_sparse, ExternalCost.runWithCost_law]
-
-/-- Every external prefix has a strict fair-bit bound, including terminal failure. -/
-theorem runWithResources_bits {A : Type} {budget : Nat} (attempts : Nat)
-    (program : OracleProgram Garbling.oracleSpec A budget) (state : SparseState) (depth : Nat)
-    (result : (Option (A × SparseState) × Nat) × Nat)
-    (reached : result ∈ (runWithResources attempts program state depth).support) :
-    result.2 ≤ budget * (257 * attempts) := by
-  induction program generalizing state depth result with
-  | pure distribution =>
-      simp only [runWithResources] at reached
-      obtain ⟨value, _, same⟩ := (PMF.mem_support_map_iff _ _ _).mp reached
-      rw [← same]
-      exact Nat.zero_le _
-  | sample distribution next ih =>
-      simp only [runWithResources] at reached
-      obtain ⟨value, _, member⟩ := (PMF.mem_support_bind_iff _ _ _).mp reached
-      exact ih value state depth result member
-  | @query budget request next ih =>
-      simp only [runWithResources] at reached
-      obtain ⟨sampled, member, tail⟩ := (PMF.mem_support_bind_iff _ _ _).mp reached
-      have head := withBits_bound (cutoffDraw attempts (externalDraw request state)) (257 * attempts)
-        (fun Seed random seed => cutoffDraw_bit_bound random attempts _
-          (combinedDraw_sizeLe (.inr request) state) seed) sampled member
-      rcases sampled with ⟨answer, bits⟩
-      cases answer with
-      | none =>
-          simp only [PMF.mem_support_pure_iff] at tail
-          rw [tail]
-          dsimp only at *
-          nlinarith
-      | some answer =>
-          obtain ⟨output, outputReached, same⟩ := (PMF.mem_support_map_iff _ _ _).mp tail
-          have rest := ih answer.1 answer.2 (depth + 1) output outputReached
-          rw [← same]
-          dsimp only at *
-          nlinarith
-
-/-- Both counters and the state bound refer to the same supported execution. -/
-theorem runWithResources_bound {A : Type} {budget : Nat} (attempts : Nat)
-    (program : OracleProgram Garbling.oracleSpec A budget) (state : SparseState)
-    (depth capacity : Nat) (bound : Cost.StateBound state capacity) (depthBound : depth ≤ capacity)
-    (result : (Option (A × SparseState) × Nat) × Nat)
-    (reached : result ∈ (runWithResources attempts program state depth).support) :
-    result.1.2 ≤ budget * (10 * (capacity + budget) + 16) ∧
-      result.2 ≤ budget * (257 * attempts) ∧
-      (∀ value, result.1.1 = some value → Nonempty (Cost.StateBound value.2 (capacity + budget))) := by
-  have projected : result.1 ∈ (ExternalCost.runWithCost attempts program state depth).support := by
-    rw [← runWithResources_sparse]
-    exact (PMF.mem_support_map_iff _ _ _).mpr ⟨result, reached, rfl⟩
-  have sparse := ExternalCost.runWithCost_resources attempts program state depth capacity
-    bound depthBound result.1 projected
-  exact ⟨sparse.1, runWithResources_bits attempts program state depth result reached, sparse.2⟩
 
 /-- Every fallback draw has support in the original sparse distribution. -/
 theorem totalDraw_supported {A : Type} (attempts : Nat) (draw : Draw A) (value : A)

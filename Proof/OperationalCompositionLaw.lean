@@ -85,32 +85,6 @@ theorem productKernel_step {left right : OracleSpec}
         PMF.bind_map, Function.comp_def]
       exact law.trans (PMF.bind_comm _ _ _)
 
-/-- Adaptive programs can interleave both components without any additional premise. -/
-theorem productKernel_adaptive_joint {left right : OracleSpec}
-    {SparseLeft SparseRight EagerLeft EagerRight Result : Type}
-    (leftEager : OracleHandler left EagerLeft) (rightEager : OracleHandler right EagerRight)
-    (leftSampled : ∀ query, SparseLeft → PMF (left.Answer query × SparseLeft))
-    (rightSampled : ∀ query, SparseRight → PMF (right.Answer query × SparseRight))
-    (leftKernel : SparseLeft → PMF EagerLeft) (rightKernel : SparseRight → PMF EagerRight)
-    (leftStep : ∀ query state,
-      (leftKernel state).map (leftEager query) =
-        (leftSampled query state).bind (fun answer =>
-          (leftKernel answer.2).map (fun eagerState => (answer.1, eagerState))))
-    (rightStep : ∀ query state,
-      (rightKernel state).map (rightEager query) =
-        (rightSampled query state).bind (fun answer =>
-          (rightKernel answer.2).map (fun eagerState => (answer.1, eagerState))))
-    {budget : Nat} (program : OracleProgram (sumSpec left right) Result budget)
-    (state : SparseLeft × SparseRight) :
-    (productKernel leftKernel rightKernel state).bind
-        (fun eagerState => program.run (sumEager leftEager rightEager) eagerState) =
-      (runSampled (sumSampled leftSampled rightSampled) program state).bind (fun output =>
-        (productKernel leftKernel rightKernel output.2).map
-          (fun eagerState => (output.1, eagerState))) :=
-  adaptive_joint_law (sumEager leftEager rightEager) (sumSampled leftSampled rightSampled)
-    (productKernel leftKernel rightKernel)
-    (productKernel_step leftEager rightEager leftSampled rightSampled
-      leftKernel rightKernel leftStep rightStep) program state
 
 end
 

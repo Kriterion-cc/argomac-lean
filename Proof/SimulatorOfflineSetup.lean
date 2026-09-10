@@ -82,14 +82,5 @@ theorem readyWithCost_count (arrays : OfflineArrays) : (readyWithCost arrays).2 
   simp only [readyWithCost, cacheFromCoinWithCost_value, coinWithCost_count,
     cacheWithCost_count, tableWithCost_count]
 
-/-- This finite setup retains work from the sampled prefix when sampling fails. -/
-def setupFinite : SimulatorSamplingCost.FiniteRecipe offlineReady 4635060 :=
-  (SimulatorSamplingCost.offlineFinite.mapWork readyWithCost
-    (fun arrays => (readyWithCost_count arrays).le)).relabel (by
-      simp only [Code.map_law, offlineReady]
-      congr 1
-      funext arrays
-      exact readyWithCost_value arrays)
-
 end SimulatorMachine.Implementation
 end Kriterion.ArgoMAC.Security

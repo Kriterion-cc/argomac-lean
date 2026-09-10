@@ -73,21 +73,6 @@ theorem program_step {size : Nat} (request : (programSpec size).Query)
         ProgrammedPermutation.afterProgram, Draw.map_distribution, PMF.map_comp, PMF.map_bind,
         PMF.bind_map, Function.comp_def] using law
 
-/-- The full adaptive law includes arbitrary interleavings of reads and programming requests. -/
-theorem program_adaptive_joint {size : Nat} {Result : Type} {budget : Nat}
-    (program : OracleProgram (programSpec size) Result budget) (state : ProgrammedPermutation size) :
-    (programCompletion state).bind (fun eagerState => program.run programEager eagerState) =
-      (runSampled programSampled program state).bind (fun output =>
-        (programCompletion output.2).map (fun eagerState => (output.1, eagerState))) :=
-  adaptive_joint_law programEager programSampled programCompletion program_step program state
-
-/-- The eager programming step denotes the original full-permutation swap. -/
-theorem programEager_program_denote {size : Nat} (state : ProgrammedPermutation size)
-    (π : Equiv.Perm (Fin size)) (input target : Fin size) :
-    let result := programEager (.program input target) (state, π)
-    result.2.1.denote result.2.2 =
-      (state.denote π).trans (Equiv.swap (state.denote π input) target) :=
-  state.afterProgram_exact input target π _
 
 end
 end Kriterion.ArgoMAC.Security.OperationalOracle

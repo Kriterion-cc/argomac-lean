@@ -4,43 +4,6 @@ namespace Kriterion.ArgoMAC.Security.OperationalOracle
 open Cryptography
 noncomputable section
 
-private theorem uniform_snd {A B C : Type} [Fintype A] [Fintype B] [Fintype C]
-    [Nonempty A] [Nonempty B] [Nonempty C] (equiv : A ≃ B × C) :
-    (PMF.uniformOfFintype A).map (fun a => (equiv a).2) = PMF.uniformOfFintype C := by
-  have projected := congrArg (fun p : PMF (B × C) => p.map Prod.snd) (uniform_equiv equiv)
-  simp only [PMF.map_comp] at projected
-  apply projected.trans
-  rw [← uniform_product, PMF.map_bind]
-  have component (b : B) :
-      ((PMF.uniformOfFintype C).map (fun c => (b, c))).map Prod.snd =
-        PMF.uniformOfFintype C := by
-    rw [PMF.map_comp]
-    exact PMF.map_id _
-  simp_rw [component]
-  exact PMF.bind_const _ _
-
-/-- Fresh hash programming gives the exact eager function-update law. -/
-theorem HashTable.program_fresh_distribution {Key : Type} [Fintype Key] [DecidableEq Key]
-    (positive : 0 < size) (table : HashTable Key size) (key : Key)
-    (fresh : table.lookup key = none) (target : Fin size) :
-    letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
-    (PMF.uniformOfFintype table.Completion).map
-        (fun f => Function.update f.val key target) =
-      (PMF.uniformOfFintype (table.program key target).Completion).map Subtype.val := by
-  classical
-  letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
-  letI : Nonempty {f : table.Completion // f.val key = target} :=
-    ⟨table.extend_completionEquiv key fresh target (Classical.choice inferInstance)⟩
-  have projected := congrArg
-    (fun p : PMF {f : table.Completion // f.val key = target} => p.map (fun f => f.val.val))
-    (uniform_snd (table.freshCompletionEquiv key fresh target))
-  simp only [PMF.map_comp] at projected
-  calc
-    _ = (PMF.uniformOfFintype {f : table.Completion // f.val key = target}).map
-        (fun f => f.val.val) := projected
-    _ = _ := by
-      rw [← uniform_equiv (table.extend_completionEquiv key fresh target), PMF.map_comp]
-      rfl
 
 /-- The hash state records a new answer only when the input is fresh. -/
 def HashTable.afterQuery {Key : Type} [DecidableEq Key]
@@ -144,15 +107,6 @@ theorem hash_step {Key : Type} [Fintype Key] [DecidableEq Key] {size : Nat}
   simpa only [hashCompletion, hashEager, hashSampled, PMF.map_comp, Function.comp_def] using
     table.query_joint positive key
 
-/-- The sparse hash table matches every adaptive eager hash program. -/
-theorem hash_adaptive_joint {Key : Type} [Fintype Key] [DecidableEq Key] {size : Nat}
-    (positive : 0 < size) {Result : Type} {budget : Nat}
-    (program : OracleProgram (hashSpec Key size) Result budget) (table : HashTable Key size) :
-    (hashCompletion positive table).bind (fun eagerState => program.run hashEager eagerState) =
-      (runSampled (hashSampled positive) program table).bind (fun output =>
-        (hashCompletion positive output.2).map (fun eagerState => (output.1, eagerState))) :=
-  adaptive_joint_law (hashEager (Key := Key)) (hashSampled (Key := Key) positive)
-    (hashCompletion (Key := Key) positive) (hash_step (Key := Key) positive) program table
 
 /-- An empty hash table permits every eager function. -/
 def hashEmptyCompletionEquiv {Key : Type} [DecidableEq Key] (size : Nat) :

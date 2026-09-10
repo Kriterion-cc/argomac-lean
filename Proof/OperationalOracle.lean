@@ -44,46 +44,6 @@ theorem swaps_append {A : Type} [DecidableEq A]
       intro a
       simp only [List.cons_append, swaps_cons, Equiv.trans_apply, ih]
 
-/-- This evaluator counts each equality test in the sparse permutation. -/
-def swapsWithCost {A : Type} [DecidableEq A] : List (A × A) → A → A × Nat
-  | [], value => (value, 0)
-  | pair :: rest, value =>
-      let tested := if value = pair.1 then (pair.2, 1)
-        else if value = pair.2 then (pair.1, 2) else (value, 2)
-      let remaining := swapsWithCost rest tested.1
-      (remaining.1, tested.2 + remaining.2)
-
-/-- The counted evaluator computes the same permutation. -/
-theorem swapsWithCost_value {A : Type} [DecidableEq A]
-    (table : List (A × A)) (value : A) :
-    (swapsWithCost table value).1 = swaps table value := by
-  induction table generalizing value with
-  | nil => rfl
-  | cons pair rest ih =>
-      simp only [swapsWithCost, swaps_cons, Equiv.swap_apply_def]
-      by_cases first : value = pair.1
-      · simp only [first, if_pos]
-        exact ih pair.2
-      · simp only [first]
-        by_cases second : value = pair.2
-        · simp only [second, if_pos]
-          exact ih pair.1
-        · simp only [second]
-          exact ih value
-
-/-- Each stored transposition needs at most two equality tests. -/
-theorem swapsWithCost_le {A : Type} [DecidableEq A]
-    (table : List (A × A)) (value : A) :
-    (swapsWithCost table value).2 ≤ 2 * table.length := by
-  induction table generalizing value with
-  | nil => simp [swapsWithCost]
-  | cons pair rest ih =>
-      simp only [swapsWithCost, List.length_cons]
-      split
-      · have := ih pair.2; dsimp only; omega
-      · split
-        · have := ih pair.1; dsimp only; omega
-        · have := ih value; dsimp only; omega
 
 /-- The two sparse permutations pair the used input and output prefixes. -/
 structure SparsePermutation (size : Nat) where
@@ -211,14 +171,6 @@ theorem SparsePermutation.unusedOutput_uniform {size : Nat}
     ⟨state.unusedOutputEquiv ⟨0, by omega⟩⟩
   exact uniform_map_equiv state.unusedOutputEquiv
 
-/-- A new pair gives the requested forward answer. -/
-theorem SparsePermutation.extend_pair {size : Nat}
-    (state : SparsePermutation size) (room : state.used < size)
-    (inputPosition outputPosition : Fin size) :
-    let next := state.extend room inputPosition outputPosition
-    next.output (next.input.symm (state.input inputPosition)) =
-      state.output outputPosition := by
-  simp [extend, input, output, swaps ]
 
 /-- The update preserves each earlier pair. -/
 theorem SparsePermutation.extend_old {size : Nat}
@@ -259,49 +211,6 @@ theorem programOverlay_length {A : Type} (overlay : List (A × A)) (current targ
     (programOverlay overlay current target).length = overlay.length + 1 := by
   simp [programOverlay]
 
-private theorem uniform_map_fst {A B C : Type*}
-    [Fintype A] [Fintype B] [Fintype C]
-    [Nonempty A] [Nonempty B] [Nonempty C] (e : A ≃ B × C) :
-    (PMF.uniformOfFintype A).map (fun a => (e a).1) =
-      PMF.uniformOfFintype B := by
-  classical
-  apply PMF.ext
-  intro b
-  simp only [PMF.map_apply, PMF.uniformOfFintype_apply]
-  rw [e.tsum_eq (fun pair => if b = pair.1 then (Fintype.card A : ENNReal)⁻¹ else 0),
-    ENNReal.tsum_prod', ENNReal.tsum_comm]
-  simp_rw [@eq_comm B b]
-  simp only [tsum_ite_eq]
-  simp only [tsum_fintype, Finset.sum_const,
-    Finset.card_univ, nsmul_eq_mul]
-  rw [Fintype.card_congr e, Fintype.card_prod, Nat.cast_mul,
-    ENNReal.mul_inv (Or.inr (ENNReal.natCast_ne_top _))
-      (Or.inl (ENNReal.natCast_ne_top _)), mul_comm, mul_assoc,
-    ENNReal.inv_mul_cancel (Nat.cast_ne_zero.mpr Fintype.card_ne_zero)
-      (ENNReal.natCast_ne_top _), mul_one]
-
-/-- A uniform compatible eager permutation has a uniform fresh answer. -/
-theorem compatible_fresh_uniform {A : Type*} [Fintype A] [DecidableEq A]
-    (s t : Set A) [DecidablePred (· ∈ s)] [DecidablePred (· ∈ t)]
-    (e : s ≃ t) (x : A) (freshInput : x ∉ s) (y : A) (freshOutput : y ∉ t) :
-    letI : Nonempty {π : Equiv.Perm A // ∀ a : s, π a = e a} :=
-      ⟨⟨e.extendSubtype, fun a => e.extendSubtype_apply_of_mem a a.2⟩⟩
-    letI : Nonempty (tᶜ : Set A) := ⟨⟨y, freshOutput⟩⟩
-    (PMF.uniformOfFintype {π : Equiv.Perm A // ∀ a : s, π a = e a}).map
-        (fun π => π.val x) =
-      (PMF.uniformOfFintype (tᶜ : Set A)).map Subtype.val := by
-  classical
-  letI : Nonempty {π : Equiv.Perm A // ∀ a : s, π a = e a} :=
-    ⟨⟨e.extendSubtype, fun a => e.extendSubtype_apply_of_mem a a.2⟩⟩
-  letI : Nonempty (tᶜ : Set A) := ⟨⟨y, freshOutput⟩⟩
-  letI : Nonempty {π : Equiv.Perm A // (∀ a : s, π a = e a) ∧ π x = y} :=
-    ⟨programCompatiblePermutation s t e x freshInput y freshOutput
-      (Classical.choice inferInstance)⟩
-  have law := uniform_map_fst
-    ((programCompatiblePermutationEquiv s t e x freshInput y freshOutput).trans
-      (Equiv.prodComm _ _))
-  have projected := congrArg (fun p : PMF (tᶜ : Set A) => p.map Subtype.val) law
-  simpa [PMF.map_comp, programCompatiblePermutationEquiv, Function.comp_def] using projected
 
 /-- The sparse prefixes define the exact partial assignment. -/
 def SparsePermutation.assignment {size : Nat} (state : SparsePermutation size) :
@@ -427,55 +336,6 @@ def SparsePermutation.reverse_completionEquiv {size : Nat}
   left_inv _ := rfl
   right_inv _ := rfl
 
-/-- A fresh sparse query has the eager conditional answer distribution. -/
-theorem SparsePermutation.forward_fresh_distribution {size : Nat}
-    (state : SparsePermutation size) (x : Fin size) (fresh : ¬ state.knownInput x) :
-    (PMF.uniformOfFintype state.Completion).map (fun π => π.val x) =
-      (state.forward x).distribution.map Prod.fst := by
-  classical
-  have room : state.used < size := by
-    have := (state.input.symm x).isLt
-    unfold knownInput at fresh
-    omega
-  letI : Nonempty (Fin (size - state.used)) := ⟨⟨0, by omega⟩⟩
-  let y := state.unusedOutputEquiv ⟨0, by omega⟩
-  letI : Nonempty {y : Fin size // ¬ state.knownOutput y} := ⟨y⟩
-  have law := compatible_fresh_uniform {x | state.knownInput x}
-    {y | state.knownOutput y} state.assignment x fresh y.val y.property
-  have pool := congrArg
-    (fun p : PMF {y : Fin size // ¬ state.knownOutput y} => p.map Subtype.val)
-    (state.unusedOutput_uniform room)
-  simp only [PMF.map_comp] at pool
-  calc
-    _ = (PMF.uniformOfFintype {y : Fin size // ¬ state.knownOutput y}).map Subtype.val := by
-      exact law
-    _ = (PMF.uniformOfFintype (Fin (size - state.used))).map
-        (fun rank => state.output (state.suffix rank)) := pool.symm
-    _ = _ := by
-      simp only [forward, knownInput] at fresh ⊢
-      simp only [dif_neg fresh, Draw.distribution, PMF.map_comp]
-      rfl
-
-/-- A replay query returns the recorded eager answer. -/
-theorem SparsePermutation.forward_known_distribution {size : Nat}
-    (state : SparsePermutation size) (x : Fin size) (known : state.knownInput x) :
-    (PMF.uniformOfFintype state.Completion).map (fun π => π.val x) =
-      (state.forward x).distribution.map Prod.fst := by
-  have same (π : state.Completion) : π.val x = state.output (state.input.symm x) :=
-    π.property ⟨x, known⟩
-  simp only [forward, knownInput] at known ⊢
-  simp only [dif_pos known, Draw.distribution, PMF.pure_map]
-  simp_rw [same]
-  exact PMF.map_const _ _
-
-/-- Every forward query has the eager conditional answer law. -/
-theorem SparsePermutation.forward_distribution {size : Nat}
-    (state : SparsePermutation size) (x : Fin size) :
-    (PMF.uniformOfFintype state.Completion).map (fun π => π.val x) =
-      (state.forward x).distribution.map Prod.fst := by
-  by_cases known : state.knownInput x
-  · exact state.forward_known_distribution x known
-  · exact state.forward_fresh_distribution x known
 
 /-- An inverse query is a forward query in the reversed sparse state. -/
 theorem SparsePermutation.inverse_reverse_forward {size : Nat}
@@ -486,23 +346,6 @@ theorem SparsePermutation.inverse_reverse_forward {size : Nat}
   dsimp only [reverse, input, output]
   split <;> simp_all [Draw.map, extend, suffix]; rfl
 
-/-- Every inverse query has the eager conditional answer law. -/
-theorem SparsePermutation.inverse_distribution {size : Nat}
-    (state : SparsePermutation size) (y : Fin size) :
-    (PMF.uniformOfFintype state.Completion).map (fun π => π.val.symm y) =
-      (state.inverse y).distribution.map Prod.fst := by
-  have law := state.reverse.forward_distribution y
-  have uniform := uniform_map_equiv state.reverse_completionEquiv
-  have projected := congrArg
-    (fun p : PMF state.Completion => p.map (fun π => π.val.symm y)) uniform
-  simp only [PMF.map_comp] at projected
-  calc
-    _ = (PMF.uniformOfFintype state.reverse.Completion).map (fun π => π.val y) :=
-      projected.symm
-    _ = (state.reverse.forward y).distribution.map Prod.fst := law
-    _ = _ := by
-      rw [inverse_reverse_forward, Draw.map_distribution, PMF.map_comp]
-      rfl
 
 /-- The programmed oracle keeps a sparse base and deferred output swaps. -/
 structure ProgrammedPermutation (size : Nat) where
@@ -724,48 +567,6 @@ def HashTable.freshCompletionEquiv {Key : Type} [DecidableEq Key]
       · subst query; simp [updateCompletion, pair.2.property]
       · simp [updateCompletion, Function.update_of_ne same]
 
-/-- A fresh hash draw has the uniform eager conditional answer law. -/
-theorem HashTable.fresh_distribution {Key : Type} [Fintype Key] [DecidableEq Key]
-    (positive : 0 < size) (table : HashTable Key size) (key : Key)
-    (fresh : table.lookup key = none) :
-    letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
-    (PMF.uniformOfFintype table.Completion).map (fun f => f.val key) =
-      (table.query positive key).distribution.map Prod.fst := by
-  classical
-  letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
-  let zero : Fin size := ⟨0, positive⟩
-  letI : Nonempty {f : table.Completion // f.val key = zero} :=
-    ⟨⟨table.updateCompletion key fresh (Classical.choice inferInstance) zero, by
-      simp [updateCompletion]⟩⟩
-  have law := uniform_map_fst (table.freshCompletionEquiv key fresh zero)
-  calc
-    _ = PMF.uniformOfFintype (Fin size) := law
-    _ = _ := by
-      simp only [query, fresh, Draw.distribution, PMF.map_comp]
-      exact (PMF.map_id _).symm
-
-/-- A replay hash query returns the recorded eager answer. -/
-theorem HashTable.known_distribution {Key : Type} [Fintype Key] [DecidableEq Key]
-    (positive : 0 < size) (table : HashTable Key size) (key : Key)
-    (value : Fin size) (known : table.lookup key = some value) :
-    letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
-    (PMF.uniformOfFintype table.Completion).map (fun f => f.val key) =
-      (table.query positive key).distribution.map Prod.fst := by
-  letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
-  have same (f : table.Completion) : f.val key = value := f.property key value known
-  simp only [query, known, Draw.distribution, PMF.pure_map]
-  simp_rw [same]
-  exact PMF.map_const _ _
-
-/-- Every hash query has the eager conditional answer distribution. -/
-theorem HashTable.query_distribution {Key : Type} [Fintype Key] [DecidableEq Key]
-    (positive : 0 < size) (table : HashTable Key size) (key : Key) :
-    letI : Nonempty (Fin size) := ⟨⟨0, positive⟩⟩
-    (PMF.uniformOfFintype table.Completion).map (fun f => f.val key) =
-      (table.query positive key).distribution.map Prod.fst := by
-  cases found : table.lookup key with
-  | none => exact table.fresh_distribution positive key found
-  | some value => exact table.known_distribution positive key value found
 
 /-- A fresh table entry adds exactly one equation to the eager fiber. -/
 theorem HashTable.extend_completion_iff {Key : Type} [DecidableEq Key]
