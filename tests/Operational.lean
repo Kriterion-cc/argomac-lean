@@ -58,7 +58,7 @@ private def failedPrefix :=
   let result := Cost.executeCutoffCost failingBits 2 twoDrawTrace emptyState 0 0
   (result.1.1.isNone, result.1.2, result.2)
 
-/-- The failed second draw retains the first request charge and all fair-bit reads. -/
+/- The failed second draw retains the first request charge and all fair-bit reads. -/
 #eval show IO Unit from do
   unless failedPrefix == (true, 3, 2, 31, 385) do
     throw (IO.userError "The sparse prefix cost check failed.")
