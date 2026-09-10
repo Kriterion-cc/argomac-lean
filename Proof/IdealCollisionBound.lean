@@ -1626,12 +1626,8 @@ theorem pointBranchCollision_fullTape_mass_le_blocks [Fintype Block]
 private theorem outerMeasure_bind_le {A B : Type*} (source : PMF A)
     (next : A → PMF B) (event : Set B) (bound : ENNReal)
     (pointwise : ∀ sample, (next sample).toOuterMeasure event ≤ bound) :
-    (source.bind next).toOuterMeasure event ≤ bound := by
-  rw [PMF.toOuterMeasure_bind_apply]
-  calc
-    _ ≤ ∑' sample, source sample * bound :=
-      ENNReal.tsum_le_tsum fun sample => mul_le_mul_right (pointwise sample) _
-    _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
+    (source.bind next).toOuterMeasure event ≤ bound :=
+  Probability.bind_event_le source next event bound (fun sample _ => pointwise sample)
 
 private theorem four_bind_event_le {A B C D Result : Type*}
     (first : PMF A) (second : A → PMF B) (third : A → B → PMF C)

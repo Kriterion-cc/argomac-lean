@@ -65,11 +65,15 @@ The active collision proof includes this bias.
 ## Adaptive privacy
 
 The proof keeps both adaptive query phases and the uniform random tape.
-VCV-io supplies the uniform sampler and shared oracle interpreter.
-The interpreter preserves arbitrary private samples and the indexed query budget.
-The proof uses one interpreter for ordinary runs, traced runs, and paired states.
-VCV-io state projections prove both coupling marginals.
-Regression theorems preserve the execution distribution and query order.
+VCV-io supplies uniform sampling, oracle execution, public query logs, and query bounds.
+The interpreter preserves arbitrary private samples.
+VCV-io state projections transport related oracle states.
+Its logger records public answers and omits private samples.
+Its logger erasure rule preserves the output distribution.
+The proof uses VCV-io total variation, identical-until-bad, and conditional event bounds.
+Regression theorems preserve the execution distribution and every ordered public transcript.
+The refactor removes the unused bounded bridge and its security wrappers.
+The source-ratio and correlated permutation arguments remain specific to ArgoMAC.
 The challenge library supplies the permutation counting and fresh programming lemmas.
 The proof covers valid and invalid inputs.
 

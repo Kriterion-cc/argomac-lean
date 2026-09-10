@@ -86,19 +86,14 @@ theorem independentHidden_pad_bad_mass_le [Fintype Block]
         ((independentKeyLabelsEquiv selected).symm (publicLabels, hidden)).2} ≤
       508 / (Fintype.card Block : ℝ≥0∞) := by
   have uniform := map_uniformOfFintype_equivBetween independentHiddenKeyEquiv.symm
-  rw [← uniform, PMF.toOuterMeasure_map_apply, uniform_pair_first, PMF.toOuterMeasure_bind_apply]
-  simp only [PMF.toOuterMeasure_map_apply]
-  calc
-    _ ≤ ∑' labels, (PMF.uniformOfFintype (EncPRF.PermutationIndex → Block)) labels *
-        (508 / (Fintype.card Block : ℝ≥0∞)) := by
-      apply ENNReal.tsum_le_tsum
-      intro labels
-      apply mul_le_mul_right
-      have bound := linkingPad_collision_mass_le
-        ((selectedKeyLabelsEquiv selected).symm (publicLabels, labels))
-      simpa only [Set.preimage_setOf_eq, independentHiddenKey_inverse,
-        encSourceGood_iff, not_not] using bound
-    _ = _ := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
+  rw [← uniform, PMF.toOuterMeasure_map_apply, uniform_pair_first]
+  apply Probability.bind_event_le
+  intro labels _
+  rw [PMF.toOuterMeasure_map_apply]
+  have bound := linkingPad_collision_mass_le
+    ((selectedKeyLabelsEquiv selected).symm (publicLabels, labels))
+  simpa only [Set.preimage_setOf_eq, independentHiddenKey_inverse,
+    encSourceGood_iff, not_not] using bound
 
 
 /-- The fixed extension count also applies inside an independent label guard. -/

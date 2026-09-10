@@ -70,13 +70,8 @@ theorem circuitHashRounding_le_blocks :
 
 /-- Every Boolean decision advantage is at most one. -/
 theorem decisionAdvantage_le_one (real ideal : PMF Bool) : advantage real ideal ≤ 1 := by
-  have first := ENNReal.toReal_mono ENNReal.one_ne_top (real.coe_le_one true)
-  have second := ENNReal.toReal_mono ENNReal.one_ne_top (ideal.coe_le_one true)
-  simp only [ENNReal.toReal_one] at first second
-  unfold advantage
-  rw [abs_le]
-  constructor <;> linarith [ENNReal.toReal_nonneg (a := real true),
-    ENNReal.toReal_nonneg (a := ideal true)]
+  simpa only [advantage, PMF.probOutput_eq_apply] using
+    (abs_probOutput_toReal_sub_le_tvDist real ideal).trans (tvDist_le_one real ideal)
 
 /-- Large query budgets satisfy the work metric from the unit advantage bound. -/
 theorem largeBudget_has100Bits (real ideal : PMF Bool) (queries : Nat)

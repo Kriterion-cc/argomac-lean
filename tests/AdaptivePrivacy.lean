@@ -26,55 +26,7 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.Garbling.Randomness.data_injective
 #print axioms ArgoMAC.Security.randomTape_fullSupport
 #print axioms ArgoMAC.Security.decodeResult_retargetPointGateResults
-#print axioms ArgoMAC.Security.blockCard
-#print axioms ArgoMAC.Security.uniformBlockMass
-#print axioms ArgoMAC.Security.uniformBlockTwoPointUnionBound
-#print axioms ArgoMAC.Security.uniformBlockFinsetMass
-#print axioms ArgoMAC.Security.uniformBlockFinsetMass_le
-#print axioms ArgoMAC.Security.uniformBlockTwoPointEvent_le
-#print axioms ArgoMAC.Security.uniformBlockFinsetMass_sum_le
-#print axioms ArgoMAC.Security.OracleProgramTrace.length_le
-#print axioms ArgoMAC.Security.OracleProgramTrace.all_safe
-#print axioms ArgoMAC.Security.OracleProgramTrace.append_length_le
 #print axioms Cryptography.OracleProgram.run_project
-#print axioms ArgoMAC.Security.runOracleProgramWithTrace_project
-#print axioms ArgoMAC.Security.runOracleProgramWithTrace_erase
-#print axioms ArgoMAC.Security.runOracleProgramWithTrace_reached
-#print axioms ArgoMAC.Security.runOracleProgramWithTrace_length_le
-#print axioms ArgoMAC.Security.runOracleProgramWithTrace_overBudget_mass
-#print axioms ArgoMAC.Security.runOracleProgramsWithTrace_erase
-#print axioms ArgoMAC.Security.runOracleProgramsWithTrace_result
-#print axioms ArgoMAC.Security.runOracleProgramsWithTrace_length_le
-#print axioms ArgoMAC.Security.runOracleProgramsWithTrace_overBudget_mass
-#print axioms ArgoMAC.Security.runOracleProgramsWithBridgeTrace_erase
-#print axioms ArgoMAC.Security.runOracleProgramsWithBridgeTrace_result
-#print axioms ArgoMAC.Security.runOracleProgramsWithBridgeTrace_length_le
-#print axioms ArgoMAC.Security.runOracleProgramsWithBridgeTrace_overBudget_mass
-#print axioms ArgoMAC.Security.oracleProgramTrace_collisionScheduleMass_le
-#print axioms ArgoMAC.Security.advantage_map_prod_le_disagreement
-#print axioms ArgoMAC.Security.boolDisagreement_mass
-#print axioms ArgoMAC.Security.advantage_map_prod_le_disagreementMass
-#print axioms ArgoMAC.Security.advantage_le_of_coupling
-#print axioms ArgoMAC.Security.advantage_le_of_tracedCoupling
-#print axioms ArgoMAC.Security.traceTransportCoupling_fst
-#print axioms ArgoMAC.Security.traceTransportCoupling_snd
-#print axioms ArgoMAC.Security.traceTransportCoupling_disagreement
-#print axioms ArgoMAC.Security.traceTransport_changeMass_le_badMass
-#print axioms ArgoMAC.Security.advantage_le_of_traceTransport
-#print axioms ArgoMAC.Security.advantage_le_of_traceTransport_badEvent
-#print axioms ArgoMAC.Security.deterministicBoolCoupling_fst
-#print axioms ArgoMAC.Security.deterministicBoolCoupling_snd
-#print axioms ArgoMAC.Security.deterministicBoolCoupling_disagreement
-#print axioms ArgoMAC.Security.advantage_map_le_disagreementMass
-#print axioms ArgoMAC.Security.blockCollisionMass_toReal
-#print axioms ArgoMAC.Security.tracedRealGame_erase
-#print axioms ArgoMAC.Security.tracedRealGame_overBudget_mass
-#print axioms ArgoMAC.Security.tracedIdealGame_erase
-#print axioms ArgoMAC.Security.tracedIdealGame_overBudget_mass
-#print axioms ArgoMAC.Security.adaptiveAdvantage_le_of_tracedCoupling
-#print axioms ArgoMAC.Security.adaptiveAdvantage_le_of_traceTransport
-#print axioms ArgoMAC.Security.concreteAdaptivePrivacy_of_tracedCouplings
-#print axioms ArgoMAC.Security.concreteAdaptivePrivacy_of_traceTransports
 #print axioms ArgoMAC.Security.pointLayerUsesLinkedInputKey
 #print axioms ArgoMAC.Security.recordFixed_preservesInvariant
 #print axioms ArgoMAC.Security.recordEnc_preservesInvariant
@@ -82,22 +34,7 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.initialState_invariant
 #print axioms ArgoMAC.Security.SimulatorInvariant.transcriptsConsistent
 #print axioms ArgoMAC.Security.idealOracleHandler_preservesInvariant
-#print axioms ArgoMAC.Security.oracleProgram_run_stateEquiv
 #print axioms ArgoMAC.Security.oracleProgram_run_result_of_related
-#print axioms ArgoMAC.Security.runOracleProgramRelatedTraceCoupling_fst
-#print axioms ArgoMAC.Security.runOracleProgramRelatedTraceCoupling_snd
-#print axioms ArgoMAC.Security.independentPMFCoupling_fst
-#print axioms ArgoMAC.Security.independentPMFCoupling_snd
-#print axioms ArgoMAC.Security.boundedBridgeContinuation_fst
-#print axioms ArgoMAC.Security.boundedBridgeContinuation_snd
-#print axioms ArgoMAC.Security.boundedBridgeContinuation_bad
-#print axioms ArgoMAC.Security.runOracleProgramsBoundedBridgeTraceCoupling_fst
-#print axioms ArgoMAC.Security.runOracleProgramsBoundedBridgeTraceCoupling_snd
-#print axioms ArgoMAC.Security.runOracleProgramsBoundedBridgeTraceCoupling_bad
-#print axioms ArgoMAC.Security.runOracleProgramsBoundedBridgeTraceCoupling_bad_mass
-#print axioms ArgoMAC.Security.runOracleProgramsBoundedBridgeTraceCoupling_disagreement_implies_bad
-#print axioms ArgoMAC.Security.runOracleProgramsBoundedBridgeTraceCoupling_disagreement_le_bad
-#print axioms ArgoMAC.Security.advantage_runOracleProgramsBoundedBridgeTraceCoupling
 #print axioms ArgoMAC.Security.initialState_realIdealOracleRelated
 #print axioms ArgoMAC.Security.realIdealOracleHandlers_related
 #print axioms ArgoMAC.Security.oracleProgram_real_ideal_result
@@ -283,35 +220,35 @@ theorem hashLiftRoundingArithmeticHas100Bits :
 #print axioms ArgoMAC.Security.selectedGateHashBadUnion_mass_le
 #print axioms ArgoMAC.Security.selectedGateHashBadUnion_toReal_le
 
-namespace TraceRegression
+namespace TranscriptRegression
 
 open Cryptography ArgoMAC.Security
 
 universe uQuery uAnswer uResult uState
 
-/-- This reference preserves the query trace rules from before the VCV-io migration. -/
+/-- This reference preserves the public transcript rules from before the VCV-io migration. -/
 private noncomputable def reference {oracle : OracleSpec.{uQuery, uAnswer}}
     {Result : Type uResult} {State : Type uState} (handler : OracleHandler oracle State) :
     {budget : Nat} → OracleProgram oracle Result budget → State →
-      PMF (Result × State × List (oracle.Query × State))
+      PMF (Result × State × List (Sigma oracle.Answer))
   | _, .pure result, state => result.map fun value => (value, state, [])
   | _, .query request next, state =>
       let answer := handler request state
       (reference handler (next answer.1) answer.2).map
-        fun output => (output.1, output.2.1, (request, state) :: output.2.2)
+        fun output => (output.1, output.2.1, ⟨request, answer.1⟩ :: output.2.2)
   | _, .sample distribution next, state =>
       distribution.bind fun value => reference handler (next value) state
 
-/-- VCV-io preserves every trace entry and its order for every program. -/
-theorem trace_eq_reference {oracle : OracleSpec.{uQuery, uAnswer}}
+/-- VCV-io preserves every public answer and its order for every program. -/
+theorem transcript_eq_reference {oracle : OracleSpec.{uQuery, uAnswer}}
     {Result : Type uResult} {State : Type uState} (handler : OracleHandler oracle State)
     {budget : Nat} (program : OracleProgram oracle Result budget) (state : State) :
-    runOracleProgramWithTrace handler program state = reference handler program state := by
+    runOracleProgramWithTranscript handler program state = reference handler program state := by
   induction program generalizing state with
   | pure distribution => simp [reference]
   | query request next ih => simp [reference, ih]
   | sample distribution next ih => simp [reference, ih]
 
-#print axioms trace_eq_reference
+#print axioms transcript_eq_reference
 
-end TraceRegression
+end TranscriptRegression

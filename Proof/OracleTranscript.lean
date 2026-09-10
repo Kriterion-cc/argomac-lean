@@ -1,4 +1,5 @@
-import Proof.Simulator
+import Cryptography.Primitives
+import VCVio.OracleComp.QueryTracking.Tracing
 
 namespace Kriterion.ArgoMAC.Security
 
@@ -6,21 +7,41 @@ open Cryptography
 
 universe uQuery uAnswer uResult uState uOther
 
-/-- This projection reads each public answer from the state before its query. -/
+private theorem state_map {σ α β : Type uState} (f : α → β)
+    (mx : StateT σ PMF α) (s : σ) :
+    (f <$> mx) s = PMF.map (fun p => (f p.1, p.2)) (mx s) := rfl
+
+private theorem state_bind {σ α β : Type uState}
+    (mx : StateT σ PMF α) (f : α → StateT σ PMF β) (s : σ) :
+    (mx >>= f) s = (mx s).bind (fun p => f p.1 p.2) := rfl
+
+/-- The VCV-io logger records public answers and omits private samples. -/
+def transcriptEntry {oracle : OracleSpec.{uQuery, uAnswer}} :
+    (request : (OracleProgram.effectSpec.{uQuery, uAnswer, uResult, uState} oracle).Domain) →
+    (OracleProgram.effectSpec.{uQuery, uAnswer, uResult, uState} oracle).Range request →
+    List (ULift.{max uQuery uAnswer (uResult + 1) uState} (Sigma oracle.Answer))
+  | ⟨.query request⟩, answer => [ULift.up ⟨request, answer.down⟩]
+  | ⟨.sample _ _⟩, _ => []
+
+/-- VCV-io executes each query and records its public answer in order. -/
 noncomputable def runOracleProgramWithTranscript
     {oracle : OracleSpec.{uQuery, uAnswer}} {Result : Type uResult}
     {State : Type uState} (handler : OracleHandler oracle State) {budget : Nat}
     (program : OracleProgram oracle Result budget) (state : State) :
     PMF (Result × State × List (Sigma oracle.Answer)) :=
-  (runOracleProgramWithTrace handler program state).map fun output =>
-    (output.1, output.2.1, output.2.2.map (fun step => ⟨step.1, (handler step.1 step.2).1⟩))
+  ((simulateQ ((OracleProgram.implementation.{uQuery, uAnswer, uResult, uState, 0} handler).withTraceAppend
+    transcriptEntry) (OracleProgram.toComp program)).run (ULift.up state)).map fun output =>
+      (output.1.1.down, output.2.down, output.1.2.map ULift.down)
 
 @[simp] theorem runOracleProgramWithTranscript_pure
     {oracle : OracleSpec.{uQuery, uAnswer}} {Result : Type uResult} {State : Type uState}
     (handler : OracleHandler oracle State) {budget : Nat} (result : PMF Result) (state : State) :
     runOracleProgramWithTranscript handler (.pure (budget := budget) result) state =
       result.map (fun value => (value, state, [])) := by
-  simp [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def]
+  simp only [runOracleProgramWithTranscript, OracleProgram.toComp, OracleComp.queryBind,
+    simulateQ, PFunctor.FreeM.liftM]
+  simp [OracleProgram.implementation, transcriptEntry]
+  simp only [state_map, PMF.map_comp, Function.comp_def, List.map_nil]
 
 @[simp] theorem runOracleProgramWithTranscript_query
     {oracle : OracleSpec.{uQuery, uAnswer}} {Result : Type uResult} {State : Type uState}
@@ -30,7 +51,10 @@ noncomputable def runOracleProgramWithTranscript
       (runOracleProgramWithTranscript handler (next (handler request state).1)
         (handler request state).2).map
         (fun output => (output.1, output.2.1, ⟨request, (handler request state).1⟩ :: output.2.2)) := by
-  simp [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def]
+  simp only [runOracleProgramWithTranscript, OracleProgram.toComp, OracleComp.queryBind,
+    simulateQ, PFunctor.FreeM.liftM]
+  simp [OracleProgram.implementation, transcriptEntry, state_map, state_bind,
+    PMF.pure_map, PMF.map_comp, Function.comp_def]
 
 @[simp] theorem runOracleProgramWithTranscript_sample
     {oracle : OracleSpec.{uQuery, uAnswer}} {Result Sample : Type uResult} {State : Type uState}
@@ -38,7 +62,10 @@ noncomputable def runOracleProgramWithTranscript
     (next : Sample → OracleProgram oracle Result budget) (state : State) :
     runOracleProgramWithTranscript handler (.sample distribution next) state =
       distribution.bind (fun value => runOracleProgramWithTranscript handler (next value) state) := by
-  simp [runOracleProgramWithTranscript, PMF.map_bind]
+  simp only [runOracleProgramWithTranscript, OracleProgram.toComp, OracleComp.queryBind,
+    simulateQ, PFunctor.FreeM.liftM]
+  simp [OracleProgram.implementation, transcriptEntry, state_map, state_bind,
+    PMF.map_comp, PMF.bind_map, PMF.map_bind, Function.comp_def]
 
 /-- The program has the same distribution after transcript erasure. -/
 theorem runOracleProgramWithTranscript_erase
@@ -47,8 +74,14 @@ theorem runOracleProgramWithTranscript_erase
     {budget : Nat} (program : OracleProgram oracle Result budget) (state : State) :
     (runOracleProgramWithTranscript handler program state).map
       (fun output => (output.1, output.2.1)) = program.run handler state := by
-  simpa only [runOracleProgramWithTranscript, PMF.map_comp, Function.comp_def] using
-    runOracleProgramWithTrace_erase handler program state
+  have erased := QueryImpl.fst_map_run_withTraceAppend
+    (OracleProgram.implementation.{uQuery, uAnswer, uResult, uState, 0} handler)
+    transcriptEntry (OracleProgram.toComp program)
+  have evaluated := congrFun erased (ULift.up state)
+  simp only [state_map] at evaluated
+  have lowered := congrArg (PMF.map (fun output => (output.1.down, output.2.down))) evaluated
+  simpa only [runOracleProgramWithTranscript, OracleProgram.run, OracleProgram.execute,
+    PMF.map_comp, Function.comp_def] using lowered
 
 /-- A compatible oracle gives each recorded answer in order. -/
 def OracleTranscriptCompatible
