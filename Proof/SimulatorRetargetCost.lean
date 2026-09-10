@@ -19,6 +19,7 @@ structure Cost where
   fieldMultiplications : Nat := 0
   fieldDivisions : Nat := 0
   elements : Nat := 0
+  scalarOperations : Nat := 0
   deriving DecidableEq
 
 /-- This operation combines the counters of two executed computations. -/
@@ -29,12 +30,13 @@ def Cost.add (left right : Cost) : Cost where
   fieldMultiplications := left.fieldMultiplications + right.fieldMultiplications
   fieldDivisions := left.fieldDivisions + right.fieldDivisions
   elements := left.elements + right.elements
+  scalarOperations := left.scalarOperations + right.scalarOperations
 
 private theorem binaryScalar_spec [FieldCertificate] [GroupCertificate]
     (scalar : ScalarField) (point : Point) :
-    (binaryPointMulWithCost 254 scalar.val point).1 = scalar • point ∧
-      (binaryPointMulWithCost 254 scalar.val point).2 ≤ 508 := by
-  obtain ⟨same, cost⟩ := binaryPointMulWithCost_spec 254 scalar.val point
+    (binaryPointMulFullCost 254 scalar.val point).1 = scalar • point ∧
+      (binaryPointMulFullCost 254 scalar.val point).2.1 ≤ 508 := by
+  obtain ⟨same, cost, _⟩ := binaryPointMulFullCost_spec 254 scalar.val point
   refine ⟨same.trans ?_, cost⟩
   rw [binaryPointMul_eq _ _ _
     (lt_trans scalar.val_lt (show scalarFieldModulus < 2 ^ 254 by decide))]
@@ -47,10 +49,11 @@ def pointHornerWithCost [FieldCertificate] (scalar : ScalarField) :
   | [] => (0, {})
   | point :: points =>
       let tail := pointHornerWithCost scalar points
-      let product := binaryPointMulWithCost 254 scalar.val tail.1
+      let product := binaryPointMulFullCost 254 scalar.val tail.1
       (point + product.1, { tail.2 with
-        groupAdditions := tail.2.groupAdditions + product.2 + 1
-        elements := tail.2.elements + 1 })
+        groupAdditions := tail.2.groupAdditions + product.2.1 + 1
+        elements := tail.2.elements + 1
+        scalarOperations := tail.2.scalarOperations + product.2.2 })
 
 /-- The counted fold computes the original point polynomial. -/
 theorem pointHornerWithCost_value [FieldCertificate] [GroupCertificate]
@@ -83,11 +86,12 @@ theorem pointHornerWithCost_bound [FieldCertificate] [GroupCertificate]
 def outputTargetPointsWithCost [FieldCertificate] (point : Point) (free : List Point) :
     List Point × Cost :=
   let tail := pointHornerWithCost radix free
-  let product := binaryPointMulWithCost 254 radix.val tail.1
+  let product := binaryPointMulFullCost 254 radix.val tail.1
   ((point + -product.1) :: free, { tail.2 with
-    groupAdditions := tail.2.groupAdditions + product.2 + 1
+    groupAdditions := tail.2.groupAdditions + product.2.1 + 1
     groupNegations := tail.2.groupNegations + 1
-    elements := tail.2.elements + 1 })
+    elements := tail.2.elements + 1
+    scalarOperations := tail.2.scalarOperations + product.2.2 })
 
 /-- The counted point targets agree with the original output construction. -/
 theorem outputTargetPointsWithCost_value [FieldCertificate] [GroupCertificate]
@@ -233,6 +237,48 @@ theorem outputTargetsWithCost_bound [FieldCertificate] [GroupCertificate]
   simp only [outputTargetsWithCost, Cost.add, Vector.size, rowsLength,
     FieldMacToECMac.outputMacCount]
   exact ⟨by omega, by omega, by omega, by omega, by omega, by omega⟩
+
+/-- The Horner fold executes 254 scalar rounds for each input point. -/
+theorem pointHornerWithCost_scalarOperations [FieldCertificate]
+    (scalar : ScalarField) (points : List Point) :
+    (pointHornerWithCost scalar points).2.scalarOperations = 1016 * points.length := by
+  induction points with
+  | nil => rfl
+  | cons point points ih =>
+      have steps := (binaryPointMulFullCost_spec 254 scalar.val
+        (pointHornerWithCost scalar points).1).2.2
+      simp only [pointHornerWithCost, List.length_cons]
+      omega
+
+/-- The target computation executes one additional scalar multiplication. -/
+theorem outputTargetPointsWithCost_scalarOperations [FieldCertificate]
+    (point : Point) (free : List Point) :
+    (outputTargetPointsWithCost point free).2.scalarOperations = 1016 * (free.length + 1) := by
+  have tail := pointHornerWithCost_scalarOperations radix free
+  have last := (binaryPointMulFullCost_spec 254 radix.val
+    (pointHornerWithCost radix free).1).2.2
+  simp only [outputTargetPointsWithCost]
+  omega
+
+private theorem homogeneousRowsWithCost_scalarOperations [FieldCertificate]
+    (points : List Point) (scales : List NonZeroBase) :
+    (homogeneousRowsWithCost points scales).2.scalarOperations = 0 := by
+  induction points generalizing scales with
+  | nil => rfl
+  | cons point points ih =>
+      cases scales with
+      | nil => rfl
+      | cons scale scales =>
+          simp only [homogeneousRowsWithCost, Cost.add, ih]
+          cases point <;> rfl
+
+/-- The complete output-target computation counts all 91 scalar multiplications. -/
+theorem outputTargetsWithCost_scalarOperations [FieldCertificate]
+    (point : Point) (free : Vector Point 90)
+    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
+    (outputTargetsWithCost point free scales).2.scalarOperations = 92456 := by
+  simp only [outputTargetsWithCost, Cost.add, outputTargetPointsWithCost_scalarOperations,
+    homogeneousRowsWithCost_scalarOperations, Vector.length_toList]
 
 /-- This fold counts one field multiplication, one field sum, and one list read per bit. -/
 def fromBitsWithCost : List BaseField → BaseField × Cost

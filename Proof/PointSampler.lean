@@ -120,6 +120,29 @@ theorem binaryPointMulWithCost_spec [FieldCertificate] (rounds scalar : Nat) (po
       all_goals constructor
       all_goals first | exact True.intro | omega
 
+/-- This algorithm counts group additions and scalar-loop operations separately.
+Each round charges division, remainder, a parity test, and one round step. -/
+def binaryPointMulFullCost [FieldCertificate] : Nat → Nat → Point → Point × Nat × Nat
+  | 0, _, _ => (0, 0, 0)
+  | rounds + 1, scalar, point =>
+      let half := binaryPointMulFullCost rounds (scalar / 2) point
+      let doubled := half.1 + half.1
+      if scalar % 2 = 1 then (doubled + point, half.2.1 + 2, half.2.2 + 4)
+      else (doubled, half.2.1 + 1, half.2.2 + 4)
+
+theorem binaryPointMulFullCost_spec [FieldCertificate] (rounds scalar : Nat) (point : Point) :
+    (binaryPointMulFullCost rounds scalar point).1 = binaryPointMul rounds scalar point ∧
+      (binaryPointMulFullCost rounds scalar point).2.1 ≤ 2 * rounds ∧
+      (binaryPointMulFullCost rounds scalar point).2.2 = 4 * rounds := by
+  induction rounds generalizing scalar with
+  | zero => simp [binaryPointMulFullCost, binaryPointMul]
+  | succ rounds ih =>
+      obtain ⟨value, additions, operations⟩ := ih (scalar / 2)
+      by_cases odd : scalar % 2 = 1
+      all_goals simp only [binaryPointMulFullCost, binaryPointMul, odd,
+        ite_true, ite_false, value]
+      all_goals exact ⟨trivial, by omega, by omega⟩
+
 /-- The bounded binary algorithm computes natural-number multiplication. -/
 theorem binaryPointMul_eq [FieldCertificate] (rounds scalar : Nat) (point : Point)
     (bound : scalar < 2 ^ rounds) : binaryPointMul rounds scalar point = scalar • point := by

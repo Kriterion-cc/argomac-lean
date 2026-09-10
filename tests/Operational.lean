@@ -1,4 +1,4 @@
-import Proof.SimulatorMachineCost
+import Proof.SimulatorPrefixCost
 import Proof.SimulatorCutoff
 import Proof.SimulatorFiniteArithmetic
 
@@ -44,3 +44,20 @@ example : (cutoff 3 2).run bitSource 0 = ((some ⟨2, by decide⟩, 2), 4) := by
 #print axioms Program.cutoff_failure
 #print axioms Program.cutoff_bit_bound
 #print axioms Cost.executeCost_budget
+
+private def failingBits (width : Nat) (seed : Nat) : Fin (2 ^ width) × Nat :=
+  (⟨if seed = 0 then 0 else 2 ^ width - 1, by
+    split <;> have := Nat.two_pow_pos width <;> omega⟩, seed + 1)
+
+private def twoDrawTrace : Program combinedSpec Unit 2 :=
+  .query (.inr (.fixedForward fixedIndex 0)) fun _ =>
+  .query (.inr (.fixedForward fixedIndex 1)) fun _ => .pure ()
+
+private def failedPrefix :=
+  let result := Cost.executeCutoffCost failingBits 2 twoDrawTrace emptyState 0 0
+  (result.1.1.isNone, result.1.2, result.2)
+
+/-- The failed second draw retains the first request charge and all fair-bit reads. -/
+example : failedPrefix = (true, 3, 2, 31, 385) := by decide
+#print axioms Cost.executeCutoffCost_correct
+#print axioms Cost.executeCutoffCost_budget

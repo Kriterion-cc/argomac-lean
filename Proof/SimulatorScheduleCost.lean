@@ -595,7 +595,8 @@ def outputTargetsVectorWithCost [FieldCertificate] [GroupCertificate]
   let result := outputTargetsWithCost point free scales
   (⟨result.1, by rw [outputTargetsWithCost_value]; exact (outputTargets point free scales.get).size_toArray⟩,
     result.2.groupAdditions + result.2.groupNegations + result.2.fieldAdditions +
-      result.2.fieldMultiplications + result.2.fieldDivisions + result.2.elements)
+      result.2.fieldMultiplications + result.2.fieldDivisions + result.2.elements +
+      result.2.scalarOperations)
 
 theorem outputTargetsVectorWithCost_value [FieldCertificate] [GroupCertificate]
     (point : Point) (free : Vector Point 90)
@@ -607,8 +608,9 @@ theorem outputTargetsVectorWithCost_value [FieldCertificate] [GroupCertificate]
 theorem outputTargetsVectorWithCost_bound [FieldCertificate] [GroupCertificate]
     (point : Point) (free : Vector Point 90)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (outputTargetsVectorWithCost point free scales).2 ≤ 47410 := by
+    (outputTargetsVectorWithCost point free scales).2 ≤ 139866 := by
   obtain ⟨ga, gn, fa, fm, fd, elements⟩ := outputTargetsWithCost_bound point free scales
+  have scalar := outputTargetsWithCost_scalarOperations point free scales
   simp only [outputTargetsVectorWithCost]
   omega
 
@@ -634,7 +636,7 @@ theorem selectedPointsWithCost_bound [FieldCertificate] [GroupCertificate]
     (state : CircuitSimulatorState) (tables : PointTables state.points)
     (input : AffineInput) (point : Point) (free : Vector Point 90)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (selectedPointsWithCost state tables input point free scales).2 ≤ 3142411 := by
+    (selectedPointsWithCost state tables input point free scales).2 ≤ 3234867 := by
   have targets := outputTargetsVectorWithCost_bound point free scales
   have rows := pointRowsRetargetWithCost_bound tables.rows input
     (outputTargetsVectorWithCost point free scales).1
@@ -1162,7 +1164,7 @@ theorem prepareWithCost_bound [FieldCertificate] [GroupCertificate]
     (state : CircuitSimulatorState) (tables : SimulatorTables state)
     (input : AffineInput) (point : Point) (free : Vector Point 90)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (prepareWithCost state tables input point free scales).2 ≤ 3300000 := by
+    (prepareWithCost state tables input point free scales).2 ≤ 3400000 := by
   have curve := prepareCurveWithCost_bound state.curve input state.bridgeKey tables.curve
   have targets := outputTargetsVectorWithCost_bound point free scales
   have rows := prepareRowsWithCost_bound tables.rows input

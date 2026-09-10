@@ -159,7 +159,7 @@ theorem Program.cutoff_failure {oracle : OracleSpec.{0, 0}} {A State : Type} {bu
     ((tsub_le_tsub_left lower 1).trans
       (loss_pow_le _ (pow_le_one₀ (zero_le _) (by norm_num)) budget))
 
-private theorem optional_bit_bound {A B Seed : Type}
+theorem optional_bit_bound {A B Seed : Type}
     (random : (width : Nat) → Seed → Fin (2 ^ width) × Seed)
     (source : BitCode (Option A)) (next : A → BitCode (Option B))
     (first second : Nat) (left : ∀ seed, (source.run random seed).2 ≤ first)
@@ -177,7 +177,7 @@ def drawSizeLe {A : Type} (maximum : Nat) : Draw A → Prop
   | .pure _ => True
   | .uniform size _ _ => size ≤ maximum
 
-private theorem cutoffDraw_bit_bound {A Seed : Type}
+theorem cutoffDraw_bit_bound {A Seed : Type}
     (random : (width : Nat) → Seed → Fin (2 ^ width) × Seed)
     (attempts : Nat) (draw : Draw A) (bounded : drawSizeLe (2 ^ 256) draw) (seed : Seed) :
     ((cutoffDraw attempts draw).run random seed).2 ≤ 257 * attempts := by
