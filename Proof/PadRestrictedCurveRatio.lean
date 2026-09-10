@@ -88,8 +88,9 @@ theorem actualCurveProgrammedSource_guard_mass_ratio
       (partialActiveDomains gates exposed publicLabel) index))
     (fun index => exposed (rawLabelBucket index) (rawSlotBranch index.slot)) Fintype.card_pos
     priorFits residualFits
-  apply (mul_le_mul_left' factor _).trans
+  apply (mul_le_mul_right factor _).trans
   convert bound using 1
+  all_goals try rfl
   congr 1
   ext sample
   simp only [Set.mem_setOf_eq, realOracleTranscriptCompatible_iff,

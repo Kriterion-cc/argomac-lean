@@ -50,7 +50,7 @@ theorem programmed_mass_lower_of_extension [Fintype Block]
       (fun oracle => programGateSchedule {state with fixedOracle := oracle.1} schedule)).toOuterMeasure
         {programmed | PermutationTranscriptMatches programmed.fixedOracle queries} = 0
   · rw [empty, atZero]
-    exact zero_le _
+    exact bot_le
   · exact bound (Classical.choice (programGateSchedule_extension_of_mass_ne_zero state schedule queries fresh empty))
 
 set_option maxRecDepth 4096 in

@@ -67,8 +67,10 @@ theorem fixedTranscriptFactor_eq_mass [Fintype Block] [Fintype Pipeline.FixedKey
     rcases second with impossible | second
     · exact isEmptyElim impossible
     exact congrArg Sum.inr (Subtype.ext ((reference.permutation index).injective equal))
+  have empty (index) : Fintype.card (RawBucketUse gates index) = 0 :=
+    @Fintype.card_eq_zero _ _ ⟨fun use => Empty.elim use.1.1⟩
   have mass := rawFixedTranscript_mass gates reference history compatible domains ranges
-  simpa only [RawGarblingMatches, gates, IsEmpty.forall_iff, true_and, Fintype.card_ofIsEmpty,
+  simpa only [empty, RawGarblingMatches, gates, IsEmpty.forall_iff, true_and,
     Nat.zero_add, fixedTranscriptFactor] using mass
 
 /-- Transcript concatenation imposes both sets of recorded answers. -/
@@ -344,7 +346,7 @@ theorem idealOracleTranscriptCompatible_iff_real (state : SimulatorState) (refer
         simp only [OracleTranscriptCompatible, idealOracleHandler, oracleHandlerFor, Garbling.oracleHandler]
       all_goals
         apply and_congr
-        · simp only [fixed, enc, hash]
+        · simp only [fixed, enc, hash] <;> rfl
         · exact inductionHypothesis _ fixed enc hash
 
 /-- This active-slot factor uses the actual query count before encoding. -/
@@ -383,11 +385,11 @@ theorem activeIdealSlotFactor_le (N Q prior residual : Nat) (positive : 0 < N)
     exact_mod_cast (Nat.descFactorial_le_pow (N - prior) Q).trans
       (Nat.pow_le_pow_left (Nat.sub_le N prior) Q)
   have ratio : ((N - prior).descFactorial Q : ℝ≥0∞) * ((N : ℝ≥0∞) ^ Q)⁻¹ ≤ 1 := by
-    apply (mul_le_mul_right' count _).trans
+    apply (mul_le_mul_left count _).trans
     rw [ENNReal.mul_inv_cancel
       (ENNReal.pow_ne_zero (Nat.cast_ne_zero.mpr (Nat.ne_of_gt positive)) _)
       (ENNReal.pow_ne_top (ENNReal.natCast_ne_top _))]
-  have bound := mul_le_mul_right' ratio
+  have bound := mul_le_mul_left ratio
     (((N - (Q + residual)).factorial : ℝ≥0∞) / N.factorial)
   simpa only [one_mul, ← mul_div_assoc] using bound
 
@@ -451,7 +453,7 @@ theorem circuitSharedInactive_adaptiveFactor_mass_ge
             {randomness with fixedKeyOracle := sample.1} transcript} := by
   apply le_trans _ (circuitSharedInactive_realTranscript_mass_ge keys slopes lifts tables selected
     wire shift publicLabel randomness transcript compatible offsetsDistinct referenceActive)
-  exact mul_le_mul_left' (adaptiveIdealPermutationFactor_le _ _ _ _ _ Fintype.card_pos
+  exact mul_le_mul_right (adaptiveIdealPermutationFactor_le _ _ _ _ _ Fintype.card_pos
     priorFits residualFits) _
 
 end

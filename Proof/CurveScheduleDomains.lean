@@ -131,6 +131,7 @@ theorem curveGateProgramRecords_domains
   rcases index with ⟨kind, bit, slot⟩
   cases kind <;>
     simp [isCurveIndex, partialActiveDomains, curveOnlyExposed, rawActiveDomains, rawLabelBucket]
+  split_ifs <;> simp_all
 
 /-- The invalid schedule writes one domain in each selected curve bucket. -/
 theorem curveGateProgramRecords_exposedCount [Fintype Block]
@@ -145,5 +146,6 @@ theorem curveGateProgramRecords_exposedCount [Fintype Block]
   rw [curveGateProgramRecords_domainCount curve points input curveMac pointMac keys slopes lifts tables]
   rcases index with ⟨kind, bit, slot⟩
   cases kind <;> simp [isCurveIndex, curveOnlyExposed, rawLabelBucket]
+  split_ifs <;> simp_all
 
 end Kriterion.ArgoMAC.Security

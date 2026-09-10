@@ -169,10 +169,10 @@ theorem fullSourceGood_curve_mass_ge
       (PMF.uniformOfFintype _).toOuterMeasure event) eventEq
   have bound := bound.trans_eq rightEq
   apply le_trans _ bound
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   apply ENNReal.tsum_le_tsum
   intro hash
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   by_cases compatible : OracleTranscriptCompatible Garbling.oracleHandler
     {randomness with hashOracle := hash} (before ++ after)
   · have changed : OracleTranscriptCompatible Garbling.oracleHandler

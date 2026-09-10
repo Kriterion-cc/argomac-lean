@@ -261,7 +261,6 @@ theorem uniform_affine_nestedCoordinate
       PMF.uniformOfFintype BaseField := by
   have law := congrArg (fun distribution => distribution.map (target ∘ Prod.fst))
     (map_uniformOfFintype_equivBetween (swapNestedSeed row position))
-  dsimp only at law
   rw [PMF.map_comp] at law
   have right : (PMF.uniformOfFintype ((Rows → Positions → BaseField) × BaseField)).map
       (target ∘ Prod.fst) =
@@ -332,7 +331,7 @@ private theorem uniform_function_eval {Index Value : Type*}
       PMF.uniformOfFintype Value := by
   have law := congrArg (fun distribution => distribution.map Prod.fst)
     (map_uniformOfFintype_equivBetween (Equiv.piSplitAt index (fun _ => Value)))
-  simpa only [PMF.map_comp, map_uniform_prod_fst] using law
+  simpa only [PMF.map_comp, map_uniform_prod_fst, Function.comp_def, Equiv.piSplitAt_apply] using law
 
 private theorem uniform_nested_eval {Rows Positions : Type*}
     [Fintype Rows] [Fintype Positions] [DecidableEq Rows] [DecidableEq Positions]
@@ -341,7 +340,6 @@ private theorem uniform_nested_eval {Rows Positions : Type*}
       (fun values => values row position) = PMF.uniformOfFintype BaseField := by
   have law := congrArg (fun distribution => distribution.map (fun values => values position))
     (uniform_function_eval (Value := Positions → BaseField) row)
-  dsimp only at law
   rw [PMF.map_comp, uniform_function_eval] at law
   exact law
 
@@ -469,7 +467,6 @@ private theorem uniform_nested_quotient_eval {Rows Positions : Type*}
       (fun values => values row position) = PMF.uniformOfFintype HashLiftQuotient := by
   have law := congrArg (fun distribution => distribution.map (fun values => values position))
     (uniform_function_eval (Value := Positions → HashLiftQuotient) row)
-  dsimp only at law
   rw [PMF.map_comp, uniform_function_eval] at law
   exact law
 
@@ -626,7 +623,6 @@ theorem RowPublicSample.target_quotient_uniform (visible : VisibleRowSample)
       have projection := congrArg (fun distribution => distribution.map Prod.fst)
         (map_uniform_prod_snd (First := HiddenGateSample 4)
           (Second := HiddenGateSample 4 × HiddenGateSample 5))
-      dsimp only at projection
       rw [PMF.map_comp, map_uniform_prod_fst] at projection
       have law := YPublicSample.target_quotient_uniform visible.2.1 input target.y gate position
       rw [← projection, PMF.map_comp] at law
@@ -635,7 +631,6 @@ theorem RowPublicSample.target_quotient_uniform (visible : VisibleRowSample)
       have projection := congrArg (fun distribution => distribution.map Prod.snd)
         (map_uniform_prod_snd (First := HiddenGateSample 4)
           (Second := HiddenGateSample 4 × HiddenGateSample 5))
-      dsimp only at projection
       rw [PMF.map_comp, map_uniform_prod_snd] at projection
       have law := ZPublicSample.target_quotient_uniform visible.2.2 input target.z gate position
       rw [← projection, PMF.map_comp] at law
@@ -676,7 +671,6 @@ theorem selectedPointBlock_mass_le [Fintype Block]
     exact bound
   | pad index =>
     have fields := congrArg (fun distribution => distribution.map Prod.fst) law
-    dsimp only at fields
     rw [PMF.map_comp, map_uniform_prod_fst] at fields
     have bound := targetPadBlocks_mass_le (visible.gateTable family position) index block
     rw [← fields, PMF.toOuterMeasure_map_apply, Set.preimage_setOf_eq] at bound
@@ -701,7 +695,6 @@ theorem uniform_nestedCoordinate_shift
     rw [Function.update_self, Function.update_self, shiftLaw]
     ring
   have negative := congrArg (fun distribution => distribution.map (fun value : BaseField => -value)) law
-  dsimp only at negative
   rw [PMF.map_comp] at negative
   have uniformNeg := map_uniformOfFintype_equivBetween (Equiv.neg BaseField)
   change (PMF.uniformOfFintype BaseField).map (fun value => -value) = _ at uniformNeg
@@ -1027,7 +1020,7 @@ theorem XPublicSample.branchTarget_false_source (sample : XPublicSample)
   dsimp only [xMaskSelectedEquiv]
   fin_cases gate <;>
     dsimp only [XPublicSample.branchTarget, XPublicSample.branchSlope, maskShiftEquiv,
-      Equiv.coe_fn_symm_mk]
+      Equiv.coe_fn_symm_mk, Equiv.symm, Equiv.coe_fn_mk]
   all_goals simp [XPublicSample.retargetMask]; split_ifs <;> ring_nf
 
 /-- The Y false target is the actual reconstructed mask entry. -/
@@ -1042,7 +1035,7 @@ theorem YPublicSample.branchTarget_false_source (sample : YPublicSample)
   dsimp only [yMaskSelectedEquiv]
   fin_cases gate <;>
     dsimp only [YPublicSample.branchTarget, YPublicSample.branchSlope, maskShiftEquiv,
-      Equiv.coe_fn_symm_mk]
+      Equiv.coe_fn_symm_mk, Equiv.symm, Equiv.coe_fn_mk]
   all_goals simp [YPublicSample.retargetMask]; split_ifs <;> ring_nf
 
 /-- The Z false target is the actual reconstructed mask entry. -/
@@ -1057,7 +1050,7 @@ theorem ZPublicSample.branchTarget_false_source (sample : ZPublicSample)
   dsimp only [zMaskSelectedEquiv]
   fin_cases gate <;>
     dsimp only [ZPublicSample.branchTarget, ZPublicSample.branchSlope, maskShiftEquiv,
-      Equiv.coe_fn_symm_mk]
+      Equiv.coe_fn_symm_mk, Equiv.symm, Equiv.coe_fn_mk]
   all_goals simp [ZPublicSample.retargetMask]; split_ifs <;> ring_nf
 
 /-- The Curve false target is the actual reconstructed mask entry. -/
@@ -1072,7 +1065,7 @@ theorem CurvePublicSample.branchTarget_false_source (sample : CurvePublicSample)
   dsimp only [curveMaskShiftEquiv]
   fin_cases gate <;>
     dsimp only [CurvePublicSample.branchTarget, CurvePublicSample.branchSlope, maskShiftEquiv,
-      Equiv.coe_fn_symm_mk]
+      Equiv.coe_fn_symm_mk, Equiv.symm, Equiv.coe_fn_mk]
   all_goals simp [CurvePublicSample.retargetMask, Equiv.addLeft]; split_ifs <;> ring_nf
 
 /-- The true target adds the actual branch slope to the false target. -/
@@ -1273,7 +1266,6 @@ theorem RowPublicSample.branchTarget_quotient_uniform (visible : VisibleRowSampl
       have projection := congrArg (fun distribution => distribution.map Prod.fst)
         (map_uniform_prod_snd (First := HiddenGateSample 4)
           (Second := HiddenGateSample 4 × HiddenGateSample 5))
-      dsimp only at projection
       rw [PMF.map_comp, map_uniform_prod_fst] at projection
       have law := YPublicSample.branchTarget_quotient_uniform visible.2.1
         ![rows.y.x, rows.y.xSquared, rows.y.ySquared] input target.y gate position
@@ -1284,7 +1276,6 @@ theorem RowPublicSample.branchTarget_quotient_uniform (visible : VisibleRowSampl
       have projection := congrArg (fun distribution => distribution.map Prod.snd)
         (map_uniform_prod_snd (First := HiddenGateSample 4)
           (Second := HiddenGateSample 4 × HiddenGateSample 5))
-      dsimp only at projection
       rw [PMF.map_comp, map_uniform_prod_snd] at projection
       have law := ZPublicSample.branchTarget_quotient_uniform visible.2.2
         ![rows.z.y, rows.z.xy, rows.z.xSquared, rows.z.ySquared] input target.z gate position
@@ -1326,7 +1317,6 @@ theorem pointBranchBlock_mass_le [Fintype Block] (visible : VisibleRowSample)
   | pad index =>
     have law := RowPublicSample.branchTarget_quotient_uniform visible rows input target family position true
     have fields := congrArg (fun distribution => distribution.map Prod.fst) law
-    dsimp only at fields
     rw [PMF.map_comp, map_uniform_prod_fst] at fields
     have bound := targetPadBlocks_mass_le (visible.gateTable family position) index block
     rw [← fields, PMF.toOuterMeasure_map_apply, Set.preimage_setOf_eq] at bound
@@ -1354,13 +1344,13 @@ theorem pointBranchBlock_eq_selectedPointBlock (visible : VisibleRowSample)
     pointBranchBlock visible hidden rows input target family position slot =
       selectedPointBlock visible hidden input target family position slot := by
   rcases family with gate | (gate | gate) <;> cases slot <;>
-    simp only [PointGateFamily.selectedBit] at active <;>
+    simp only [PointGateFamily.selectedBit, Nat.lt_succ_iff] at active <;>
     simp [pointBranchBlock, selectedPointBlock, RowPublicSample.branchTargetQuotient,
       RowPublicSample.gateTargetQuotient, RowPublicSample.retargetMask,
       RowPublicSample.visibleHiddenEquiv, XPublicSample.branchTarget,
       YPublicSample.branchTarget, ZPublicSample.branchTarget, active]
   all_goals try rw [active]
-  all_goals congr 3 <;> simp
+  all_goals congr 3 <;> first | rfl | (try simp [Nat.lt_succ_iff, active])
 
 private theorem uniform_two_evaluations {Index Value : Type*}
     [Fintype Index] [DecidableEq Index] [Fintype Value] [Nonempty Value]
@@ -1372,7 +1362,6 @@ private theorem uniform_two_evaluations {Index Value : Type*}
       (fun pair : Value × ({index : Index // index ≠ first} → Value) =>
         (pair.1, pair.2 other)))
     (map_uniformOfFintype_equivBetween (Equiv.piSplitAt first (fun _ => Value)))
-  dsimp only at law
   rw [PMF.map_comp] at law
   have productLaw := uniform_product_map
     (A := Value) (B := {index : Index // index ≠ first} → Value)
@@ -1399,7 +1388,7 @@ private theorem uniform_pair_event_le {Index Source Value : Type*}
       _ ≤ ∑' sample, PMF.uniformOfFintype Source sample * density := by
         apply ENNReal.tsum_le_tsum
         intro sample
-        apply mul_le_mul_left'
+        apply mul_le_mul_right
         rw [PMF.toOuterMeasure_map_apply, Set.preimage_setOf_eq]
         exact pointwise (right sample)
       _ = _ := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
@@ -1601,11 +1590,11 @@ theorem pointBranchCollision_mass_le_blocks [Fintype Block]
   apply bound.trans
   simp only [Finset.sum_const, Finset.card_univ, pointRowPair_card, nsmul_eq_mul,
     ← Finset.mul_sum, Fintype.card_fin]
-  have bound := mul_le_mul_left' activeSlotDensity_sum_le
+  have bound := mul_le_mul_right activeSlotDensity_sum_le
     (13 * 254 * 4095 : ENNReal)
   convert bound using 1 <;>
     norm_num [PointGateFamily, coordinateBitCount, Fintype.card_sum, Fintype.card_fin,
-      mul_assoc, ← mul_div_assoc]; ring
+      mul_assoc, ← mul_div_assoc] <;> first | rfl | ring
 
 private theorem uniform_snd_event_le {A B : Type*}
     [Fintype A] [Fintype B] [Nonempty A] [Nonempty B] [Nonempty (A × B)]
@@ -1641,7 +1630,7 @@ private theorem outerMeasure_bind_le {A B : Type*} (source : PMF A)
   rw [PMF.toOuterMeasure_bind_apply]
   calc
     _ ≤ ∑' sample, source sample * bound :=
-      ENNReal.tsum_le_tsum fun sample => mul_le_mul_left' (pointwise sample) _
+      ENNReal.tsum_le_tsum fun sample => mul_le_mul_right (pointwise sample) _
     _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
 
 private theorem four_bind_event_le {A B C D Result : Type*}
@@ -1673,7 +1662,7 @@ private theorem option_decide_mass_le {Source Value : Type*} (source : PMF Sourc
   rw [PMF.toOuterMeasure_map_apply]
   cases outcome with
   | none => simp only [Option.elim, Set.preimage_setOf_eq, Bool.false_eq_true, Set.setOf_false,
-      MeasureTheory.measure_empty]; exact zero_le _
+      MeasureTheory.measure_empty]; exact bot_le
   | some value => simpa only [Option.elim, Set.preimage_setOf_eq, decide_eq_true_eq] using bound value
 
 variable {Aux : Type uAux}

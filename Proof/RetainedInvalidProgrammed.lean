@@ -34,7 +34,6 @@ private theorem sourceMass_eq [FieldCertificate] [GroupCertificate] [Fintype Blo
     rest.algebraic.field.bridgeKey rest.algebraic.field.curveR1 rest.algebraic.field.curveR2
     rest.algebraic.field.curveMask rest.reference source lifts
     (inputSelectedLabelBit input) (inputMacCoordinateEquiv (key.encodeAffine input)) history) source
-  dsimp only at eventEq
   have moved := congrArg
     (@PMF.uniformOfFintype (((PermutationOracle Pipeline.FixedKeyIndex Block) × InputMacKey) ×
       ((PermutationOracle EncPRF.PermutationIndex Block) × EncPRF.HashOracle)) _ nonempty).toOuterMeasure eventEq

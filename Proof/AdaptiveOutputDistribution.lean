@@ -138,7 +138,7 @@ theorem adaptiveOutput_normalize [FieldCertificate] [GroupCertificate]
     (fun selected randomness => observe selected (fullSelectedOutput scalar selected.1
       (nonzeroPointTapeEmbed construction
         (garblingRandomnessPointEquiv construction randomness))) (actualOutputRest randomness))
-  simpa only [← actualSelectedOutput_normalize, selectedOutputNormalization_rest] using same
+  simpa only [← actualSelectedOutput_normalize, selectedOutputNormalization_rest, randomTape] using same
 
 private theorem outputRowSourceEquiv_rest [FieldCertificate]
     (source : OffsetRandomness × GarblingOffsetRest) :
@@ -267,7 +267,7 @@ theorem actualAdaptiveMaskRun_retarget [FieldCertificate] [GroupCertificate]
   simp only [PMF.bind_bind, PMF.bind_map] at same
   dsimp only [Function.comp_def] at same
   simp only [table, publicMaskTable_retarget] at same
-  simpa only [rows, retarget_actualSelectedOutput] using same
+  simpa only [rows, retarget_actualSelectedOutput, actualAdaptiveMaskRun] using same
 
 private theorem bind_tagged {Input Sample Aux Output Observation : Type*}
     (samples : PMF Sample) (choose : Sample → PMF (Input × Aux))

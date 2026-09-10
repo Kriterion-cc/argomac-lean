@@ -146,7 +146,6 @@ theorem retainedRealSource_fullTag_sum_le [FieldCertificate] [GroupCertificate] 
         (Fintype.card (EncPRF.PermutationIndex → Block) : ℝ≥0∞)⁻¹ *
           linkedHiddenSourceMass rest (retainedFullSource rest tag) tag.1 input mac transcript
       else 0) ≤ retainedRealPublicMass rest outputKeys table input mac transcript := by
-  classical
   let samples := PMF.uniformOfFintype ((PermutationOracle Pipeline.FixedKeyIndex Block) × InputMacKey)
   let tagMap := fun sample : (PermutationOracle Pipeline.FixedKeyIndex Block) × InputMacKey =>
     actualFullCircuitSource outputKeys rest.algebraic.point.pointRandomness

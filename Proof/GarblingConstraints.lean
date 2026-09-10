@@ -38,6 +38,7 @@ theorem fixedPadLift_eq_iff (oracle : PermutationOracle Pipeline.FixedKeyIndex B
   constructor
   · intro equal
     have shifted := congrArg (fun value => value ^^^ label) equal
+    change _ = ciphertextBlockEquiv pad slot ^^^ label at shifted
     simpa only [BitVec.xor_assoc, BitVec.xor_self, BitVec.xor_zero] using shifted
   · intro equal
     rw [equal, BitVec.xor_assoc, BitVec.xor_self, BitVec.xor_zero]

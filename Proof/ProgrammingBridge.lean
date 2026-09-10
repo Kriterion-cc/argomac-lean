@@ -183,14 +183,14 @@ theorem programRetargetedBiquadraticRow_evaluate
   dsimp only at evaluated ⊢
   rcases evaluated with ⟨xValue, yValue, zValue⟩
   constructor
-  · simpa only [BiquadraticRowRequest.retarget,
+  · simpa only [BiquadraticRowRequest.retarget, BiquadraticRowRequest.schedule, BiquadraticRowRequest.table,
       BiquadraticXRequest.retarget_table,
       BiquadraticXRequest.retarget_result] using xValue
   · constructor
-    · simpa only [BiquadraticRowRequest.retarget,
+    · simpa only [BiquadraticRowRequest.retarget, BiquadraticRowRequest.schedule, BiquadraticRowRequest.table,
         BiquadraticYRequest.retarget_table,
         BiquadraticYRequest.retarget_result] using yValue
-    · simpa only [BiquadraticRowRequest.retarget,
+    · simpa only [BiquadraticRowRequest.retarget, BiquadraticRowRequest.schedule, BiquadraticRowRequest.table,
         BiquadraticZRequest.retarget_table,
         BiquadraticZRequest.retarget_result] using zValue
 

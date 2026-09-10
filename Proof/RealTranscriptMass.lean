@@ -662,7 +662,7 @@ theorem rawSharedInactive_residual_mass_ge :
           (rawMixedLabels selected publicLabel wire shift sample.2)) sample.1 ∧
             PermutationTranscriptMatches sample.1 history} := by
   classical
-  apply (mul_le_mul_right'
+  apply (mul_le_mul_left
     (rawInactiveRetained_mass_ge gates selected wire shift reference history) _).trans
   rw [uniform_prod_eq_bind, PMF.toOuterMeasure_bind_apply, PMF.toOuterMeasure_apply,
     ← ENNReal.tsum_mul_right]

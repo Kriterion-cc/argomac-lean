@@ -529,6 +529,7 @@ theorem runOracleProgramsBoundedBridgeTraceCoupling_disagreement_le_bad
       (runOracleProgramsBoundedBridgeTraceCoupling handlerOne handlerTwo related
         handlerRelated first bridgeCoupling second stateOne stateTwo statesRelated).toOuterMeasure
           { output | output.2 = true } := by
+  classical
   rw [PMF.toOuterMeasure_apply, PMF.toOuterMeasure_apply]
   apply ENNReal.tsum_le_tsum
   intro output
@@ -544,8 +545,8 @@ theorem runOracleProgramsBoundedBridgeTraceCoupling_disagreement_le_bad
       rw [Set.indicator_of_mem
         (show output ∈ { output | output.2 = true } from bad)]
     · rw [(PMF.apply_eq_zero_iff _ _).mpr member]
-      exact zero_le _
+      exact bot_le
   · rw [Set.indicator_of_notMem different]
-    exact zero_le _
+    exact bot_le
 
 end Kriterion.ArgoMAC.Security

@@ -18,16 +18,8 @@ theorem map_uniformOfFintype_equivBetween
     [Fintype Source] [Nonempty Source] [Fintype Target] [Nonempty Target]
     (equivalence : Source ≃ Target) :
     (PMF.uniformOfFintype Source).map equivalence =
-      PMF.uniformOfFintype Target := by
-  classical
-  apply PMF.ext
-  intro output
-  rw [PMF.map_apply]
-  simp only [PMF.uniformOfFintype_apply]
-  simp only [← equivalence.symm_apply_eq, eq_comm]
-  rw [Fintype.card_congr equivalence]
-  exact (tsum_ite_eq (equivalence.symm output)
-    (Inv.inv (Fintype.card Target : ENNReal))).symm
+      PMF.uniformOfFintype Target :=
+  uniform_map_equiv equivalence
 
 /-- The second part of a finite uniform product is uniform. -/
 theorem map_uniform_prod_snd
@@ -35,38 +27,16 @@ theorem map_uniform_prod_snd
     [Fintype First] [Nonempty First] [Fintype Second] [Nonempty Second] :
     (PMF.uniformOfFintype (First × Second)).map Prod.snd =
       PMF.uniformOfFintype Second := by
-  classical
-  apply PMF.ext
-  intro output
-  rw [PMF.map_apply]
-  simp only [PMF.uniformOfFintype_apply, Fintype.card_prod]
-  rw [ENNReal.tsum_prod']
-  push_cast
-  rw [ENNReal.mul_inv] <;> try simp [Fintype.card_ne_zero]
-  rw [tsum_eq_single output]
-  · simp only [if_pos]
-    rw [← mul_assoc, ENNReal.mul_inv_cancel]
-    · simp
-    · exact_mod_cast Fintype.card_ne_zero
-    · simp
-  · intro other different
-    simp [Ne.symm different]
+  rw [← uniform_map_equiv (Equiv.prodComm Second First), PMF.map_comp]
+  exact uniform_map_fst
 
 /-- The first part of a finite uniform product is uniform. -/
 theorem map_uniform_prod_fst
     {First : Type uSource} {Second : Type uTarget}
     [Fintype First] [Nonempty First] [Fintype Second] [Nonempty Second] :
     (PMF.uniformOfFintype (First × Second)).map Prod.fst =
-      PMF.uniformOfFintype First := by
-  calc
-    (PMF.uniformOfFintype (First × Second)).map Prod.fst =
-        ((PMF.uniformOfFintype (First × Second)).map
-          (Equiv.prodComm First Second)).map Prod.snd := by
-            rw [PMF.map_comp]
-            rfl
-    _ = (PMF.uniformOfFintype (Second × First)).map Prod.snd := by
-      rw [map_uniformOfFintype_equivBetween]
-    _ = PMF.uniformOfFintype First := map_uniform_prod_snd
+      PMF.uniformOfFintype First :=
+  uniform_map_fst
 
 /-- A function that ignores the second uniform part keeps its first marginal. -/
 theorem map_uniform_prod_ignore_snd
@@ -1623,7 +1593,7 @@ theorem fixedHashToField_eq_goodResidue
   change ((BitAdaptor.hashBytes
     (Pipeline.fixedKeyPermutations oracle location window) label).toNat : BaseField) =
       (good.val : BaseField)
-  simpa [fixedDaviesMeyerHashLift] using
+  simpa [fixedDaviesMeyerHashLift, BitVec.equivFin] using
     congrArg (fun value : Nat => (value : BaseField)) valueEqual
 
 /-- A function of product values equals a product of functions. -/

@@ -50,10 +50,10 @@ theorem hiddenLinkBad_source_mass_le {Source : Type*} (samples : PMF Source)
       apply ENNReal.tsum_le_tsum
       intro source
       by_cases member : source ∈ samples.support
-      · apply mul_le_mul_left'
+      · apply mul_le_mul_right
         apply (hiddenLinkBad_fixed_mass_le (curveResult source) (transcript source)).trans
         exact ENNReal.div_le_div_right
-          (add_le_add_left (by exact_mod_cast lengthBound source member) 1) _
+          (add_le_add_right (by exact_mod_cast lengthBound source member) 1) _
       · have zero : samples source = 0 := by rwa [PMF.apply_eq_zero_iff]
         simp [zero]
     _ = _ := by rw [ENNReal.tsum_mul_right, samples.tsum_coe, one_mul]

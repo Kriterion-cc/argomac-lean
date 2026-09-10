@@ -22,12 +22,10 @@ universe uKey uCounter uCTPRFIndex uEncPRFIndex uHashInput uCPAAux uSample
 /-- These are the standard assumptions in `thm:gc_opt_final`. -/
 abbrev BaBeAssumptions
     (CTPRFIndex : Type uCTPRFIndex) (EncPRFIndex : Type uEncPRFIndex)
-    (HashInput : Type uHashInput)
     (Key : Type uKey) (Counter : Type uCounter)
     (CPAAux : Type uCPAAux)
-    [Fintype CTPRFIndex] [Fintype EncPRFIndex] [Fintype HashInput]
-    [DecidableEq HashInput] :=
-  StandardAssumptions CTPRFIndex EncPRFIndex Block HashInput (Block × Block)
+    [Fintype CTPRFIndex] [Fintype EncPRFIndex] :=
+  StandardAssumptions CTPRFIndex EncPRFIndex Block
     Key Block Block Counter CPAAux
 
 /-- The fixed AES block size in the paper is 128 bits. -/
@@ -66,7 +64,7 @@ theorem uniformBlockFinsetMass_le (forbidden : Finset Block) (count : Nat)
     (PMF.uniformOfFintype Block).toOuterMeasure (forbidden : Set Block) ≤
       (count : ENNReal) * Inv.inv (↑(2 ^ blockBits : Nat) : ENNReal) := by
   rw [uniformBlockFinsetMass]
-  exact mul_le_mul_right' (by exact_mod_cast cardBound) _
+  exact mul_le_mul_left (by exact_mod_cast cardBound) _
 
 /-- The event for either of two forbidden blocks has at most `2 / 2^128` mass. -/
 theorem uniformBlockTwoPointEvent_le (first second : Block) :
@@ -134,7 +132,7 @@ theorem oracleProgramTrace_collisionScheduleMass_le
       simpa using scheduleBound
     _ ≤ (budget * count : ENNReal) *
         Inv.inv (↑(2 ^ blockBits : Nat) : ENNReal) := by
-      apply mul_le_mul_right'
+      apply mul_le_mul_left
       exact_mod_cast countBound
 
 /-- A Boolean coupling bounds advantage by its two disagreement outcomes. -/
@@ -308,7 +306,7 @@ theorem traceTransportCoupling_fst
     (transport : Bool × FirstTrace → Bool × SecondTrace) :
     (traceTransportCoupling firstTraced transport).map Prod.fst = firstTraced := by
   rw [traceTransportCoupling, PMF.map_comp]
-  simpa [Function.comp_def] using PMF.map_id firstTraced
+  exact PMF.map_id firstTraced
 
 theorem traceTransportCoupling_snd
     {FirstTrace SecondTrace : Type uSample}
@@ -809,18 +807,8 @@ theorem bucketedCTPRFHas100Bits :
   have countBound :
       Pipeline.pointBucketCount * Pipeline.digitsPerBucket ^ 2 + Pipeline.curveBucketCount +
           4 * Pipeline.digitsPerBucket * queries ≤ permutationWork queries * 2 ^ 29 := by
-    cases queries with
-    | zero =>
-        norm_num [Pipeline.pointBucketCount, Pipeline.curveBucketCount, Pipeline.digitsPerBucket,
-          Pipeline.pointDigitAdaptorsPerOutput, Pipeline.curveDigitAdaptorCount,
-          Pipeline.bucketSlotCount, FieldMacToECMac.outputMacCount, coordinateBitCount,
-          permutationWork]
-    | succ queries =>
-        rw [permutationWork, Nat.max_eq_left (by omega : 1 ≤ queries + 1)]
-        norm_num [Pipeline.pointBucketCount, Pipeline.curveBucketCount, Pipeline.digitsPerBucket,
-          Pipeline.pointDigitAdaptorsPerOutput, Pipeline.curveDigitAdaptorCount,
-          Pipeline.bucketSlotCount, FieldMacToECMac.outputMacCount, coordinateBitCount]
-        omega
+    change 136725660 + 364 * queries ≤ max queries 1 * 536870912
+    omega
   rw [WorkPerAdvantage]
   change (((Pipeline.pointBucketCount * Pipeline.digitsPerBucket ^ 2 +
       Pipeline.curveBucketCount + 4 * Pipeline.digitsPerBucket * queries : Nat) : ℝ) /
@@ -1041,10 +1029,7 @@ set_option exponentiation.threshold 400 in
 /-- The total lift rounding term retains 100-bit arithmetic. -/
 theorem hashLiftRoundingArithmeticHas100Bits :
     WorkPerAdvantage 100 1 hashLiftRoundingError := by
-  rw [WorkPerAdvantage]
-  norm_num [hashLiftRoundingError, bitAdaptorEvaluationCount,
-    Pipeline.digitAdaptorCount, Pipeline.curveDigitAdaptorCount,
-    Pipeline.pointDigitAdaptorsPerOutput, FieldMacToECMac.outputMacCount,
-    coordinateBitCount, BN254.baseFieldModulus]
+  rw [WorkPerAdvantage, hashLiftRoundingError, bitAdaptorEvaluationCountValue]
+  norm_num [BN254.baseFieldModulus]
 
 end Kriterion.ArgoMAC.Security

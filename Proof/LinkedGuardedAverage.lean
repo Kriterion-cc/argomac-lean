@@ -48,6 +48,7 @@ theorem actualLinkedTagKey_guarded_mass_ge [Fintype Block] [Fintype BaseField] [
     randomness source lifts selected publicLabels transcript miss budget lengthBound fits
   apply le_trans _ bound
   convert law.symm.le using 1
+  · rfl
   apply tsum_congr
   intro coin
   congr 1

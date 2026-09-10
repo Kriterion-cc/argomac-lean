@@ -23,7 +23,6 @@ theorem gateSourcePhases_eq {Aux : Type}
 
 private theorem tagged_mass {A B : Type*} (distribution : PMF B) (tag : A) (value : B) :
     (distribution.map (Prod.mk tag)) (tag, value) = distribution value := by
-  classical
   simp only [PMF.map_apply, Prod.mk.injEq, true_and]
   rw [tsum_eq_single value]
   · simp
@@ -54,7 +53,6 @@ theorem gateSourcePhases_mass_factor {Aux : Type}
       OracleTranscriptCompatible idealOracleHandler
         (programSelectedGateView (transcriptFinalState idealOracleHandler (initialSourceOracle data) before)
           selected.1 (sourceInputLabels data selected.1).inputMac (view selected.1)) after then 1 else 0) := by
-  classical
   rw [gateSourcePhases_eq, tagged_mass, twoPhaseTranscript_mass_factor
     idealOracleHandler (adversary.chooseInput parameter table auxiliary)
     (fun state selected => PMF.pure
@@ -66,7 +64,6 @@ theorem gateSourcePhases_mass_factor {Aux : Type}
   simp only [twoPhaseSourceMass, PMF.toOuterMeasure_pure_apply, Set.mem_setOf_eq]
   by_cases compatible : OracleTranscriptCompatible idealOracleHandler (initialSourceOracle data) before
   · simp only [compatible, true_and, if_true]
-    split_ifs <;> rfl
   · simp only [compatible, false_and, if_false]
 
 end

@@ -26,9 +26,9 @@ theorem invalidRelativeLoss_budget (budget length size : Nat) (bounded : length 
     simp only [Nat.cast_add, ENNReal.add_div, Nat.cast_ofNat]
   rw [split]
   apply (relativeLoss_product _ _).trans
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   apply tsub_le_tsub_left
-  apply add_le_add_right
+  apply add_le_add_left
   exact ENNReal.div_le_div_right (Nat.cast_le.mpr (Nat.mul_le_mul_left 182 bounded)) _
 
 /-- A constant relative factor commutes with a guarded average. -/
@@ -72,7 +72,7 @@ theorem nonfixedRelative_mass_ge [Fintype Block] [Fintype BaseField]
   apply le_trans _ bound
   rw [guarded_constant_factor]
   have loss := invalidRelativeLoss_budget budget history.length (Fintype.card Block) bounded
-  apply le_trans (mul_le_mul_right' loss _)
+  apply le_trans (mul_le_mul_left loss _)
   exact le_of_eq (by ac_rfl)
 
 private theorem uniform_mass_nonempty {Sample : Type*} [Fintype Sample]

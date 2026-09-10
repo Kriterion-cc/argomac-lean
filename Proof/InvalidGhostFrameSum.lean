@@ -24,7 +24,7 @@ private theorem frameComparison [FieldCertificate] [GroupCertificate]
     (∑' retained, (PMF.uniformOfFintype MaskRetainedTape) retained * oldWeight retained) ≤
     ∑' retained, (PMF.uniformOfFintype MaskRetainedTape) retained * newWeight retained := by
   rw [retainedFrame_weight_sum, retainedFrame_weight_sum]
-  exact ENNReal.tsum_le_tsum fun frame => mul_le_mul_left' (bound frame) _
+  exact ENNReal.tsum_le_tsum fun frame => mul_le_mul_right (bound frame) _
 
 variable [Nonempty BaseField] [Nonempty ((RawCircuitGate → FullHashLift) × CircuitHashRest)]
 

@@ -85,13 +85,11 @@ theorem sourcePrequeryLabelCollision_false_fresh
   · intro equal
     apply good
     refine ⟨query, row, Or.inl ?_⟩
-    dsimp only
     rw [selectedUse, domainLaw, queryEqual]
     exact (rawSourceRecord_domain oracle bridgeKey source lifts key gate slot).symm.trans equal.symm
   · intro equal
     apply good
     refine ⟨query, row, Or.inr ?_⟩
-    dsimp only
     rw [selectedUse, rangeLaw, queryEqual]
     exact (rawSourceRecord_range oracle bridgeKey source lifts key gate slot).symm.trans equal.symm
 
@@ -199,7 +197,6 @@ theorem reconstructedCircuitSource_eq_split (bridgeKey mask : BaseField)
         (circuitMaskSampleSplit bridgeKey mask rows input sample).2 := by
   have law := congrArg (fun selected => circuitMaskSourceFromSelected selected mask
     (fun row => rows.get row) input) (circuitMaskSampleGarble_split bridgeKey mask rows sparse input sample)
-  dsimp only at law
   rw [circuitMaskSourceFromSelected_garble] at law
   have targets : Vector.ofFn (fun row => (FieldMacToECMac.evaluateRows rows input).get row) =
       FieldMacToECMac.evaluateRows rows input := vector_ofFn_get _
@@ -216,7 +213,7 @@ private theorem xBranchSlope_source (sample : XPublicSample) (coefficients : Fin
       ![-source.1 2, -source.1 3, -(source.1 1 + DigitAdaptor.fromBits (source.2 1)),
         -(source.1 0 + DigitAdaptor.fromBits (source.2 0))] gate := by
   fin_cases gate <;>
-    dsimp only [xMaskSelectedEquiv, Equiv.coe_fn_symm_mk, XPublicSample.branchSlope, maskShiftEquiv]
+    dsimp only [xMaskSelectedEquiv, Equiv.coe_fn_symm_mk, Equiv.symm, Equiv.coe_fn_mk, XPublicSample.branchSlope, maskShiftEquiv]
   all_goals simp [XPublicSample.retargetMask]
 
 private theorem yBranchSlope_source (sample : YPublicSample) (coefficients : Fin 3 → BaseField)
@@ -227,7 +224,7 @@ private theorem yBranchSlope_source (sample : YPublicSample) (coefficients : Fin
       ![-source.1 2, -DigitAdaptor.fromBits (source.2 0), -source.1 1,
         -(source.1 0 + DigitAdaptor.fromBits (source.2 2))] gate := by
   fin_cases gate <;>
-    dsimp only [yMaskSelectedEquiv, Equiv.coe_fn_symm_mk, YPublicSample.branchSlope, maskShiftEquiv]
+    dsimp only [yMaskSelectedEquiv, Equiv.coe_fn_symm_mk, Equiv.symm, Equiv.coe_fn_mk, YPublicSample.branchSlope, maskShiftEquiv]
   all_goals simp [YPublicSample.retargetMask]
 
 private theorem zBranchSlope_source (sample : ZPublicSample) (coefficients : Fin 4 → BaseField)
@@ -238,7 +235,7 @@ private theorem zBranchSlope_source (sample : ZPublicSample) (coefficients : Fin
       ![-source.1 1, -source.1 3, -(source.1 0 + DigitAdaptor.fromBits (source.2 1)),
         -source.1 2, -(DigitAdaptor.fromBits (source.2 0) + DigitAdaptor.fromBits (source.2 3))] gate := by
   fin_cases gate <;>
-    dsimp only [zMaskSelectedEquiv, Equiv.coe_fn_symm_mk, ZPublicSample.branchSlope, maskShiftEquiv]
+    dsimp only [zMaskSelectedEquiv, Equiv.coe_fn_symm_mk, Equiv.symm, Equiv.coe_fn_mk, ZPublicSample.branchSlope, maskShiftEquiv]
   all_goals simp [ZPublicSample.retargetMask]
 
 def pointRawGate (row : Fin FieldMacToECMac.outputMacCount)

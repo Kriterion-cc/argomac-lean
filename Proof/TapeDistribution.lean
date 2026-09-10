@@ -10,7 +10,7 @@ noncomputable section
 
 /-- An affine offset decodes to its nonidentity curve point. -/
 theorem affineOffset_point_eq [FieldCertificate] (offset : AffineOffset) :
-    offset.point = WeierstrassCurve.Affine.Point.some
+    offset.point = WeierstrassCurve.Affine.Point.some offset.coordinates.x offset.coordinates.y
       ((curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
         ((equation_iff_onCurve offset.coordinates).mpr offset.onCurve)) := by
   simp [AffineOffset.point, decodePoint, (validate_eq_true_iff _).mpr offset.onCurve]
@@ -249,7 +249,10 @@ theorem nonzeroPointOffsets_card_loss [FieldCertificate] [GroupCertificate]
       Fintype.card OffsetRandomness -
         Fintype.card {randomness : OffsetRandomness |
           (0 : Point) ∈ construction.offsets randomness} :=
-    Fintype.card_subtype_compl _
+    @Fintype.card_subtype_compl OffsetRandomness offsetRandomnessFintype (fun randomness =>
+      (0 : Point) ∈ construction.offsets randomness)
+      (inferInstance : Fintype {randomness : OffsetRandomness |
+        (0 : Point) ∈ construction.offsets randomness}) (nonzeroPointOffsetsFintype construction)
   rw [card, Nat.cast_sub (Fintype.card_subtype_le _), sub_div,
     div_self (Nat.cast_ne_zero.mpr Fintype.card_ne_zero)]
   linarith

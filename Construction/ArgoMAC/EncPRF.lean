@@ -11,7 +11,9 @@ open BN254 Cryptography
 inductive Coordinate
   | x
   | y
-deriving DecidableEq, Fintype
+deriving DecidableEq
+
+instance : Fintype Coordinate := ⟨{.x, .y}, fun value => by cases value <;> simp⟩
 
 structure Counter where
   coordinate : Coordinate

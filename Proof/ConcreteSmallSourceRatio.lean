@@ -38,7 +38,7 @@ theorem concreteSmallSourceRatio [FieldCertificate] [GroupCertificate] [Terminat
         (fullGateRealFallback adversary parameter auxiliary scalar witness))
       (fun coin => PMF.pure coin.1.2) {coin | fullGateGhostBad coin} transcript = 0
   · rw [zero, mul_zero]
-    exact zero_le _
+    exact bot_le
   obtain ⟨referenceBefore, referenceAfter, nonfixedWitness, key,
     firstCompatible, secondCompatible, nonfixed, bounded, bits, mac⟩ :=
     fullGateGhostGood_sourceFacts adversary parameter auxiliary scalar.value witness

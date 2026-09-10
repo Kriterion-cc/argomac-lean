@@ -27,7 +27,6 @@ theorem targetPadBlocks_injective (table : BitAdaptor.Table) :
   intro a b equal
   apply fieldBytes_injective
   have blocks := congrArg (fun blocks : Fin 2 → Block => blocks 1 ++ blocks 0) equal
-  dsimp only at blocks
   rw [targetPadBlocks_value, targetPadBlocks_value] at blocks
   exact (BitVec.xor_right_inj table.trueRow).mp blocks
 
@@ -97,7 +96,7 @@ theorem fresh_targetPadBlocks_collision_le [Fintype Block]
   calc
     _ ≤ ∑' state, prior state *
         ((Fintype.card Block : ENNReal) / baseFieldModulus) :=
-      ENNReal.tsum_le_tsum fun state => mul_le_mul_left'
+      ENNReal.tsum_le_tsum fun state => mul_le_mul_right
         (targetPadBlocks_mass_le (table state) slot (comparison state)) _
     _ = _ := by rw [ENNReal.tsum_mul_right, prior.tsum_coe, one_mul]
 
@@ -135,6 +134,13 @@ theorem goodHashLiftBlocks_fiber_card [Fintype Block]
     fin_cases slot <;> decide
   simpa only [Fintype.card_fun, count] using bound
 
+private theorem uniform_mass_le_card {Sample : Type} [Fintype Sample] [Nonempty Sample]
+    (event : Set Sample) [Fintype event] (bound : Nat) (bounded : Fintype.card event ≤ bound) :
+    (PMF.uniformOfFintype Sample).toOuterMeasure event ≤
+      (bound : ENNReal) / Fintype.card Sample := by
+  rw [PMF.toOuterMeasure_uniformOfFintype_apply]
+  exact ENNReal.div_le_div_right (Nat.cast_le.mpr bounded) _
+
 /-- Good lifts have a small density increase over full uniform hash values. -/
 theorem goodHashLiftBlocks_mass_le [Fintype Block]
     (slot : Fin 3) (block : Block) :
@@ -143,10 +149,11 @@ theorem goodHashLiftBlocks_mass_le [Fintype Block]
         (Fintype.card Block : ENNReal) ^ 2 /
           (baseFieldModulus * hashLiftQuotientCount : Nat) := by
   classical
-  rw [PMF.toOuterMeasure_uniformOfFintype_apply, Fintype.card_prod, ZMod.card,
-    Fintype.card_fin]
-  apply ENNReal.div_le_div_right
-  exact_mod_cast goodHashLiftBlocks_fiber_card slot block
+  have bound := uniform_mass_le_card
+    {sample : BaseField × HashLiftQuotient |
+      liftHashBlocks (goodHashLift sample.1 sample.2).1 slot = block}
+    (Fintype.card Block ^ 2) (goodHashLiftBlocks_fiber_card slot block)
+  simpa only [Fintype.card_prod, ZMod.card, Fintype.card_fin, Nat.cast_pow] using bound
 
 /-- This collision bound allows any prefix and one fresh field-quotient pair. -/
 theorem fresh_goodHashLiftBlocks_collision_le [Fintype Block]
@@ -160,7 +167,7 @@ theorem fresh_goodHashLiftBlocks_collision_le [Fintype Block]
   calc
     _ ≤ ∑' state, prior state * ((Fintype.card Block : ENNReal) ^ 2 /
         (baseFieldModulus * hashLiftQuotientCount : Nat)) :=
-      ENNReal.tsum_le_tsum fun state => mul_le_mul_left'
+      ENNReal.tsum_le_tsum fun state => mul_le_mul_right
         (goodHashLiftBlocks_mass_le slot (comparison state)) _
     _ = _ := by rw [ENNReal.tsum_mul_right, prior.tsum_coe, one_mul]
 

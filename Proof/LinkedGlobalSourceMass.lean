@@ -35,7 +35,7 @@ def linkedGlobalSourceMass_real_le [FieldCertificate] [GroupCertificate] [Fintyp
     (history : List (Sigma Garbling.oracleSpec.Answer)) :=
   letI : Nonempty GarblingSourceRest := ⟨(garblingOracleKeyEquiv witness).2⟩
   let bound := ENNReal.tsum_le_tsum (fun rest : GarblingSourceRest =>
-    mul_le_mul_left' (retainedLinkedTagMass_density_sum_le rest (outputKeys rest) table input mac history)
+    mul_le_mul_right (retainedLinkedTagMass_density_sum_le rest (outputKeys rest) table input mac history)
       ((PMF.uniformOfFintype GarblingSourceRest) rest))
   bound.trans_eq ((realPublicMass_refresh outputKeys unchanged table input mac history).trans
     (realTapePublicMass_split witness parameter outputKeys table input mac history).symm)
