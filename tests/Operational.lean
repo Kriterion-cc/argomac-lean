@@ -2,6 +2,7 @@ import Proof.SimulatorPrefixCost
 import Proof.SimulatorCutoff
 import Proof.SimulatorFiniteArithmetic
 import Proof.SimulatorSamplingCost
+import Proof.SimulatorTotalSampling
 
 open Kriterion.ArgoMAC Kriterion.ArgoMAC.Security
 open Kriterion.ArgoMAC.Security.SimulatorMachine
@@ -74,3 +75,19 @@ example : (twoPrivateDraws.run failingBits 0) = (((none, 1), 3), 6) := by decide
 
 /-- Two sampled blocks incur eight rejection-control operations. -/
 example : (SimulatorRejectionCost.runWithCost bitSource (cutoff 3 2) 0).2 = (2, 8) := by decide
+
+/-- The total integer sampler returns a valid zero after its retry limit. -/
+example : ((totalInteger 3 (by decide) 1).run bitSource 0).1.1 = 0 := by decide
+
+private def totalTrace :=
+  let result := Cost.executeTotalCost failingBits 2 twoDrawTrace emptyState 0 0
+  (result.1.2.1.metadata.fixedTranscript.length, result.1.2.2, result.2)
+
+/- The total executor continues after the failed draw and records every query. -/
+#eval show IO Unit from do
+  unless totalTrace == (2, 3, 2, 31, 385) do
+    throw (IO.userError "The total sparse execution check failed.")
+
+#print axioms Cost.executeTotalCost_correct
+#print axioms Cost.executeTotalCost_resources
+#print axioms Cost.executeTotalCost_bits
