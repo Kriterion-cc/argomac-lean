@@ -49,7 +49,6 @@ theorem actualLinkedTagTranscript_mass_ge [Fintype Block] [Fintype BaseField]
   apply tsum_congr
   intro hash
   apply congrArg (fun mass => (PMF.uniformOfFintype EncPRF.HashOracle) hash * mass)
-  dsimp only
   have tagEq := independentFullCircuitSource_linked outputKeys pointRandomness bridgeKey r1 r2 mask
     randomness.fixedKeyOracle enc hash inputKey (circuitSourceQuotients source)
   dsimp only [EncPRF.whiteningKeys] at tagEq

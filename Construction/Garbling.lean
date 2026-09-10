@@ -60,7 +60,7 @@ def oracleHandler : OracleHandler oracleSpec Randomness
   | .fixedInverse index output, randomness => ((randomness.fixedKeyOracle.permutation index).symm output, randomness)
   | .encForward index input, randomness => (randomness.encPRFOracle.permutation index input, randomness)
   | .encInverse index output, randomness => ((randomness.encPRFOracle.permutation index).symm output, randomness)
-  | .hash input, randomness => (randomness.hashOracle input, randomness)
+  | .hash input, randomness => (randomOracleAnswer randomness.hashOracle input, randomness)
 
 structure Topology where
   coordinateBits : Nat

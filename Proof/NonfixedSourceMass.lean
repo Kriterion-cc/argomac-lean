@@ -39,12 +39,15 @@ theorem nonfixedTranscript_update_enc_factor (randomness : Garbling.Randomness)
           simp only [encOracleTranscriptRecords, matchesCons] at reference
           simp only [NonFixedTranscriptCompatible, encOracleTranscriptRecords, matchesCons,
             ih reference.2, reference.1, true_and]
-          exact and_left_comm
+          simp [inverse, reference.1, and_left_comm]
+          exact fun _ _ _ => rfl
       | encInverse index value =>
           simp only [encOracleTranscriptRecords, matchesCons] at reference
           simp only [NonFixedTranscriptCompatible, encOracleTranscriptRecords, matchesCons, inverse,
             ih reference.2, reference.1, true_and]
-          exact and_left_comm
+          rw [inverse (oracle.permutation index) answer value,
+            inverse (randomness.encPRFOracle.permutation index) answer value, reference.1]
+          simp [and_left_comm, and_assoc]
       | hash value =>
           simp only [encOracleTranscriptRecords] at reference ⊢
           simp only [NonFixedTranscriptCompatible, ih reference]

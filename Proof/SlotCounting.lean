@@ -1,5 +1,5 @@
 import Proof.Gate
-import Proof.PermutationCounting
+import Cryptography.Permutation
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Sum.Basic

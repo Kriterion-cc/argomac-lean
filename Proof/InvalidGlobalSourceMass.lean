@@ -25,17 +25,17 @@ private theorem refresh_relative_sum {Rest Nonfixed Tag : Type*}
   apply ENNReal.tsum_le_tsum
   intro rest
   rw [expand rest, mul_left_comm factor (rests rest)]
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   rw [← ENNReal.tsum_mul_left]
   apply ENNReal.tsum_le_tsum
   intro tag
   rw [mul_left_comm factor (tags tag)]
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   by_cases kept : guard rest
   · rw [if_pos kept]
     exact count rest tag kept
   · rw [if_neg kept, mul_zero]
-    exact zero_le _
+    exact bot_le
 
 attribute [local instance] publicInputMacKeyFintype bitAdaptorTableFintype
   instFintypeCircuitMaskTables instFintypeRawCircuitGate_1 instDecidableEqRawCircuitGate_1

@@ -1,6 +1,6 @@
 /- This file proves the exact oracle law for fresh gate programming. -/
 
-import Proof.ProgrammingDistribution
+import Cryptography.Permutation
 import Proof.PublicDistribution
 
 namespace Kriterion.ArgoMAC.Security
@@ -29,6 +29,7 @@ local instance unusedTranscriptOutputFintype {Index : Type}
     Fintype (UnusedTranscriptOutput history index) := by
   classical
   unfold UnusedTranscriptOutput
+  letI : DecidablePred (fun output : Block => ∀ record ∈ history, record.index = index → record.range ≠ output) := fun _ => Classical.propDecidable _
   infer_instance
 
 /-- This operation extends a compatible oracle by one fresh record. -/
@@ -75,7 +76,7 @@ def programTranscriptOracleEquiv {Index : Type} [DecidableEq Index]
     apply Prod.ext
     · apply Subtype.ext
       have oracle := congrArg Prod.fst restore
-      simpa only [swapProgramPair, assigned] using oracle
+      simpa only [swapProgramPair, programTranscriptOracle, assigned] using oracle
     · apply Subtype.ext
       exact programPermutation_apply _ _ _ _
 

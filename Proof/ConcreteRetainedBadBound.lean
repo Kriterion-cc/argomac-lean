@@ -88,7 +88,6 @@ theorem concreteRetainedFlags_split [FieldCertificate] [GroupCertificate] (scala
   have law := congrArg (fun distribution => distribution.bind (fun source : RetainedRowCoin × SimulatorCoin =>
     retainedFlagsAt adversary parameter auxiliary (retainedCoinRows scalar source.1) source.1.2.2.value source.2))
     map_uniform_retainedSimulatorSource
-  dsimp only at law
   rw [PMF.bind_map] at law
   have inverse (source : MaskRetainedTape × PublicSample) :
       retainedCoinRows scalar (retainedSimulatorSourceEquiv source).1 = retainedSourceRows scalar source.1 := by
@@ -118,7 +117,7 @@ theorem concreteRetainedFlags_mass_le [FieldCertificate] [GroupCertificate] [Fin
           (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128) := by
       apply ENNReal.tsum_le_tsum
       intro rowCoin
-      apply mul_le_mul_left'
+      apply mul_le_mul_right
       exact retainedJointSourceFlags_mass_le adversary parameter auxiliary
         (retainedCoinRows scalar rowCoin) rowCoin.2.2.value
     _ = _ := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]
@@ -148,6 +147,7 @@ def maskSourceBadObserver [FieldCertificate] [GroupCertificate] (scalar : Scalar
       auxiliary) coin.state.oracle).map fun selected =>
         @decide (rawSourceBad coin source selected.1.1 selected.2.2) (Classical.propDecidable _)
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem maskSourceBadObserver_public [FieldCertificate] [GroupCertificate] (scalar : ScalarField)
     (retained : MaskRetainedTape) :
     (PMF.uniformOfFintype CircuitMaskSample).bind (maskSourceBadObserver adversary parameter auxiliary scalar retained) =
@@ -157,6 +157,7 @@ private theorem maskSourceBadObserver_public [FieldCertificate] [GroupCertificat
           @decide (rawSourceBad coin
             (circuitMaskSampleSplit coin.bridgeKey retained.2.2.1.2.value
               (retainedSourceRows scalar retained) selected.1.1 sample).2 selected.1.1 selected.2.2) (Classical.propDecidable _) := by
+  unfold maskSourceBadObserver
   let coin := (simulatorSourceEquiv (retained.2.2, defaultSimulatorCoin.tableSample)).1
   let choose := fun table => (runOracleProgramWithTranscript idealOracleHandler
     (adversary.chooseInput parameter table auxiliary) coin.state.oracle).map fun selected => (selected.1.1, selected)
@@ -164,7 +165,8 @@ private theorem maskSourceBadObserver_public [FieldCertificate] [GroupCertificat
     (retainedSourceRows scalar retained) (rowsForOutputKeysSparse _ _) choose
     (fun selected source => PMF.pure (@decide (rawSourceBad coin source selected.1 selected.2.2.2) (Classical.propDecidable _)))
   simpa only [maskSourceBadObserver, choose, PMF.bind_map, PMF.map, PMF.bind_bind,
-    PMF.pure_bind, Function.comp_def, actualCoinPrefix, coin] using law
+    PMF.pure_bind, Function.comp_def, actualCoinPrefix, coin, simulatorSourceEquiv, Equiv.coe_fn_mk,
+    SimulatorCoin.state, CircuitSimulatorState.table, publicMaskTable, rawSourceBad] using law
 
 private theorem rawSourceBadAt_le (rows : Rows) (sparse : ∀ row, SparseRow (rows.get row))
     (mask : BaseField) (coin : SimulatorCoin) :
@@ -217,7 +219,7 @@ theorem goodRetainedBadSource_mass_le [FieldCertificate] [GroupCertificate] [Fin
   rw [PMF.toOuterMeasure_bind_apply, PMF.toOuterMeasure_bind_apply]
   apply ENNReal.tsum_le_tsum
   intro source
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   exact rawSourceBadAt_le adversary parameter auxiliary (retainedSourceRows scalar source.1)
     (rowsForOutputKeysSparse _ _) source.1.2.2.1.2.value _
 
@@ -229,7 +231,7 @@ theorem decodeFullSource_lifts (source : (RawCircuitGate → FullHashLift) × Ci
   simp only [decodeFullSource, Equiv.apply_symm_apply]
   obtain ⟨pair, same⟩ := complete gate
   rw [← same]
-  simp only [fullSourceHashPair, goodHashLiftSource, Equiv.apply_symm_apply]
+  simp only [fullSourceHashPair_good]
 
 /-- The full-source flag also rejects incomplete hash fibers. -/
 def fullRetainedBadObserver [FieldCertificate] [GroupCertificate] (scalar : ScalarField)
@@ -247,7 +249,7 @@ private theorem fullRetainedBadObserver_good [FieldCertificate] [GroupCertificat
   have complete : FullSourceComplete (fun gate => goodHashLiftSource (source.1 gate)) :=
     fun gate => ⟨source.1 gate, rfl⟩
   rw [retainedGoodHashObserver, fullRetainedBadObserver, if_pos complete]
-  simp only [decodeFullSource, fullSourceHashPair, goodHashLiftSource, Equiv.apply_symm_apply]
+  simp only [decodeFullSource, fullSourceHashPair_good]
 
 /-- This flag uses the exact full-source sampling law used by the source ratio. -/
 def fullRetainedBadSource [FieldCertificate] [GroupCertificate] (scalar : ScalarField)

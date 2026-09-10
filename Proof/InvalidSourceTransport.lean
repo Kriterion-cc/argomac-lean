@@ -107,7 +107,7 @@ theorem nonzeroMask_weighted_mass_ge [FieldCertificate] [Fintype BaseField] (wei
   apply ENNReal.tsum_le_tsum
   intro mask
   simp only [PMF.uniformOfFintype_apply]
-  apply mul_le_mul_right'
+  apply mul_le_mul_left
   apply ENNReal.inv_le_inv.mpr
   exact_mod_cast Fintype.card_le_of_injective NonZeroBase.value
     (fun first second equal => by cases first; cases second; simp_all)
@@ -157,7 +157,7 @@ theorem offCurve_nonzero_weighted_mass_ge [FieldCertificate] [Fintype BaseField]
   apply ENNReal.tsum_le_tsum
   intro key
   simpa only [PMF.uniformOfFintype_apply] using
-    mul_le_mul_left' (nonzeroMask_weighted_mass_ge (weight key)) ((Fintype.card BaseField : ℝ≥0∞)⁻¹)
+    mul_le_mul_right (nonzeroMask_weighted_mass_ge (weight key)) ((Fintype.card BaseField : ℝ≥0∞)⁻¹)
 
 end
 end Kriterion.ArgoMAC.Security

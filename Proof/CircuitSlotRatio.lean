@@ -75,8 +75,7 @@ theorem circuitBucketUse_injective (index : Pipeline.FixedKeyIndex) :
   | curve adaptor => exact @Subsingleton.elim (Fin 1) inferInstance first second
   | point coordinate adaptor =>
       cases coordinate <;> cases adaptor <;> try exact Fin.elim0 first
-      all_goals simpa only [circuitBucketUse, circuitBucketGate, Sum.inr.injEq, Prod.mk.injEq,
-        and_true] using gateEqual
+      all_goals exact congrArg Prod.fst (Sum.inr.inj gateEqual)
 
 /-- Every actual gate use occurs in this bucket list. -/
 theorem circuitBucketUse_surjective (index : Pipeline.FixedKeyIndex) :
@@ -182,7 +181,7 @@ theorem circuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
   classical
   simp_rw [div_eq_mul_inv]
   rw [← Finset.sum_mul]
-  apply mul_le_mul_right'
+  apply mul_le_mul_left
   simp only [← Nat.cast_sum]
   apply Nat.cast_le.mpr
   calc
@@ -305,7 +304,7 @@ theorem circuitSharedInactive_independentFactor_mass_ge
             (rawMixedLabels selected publicLabel wire shift sample.2)) sample.1 ∧
           OracleTranscriptCompatible Garbling.oracleHandler
             {randomness with fixedKeyOracle := sample.1} transcript} :=
-  (mul_le_mul_left' (circuitIndependentFactor_le _ fits) _).trans
+  (mul_le_mul_right (circuitIndependentFactor_le _ fits) _).trans
     (circuitSharedInactive_realTranscript_mass_ge keys slopes lifts tables selected wire shift
       publicLabel randomness transcript compatible offsetsDistinct referenceActive)
 

@@ -33,19 +33,19 @@ private theorem normalized_ghost_weight_le [FieldCertificate]
   apply le_trans ?_ (fullCurveMaskEquiv_nonzero_sum_ge rows input invalid choose weight)
   apply ENNReal.tsum_le_tsum
   intro oldMask
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   apply ENNReal.tsum_le_tsum
   intro hidden
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   apply ENNReal.tsum_le_tsum
   intro oldKey
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   apply ENNReal.tsum_le_tsum
   intro full
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   by_cases complete : FullSourceComplete full.1
   · rw [if_pos complete, if_pos complete]
-    exact mul_le_mul_left' (bound oldMask hidden oldKey full) _
+    exact mul_le_mul_right (bound oldMask hidden oldKey full) _
   · rw [if_neg complete, if_neg complete]
 
 /-- This source weight keeps the three independent key and mask samples. -/

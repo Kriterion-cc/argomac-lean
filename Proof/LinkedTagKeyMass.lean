@@ -76,7 +76,7 @@ theorem actualLinkedTagKey_mass_ge [Fintype Block] [Fintype BaseField] [Fintype 
   conv_rhs => rw [uniform_pair_weight]
   apply ENNReal.tsum_le_tsum
   intro coin
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   by_cases labels : (selectedKeyLabelsEquiv selected coin.2).1 = publicLabels
   · rw [if_pos labels]
     have bound := actualLinkedTagTranscript_mass_ge outputKeys pointRandomness bridgeKey r1 r2 mask coin.2

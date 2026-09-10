@@ -66,7 +66,7 @@ theorem hiddenEncSource_weighted_mass_ge [Fintype Block] [Fintype BaseField]
   rw [weighted_swap]
   apply ENNReal.tsum_le_tsum
   intro hash
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   by_cases compatible : OracleTranscriptCompatible Garbling.oracleHandler
       {randomness with hashOracle := hash} transcript
   · rw [if_pos compatible]

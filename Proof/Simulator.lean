@@ -25,8 +25,7 @@ theorem map_uniformOfFintype_equiv
   rw [PMF.map_apply, PMF.uniformOfFintype_apply]
   simp only [PMF.uniformOfFintype_apply, ← equivalence.symm_apply_eq,
     eq_comm]
-  exact (tsum_ite_eq (equivalence.symm output)
-    (Inv.inv (Fintype.card Sample : ENNReal))).symm
+  simp only [tsum_ite_eq]
 
 /-- This predicate requires safety only on one program's reachable query path. -/
 def OracleProgramSafe
@@ -859,6 +858,7 @@ theorem runOracleProgramTraceCoupling_disagreement_mass
     (stateOne : StateOne) (stateTwo : StateTwo) :
     (runOracleProgramTraceCoupling handlerOne handlerTwo program stateOne stateTwo).toOuterMeasure
         { output | output.1.1 ≠ output.2.1 } = 0 := by
+  classical
   rw [PMF.toOuterMeasure_apply, ENNReal.tsum_eq_zero]
   intro output
   by_cases different : output.1.1 ≠ output.2.1
@@ -1225,6 +1225,7 @@ theorem runOracleProgramsRelatedBridgeTraceCoupling_disagreement_mass
       handlerRelated first bridgeCoupling second stateOne stateTwo
       statesRelated).toOuterMeasure
         { output | output.1.1 ≠ output.2.1 } = 0 := by
+  classical
   rw [PMF.toOuterMeasure_apply, ENNReal.tsum_eq_zero]
   intro output
   by_cases different : output.1.1 ≠ output.2.1
@@ -1725,7 +1726,7 @@ theorem freshProgrammingSample_nonempty
     apply freshDomain record member sameIndex
     apply (oracle.permutation record.index).injective
     rw [matchesTranscript record member]
-    simpa [sameIndex] using sameRange
+    simpa [sameIndex, swapProgramPair] using sameRange
 
 noncomputable instance freshProgrammingSampleFintype
     {Index : Type uIndex} [Fintype Index] [DecidableEq Index]
@@ -1759,7 +1760,7 @@ def swapFreshProgrammingSample
       apply fresh.1
       apply (sample.1.1.permutation record.index).injective
       rw [sample.2.1 record member]
-      simpa [sameIndex] using sameRange
+      simpa [sameIndex, swapProgramPair] using sameRange
 
 /-- The fresh swap map is an involution inside its transcript fiber. -/
 theorem swapFreshProgrammingSample_involutive
@@ -2205,13 +2206,13 @@ theorem carryIdealHandler_swapFixed
       · rfl
   | encForward current domain =>
       simp [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
-        swapFixedStateTarget, recordEnc]
+        swapFixedStateTarget, recordEnc] <;> rfl
   | encInverse current range =>
       simp [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
-        swapFixedStateTarget, recordEnc]
+        swapFixedStateTarget, recordEnc] <;> rfl
   | hash current =>
       simp [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
-        swapFixedStateTarget, recordHash]
+        swapFixedStateTarget, recordHash] <;> rfl
 
 /-- This condition excludes the programmed hash input. -/
 def HashQuerySafe (input : BaseField) : Garbling.OracleQuery → Prop
@@ -2231,16 +2232,16 @@ theorem carryIdealHandler_swapHash
   cases query with
   | fixedForward current domain =>
       simp [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
-        swapHashStateTarget, recordFixed]
+        swapHashStateTarget, recordFixed] <;> rfl
   | fixedInverse current range =>
       simp [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
-        swapHashStateTarget, recordFixed]
+        swapHashStateTarget, recordFixed] <;> rfl
   | encForward current domain =>
       simp [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
-        swapHashStateTarget, recordEnc]
+        swapHashStateTarget, recordEnc] <;> rfl
   | encInverse current range =>
       simp [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
-        swapHashStateTarget, recordEnc]
+        swapHashStateTarget, recordEnc] <;> rfl
   | hash current =>
       have answerEq := updateProgramPair_apply_of_ne state.hashOracle
         input target current safe
@@ -2250,7 +2251,7 @@ theorem carryIdealHandler_swapHash
       simp only [carrySimulatorHandler, idealOracleHandler, oracleHandlerFor,
         swapHashStateTarget]
       rw [answerEq']
-      simp [recordHash]
+      simp [recordHash] <;> rfl
 
 /-- A path-safe adversary program commutes with one fixed-key state swap. -/
 theorem oracleProgram_run_swapFixed_of_safe

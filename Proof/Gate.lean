@@ -144,8 +144,7 @@ def goodHashLift (target : BaseField) (quotient : HashLiftQuotient) :
   let value := target.val + baseFieldModulus * quotient.val
   have valueLt : value < 2 ^ 384 := by
     exact lt_of_lt_of_le (goodHashLiftValue_lt_goodCount target quotient) (by
-      simpa [hashLiftQuotientCount] using
-        Nat.mul_div_le (2 ^ 384) baseFieldModulus)
+      exact Nat.div_mul_le_self _ _)
   refine ⟨BitVec.ofNat 384 value, ?_⟩
   simp only [HashLiftRepresents, BitVec.toNat_ofNat]
   rw [Nat.mod_eq_of_lt valueLt]
@@ -163,8 +162,7 @@ theorem goodHashLift_toNat (target : BaseField) (quotient : HashLiftQuotient) :
     (target.val + baseFieldModulus * quotient.val)).toNat = _
   rw [BitVec.toNat_ofNat, Nat.mod_eq_of_lt (lt_of_lt_of_le
     (goodHashLiftValue_lt_goodCount target quotient) (by
-      simpa [hashLiftQuotientCount] using
-        Nat.mul_div_le (2 ^ 384) baseFieldModulus))]
+      exact Nat.div_mul_le_self _ _))]
   simp [goodHashLiftEquiv, baseFieldFinEquiv]
 
 set_option exponentiation.threshold 400 in
@@ -400,9 +398,9 @@ theorem programHashGate_evaluate (state : SimulatorState)
     location window label table target blocks blocksTarget
   intro slot
   fin_cases slot
-  · simpa [programHashGate, index0, index1, index2, state0, state1] using point0''
-  · simpa [programHashGate, index0, index1, index2, state0, state1] using point1'
-  · simpa [programHashGate, index0, index1, index2, state0, state1] using point2
+  · simpa [programHashGate, programFixedSlot, index0, index1, index2, state0, state1] using point0''
+  · simpa [programHashGate, programFixedSlot, index0, index1, index2, state0, state1] using point1'
+  · simpa [programHashGate, programFixedSlot, index0, index1, index2, state0, state1] using point2
 
 theorem programPadGate_evaluate (state : SimulatorState)
     (location : Pipeline.FixedKeyLocation) (window : Nat) (label : Block)
@@ -428,8 +426,8 @@ theorem programPadGate_evaluate (state : SimulatorState)
     location window label table target blocks blocksTarget
   intro slot
   fin_cases slot
-  · simpa [programPadGate, index0, index1, state0] using point0'
-  · simpa [programPadGate, index0, index1, state0] using point1
+  · simpa [programPadGate, programFixedSlot, index0, index1, state0] using point0'
+  · simpa [programPadGate, programFixedSlot, index0, index1, state0] using point1
 
 /-- One programmed gate evaluates to its selected target. -/
 theorem programGate_evaluate (state : SimulatorState)
@@ -1569,7 +1567,7 @@ theorem digitGateSchedule_evaluate
       lift := lifts current
     } : GateDirective) ∈ digitGateSchedule location tables values labels targets lifts := by
     exact List.mem_ofFn.mpr ⟨current, rfl⟩
-  simpa [DigitAdaptor.evaluate, current] using satisfied _ member
+  simpa [DigitAdaptor.evaluate, GateDirective.Satisfied, current] using satisfied _ member
 
 /-- A satisfied digit schedule returns the requested weighted field value. -/
 theorem digitGateSchedule_evaluateValue

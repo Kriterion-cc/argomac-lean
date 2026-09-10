@@ -18,7 +18,7 @@ private theorem retained_mass_ge {A : Type*} (p : PMF A) (kept : A → Prop)
     exact tsum_congr fun a => by by_cases member : kept a <;> simp [member]
   apply tsub_le_iff_right.mpr
   rw [← partition]
-  exact add_le_add_left badBound _
+  exact add_le_add_right badBound _
 
 private theorem uniform_prod_eq_bind_fst {A B : Type*}
     [Fintype A] [Fintype B] [Nonempty A] [Nonempty B] :
@@ -94,7 +94,7 @@ theorem inactiveSlot_exact_mass_ge (tweak offset : Gate → Block)
         {sample | (∀ gate, sample.2 (sample.1 ^^^ tweak gate) = offset gate ^^^ sample.1) ∧
           ∀ query, sample.2 (queryDomain query) = queryRange query} := by
   classical
-  apply (mul_le_mul_right' (retainedSlotLabels_mass_ge tweak offset queryDomain queryRange) _).trans
+  apply (mul_le_mul_left (retainedSlotLabels_mass_ge tweak offset queryDomain queryRange) _).trans
   rw [uniform_prod_eq_bind_fst, PMF.toOuterMeasure_bind_apply, PMF.toOuterMeasure_apply,
     ← ENNReal.tsum_mul_right]
   apply ENNReal.tsum_le_tsum
@@ -122,7 +122,7 @@ theorem inactiveSlot_mass_ge (tweak offset : Gate → Block)
           ∀ query, sample.2 (queryDomain query) = queryRange query} := by
   have factorialBound := factorial_ratio_ge_inverse_power (Fintype.card Block)
     (Fintype.card Gate) (Fintype.card Query) Fintype.card_pos fits
-  have bound := mul_le_mul_left' factorialBound
+  have bound := mul_le_mul_right factorialBound
     (1 - ((2 * Fintype.card Gate * Fintype.card Query : Nat) : ℝ≥0∞) / Fintype.card Block)
   rw [← mul_div_assoc, ← mul_assoc] at bound
   exact bound.trans (inactiveSlot_exact_mass_ge tweak offset queryDomain queryRange
@@ -214,7 +214,7 @@ theorem sharedSlotsRetained_mass_ge :
       (map_uniformOfFintype_equivBetween (Equiv.piSplitAt (wire slot) (fun _ => Block)))
     have evaluated : (PMF.uniformOfFintype (Wire → Block)).map
         (fun labels => labels (wire slot)) = PMF.uniformOfFintype Block := by
-      simpa only [PMF.map_comp, map_uniform_prod_fst] using evaluation
+      simpa only [Equiv.piSplitAt_apply, Function.comp_def, PMF.map_comp, map_uniform_prod_fst] using evaluation
     calc
       _ = ((PMF.uniformOfFintype (Wire → Block)).map
           (fun labels => labels (wire slot))).map (fun label => label ^^^ shift slot) := by
@@ -278,7 +278,7 @@ theorem sharedSlots_exact_mass_ge
       (PMF.uniformOfFintype ((Wire → Block) × (Slot → Equiv.Perm Block))).toOuterMeasure
         {sample | sharedSlotsCompatible wire shift tweak offset queryDomain queryRange sample} := by
   classical
-  apply (mul_le_mul_right'
+  apply (mul_le_mul_left
     (sharedSlotsRetained_mass_ge wire shift tweak offset queryDomain queryRange) _).trans
   rw [uniform_prod_eq_bind_fst, PMF.toOuterMeasure_bind_apply, PMF.toOuterMeasure_apply,
     ← ENNReal.tsum_mul_right]
@@ -308,7 +308,7 @@ theorem sharedSlots_mass_ge
   have factorBound := Finset.prod_le_prod' (s := (Finset.univ : Finset Slot)) (fun slot _ =>
     factorial_ratio_ge_inverse_power (Fintype.card Block) (Fintype.card (Gates slot))
       (Fintype.card (Queries slot)) Fintype.card_pos (fits slot))
-  exact (mul_le_mul_left' factorBound _).trans
+  exact (mul_le_mul_right factorBound _).trans
     (sharedSlots_exact_mass_ge wire shift tweak offset queryDomain queryRange
       tweaksDistinct offsetsDistinct queryDomainsDistinct queryRangesDistinct)
 

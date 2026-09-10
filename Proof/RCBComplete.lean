@@ -51,7 +51,7 @@ theorem noAffineYZero [FieldCertificate] [GroupCertificate]
   let valid : curve.toAffine.Nonsingular input.x input.y :=
     (curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
       ((equation_iff_onCurve input).mpr inputOnCurve)
-  let point : Point := .some valid
+  let point : Point := .some _ _ valid
   have ySelfNeg : input.y = curve.toAffine.negY input.x input.y := by
     simp [WeierstrassCurve.Affine.negY, curve, yZero]
   have twoPoint : 2 • point = 0 := by
@@ -177,7 +177,7 @@ theorem outputNonzero [FieldCertificate] [GroupCertificate] (a b u v : BaseField
       rw [doublingZ a b offsetOnCurve] at outputZZero
       have bNonzero := noAffineYZero { x := a, y := b } offsetOnCurve
       have bCubeZero : b ^ 3 = 0 := (mul_eq_zero.mp outputZZero).resolve_left eightNe
-      exact bNonzero (pow_eq_zero bCubeZero)
+      exact bNonzero (eq_zero_of_pow_eq_zero bCubeZero)
     · have vEqual : v = -b := eq_neg_of_add_eq_zero_left oppositeY
       subst v
       have outputYZero : addY a b a (-b) = 0 := by
@@ -221,7 +221,7 @@ theorem outputNonsingular [FieldCertificate] [GroupCertificate] (a b u v : BaseF
       (by simpa [output] using zZero)).mp equation
 
 def affinePoint [FieldCertificate] (input : AffineInput) (inputOnCurve : OnCurve input) : Point :=
-  .some <| (curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
+  .some input.x input.y <| (curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
     ((equation_iff_onCurve input).mpr inputOnCurve)
 
 theorem recoveredXOfXNe [FieldCertificate] [GroupCertificate] (a b u v : BaseField)
@@ -552,6 +552,8 @@ theorem transformedInputPoint_eq_digitEndomorphism
         show (endomorphismGenerator ^ 3) ^ 3 = (-1 : BaseField) by
           rw [generatorCube]
           ring]
+      change _ = WeierstrassCurve.Affine.Point.neg _
+      simp [WeierstrassCurve.Affine.Point.neg, WeierstrassCurve.Affine.negY, curve, pow_two, mul_assoc]
   | omega =>
       simp [digitEndomorphismBase] at selected
       subst phi
@@ -583,6 +585,8 @@ theorem transformedInputPoint_eq_digitEndomorphism
             (endomorphismGenerator ^ 5) ^ 3 =
                 (endomorphismGenerator ^ 6) ^ 2 * endomorphismGenerator ^ 3 := by ring
             _ = -1 := by rw [generatorSixth, generatorCube]; simp]
+      change _ = WeierstrassCurve.Affine.Point.neg _
+      simp [WeierstrassCurve.Affine.Point.neg, WeierstrassCurve.Affine.negY, curve, pow_two, mul_assoc]
   | omegaSquared =>
       simp [digitEndomorphismBase] at selected
       subst phi
@@ -600,8 +604,7 @@ theorem transformedInputPoint_eq_digitEndomorphism
         show (endomorphismGenerator ^ 4) ^ 3 = (1 : BaseField) by
           rw [show (endomorphismGenerator ^ 4) ^ 3 =
             (endomorphismGenerator ^ 6) ^ 2 by ring, generatorSixth]
-          simp]
-      ring
+          simp] <;> ring
   | negOmegaSquared =>
       simp [digitEndomorphismBase] at selected
       subst phi
@@ -610,7 +613,9 @@ theorem transformedInputPoint_eq_digitEndomorphism
         show endomorphismGenerator ^ 4 =
           (BN254.endomorphismBase ^ 2 : BaseField) from generatorFourth,
         show endomorphismGenerator ^ 3 = (-1 : BaseField) from generatorCube]
-      ring
+      change _ = WeierstrassCurve.Affine.Point.neg _
+      simp [WeierstrassCurve.Affine.Point.neg, WeierstrassCurve.Affine.negY, curve, pow_two, mul_assoc]
+
 
 theorem decodeEvaluateOutputKeyRow [FieldCertificate] [GroupCertificate]
     (key : FieldMacToECMac.OutputKey)

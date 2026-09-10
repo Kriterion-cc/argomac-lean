@@ -140,7 +140,7 @@ theorem add_represents [FieldCertificate] {first second : Coordinates} {left rig
     obtain ⟨rfl, rfl⟩ := leftRepresents
     rcases second with _ | ⟨x₂, y₂⟩
     · rcases right with _ | _
-      · show Represents (some (x₁, y₁)) (WeierstrassCurve.Affine.Point.some valid₁ + 0)
+      · show Represents (some (x₁, y₁)) (WeierstrassCurve.Affine.Point.some _ _ valid₁ + 0)
         rw [add_zero]
         exact ⟨rfl, rfl⟩
       · exact rightRepresents.elim
@@ -248,7 +248,7 @@ theorem clampScalar_val_lt : clampScalar.val < 2 ^ 254 :=
 theorem offset_represents [FieldCertificate] (offset : FieldMacToECMac.AffineOffset) :
     Represents (some (offset.coordinates.x, offset.coordinates.y)) offset.point := by
   have valid : validate offset.coordinates = true := (validate_eq_true_iff _).mpr offset.onCurve
-  have decoded : decodePoint offset.coordinates = some (WeierstrassCurve.Affine.Point.some
+  have decoded : decodePoint offset.coordinates = some (WeierstrassCurve.Affine.Point.some offset.coordinates.x offset.coordinates.y
       ((curve.toAffine.equation_iff_nonsingular_of_Δ_ne_zero discriminantNeZero).mp
         ((equation_iff_onCurve _).mpr offset.onCurve))) := by
     simp [decodePoint, valid]

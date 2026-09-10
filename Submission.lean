@@ -2,7 +2,7 @@
 This file is the entry point of the submission.
 `challenge.yaml` names `Submission.solution` as the entry.
 `adaptivePrivacy` proves the universal privacy field.
-`solution` supplies the verifier and benchmark entry.
+`solution` supplies the verifier and metric entry.
 -/
 
 import Solution
@@ -35,7 +35,7 @@ theorem adaptivePrivacy : AdaptivePrivacy := by
   have tapes : @uniformRandomTape Garbling.Randomness (@Fintype.ofFinite _ inferInstance)
       (Seed.randomness 0) = Security.randomTape (Seed.randomness 0) := by
     unfold uniformRandomTape Security.randomTape
-    rw [instances]
+    rw [Cryptography.uniformTape_eq, instances]
   rw [tapes]
   exact Security.concreteAdaptivePrivacy (Seed.randomness 0)
 
@@ -50,10 +50,15 @@ def solutionOf (privacy : AdaptivePrivacy) : Kriterion.Solution := {
   EvaluationOracle := Garbling.EvaluationOracle
   Topology := Garbling.Topology
   State := Security.CircuitSimulatorState
-  randomnessFromSeed := Seed.randomness
-  benchmarkGarble := fun _ scalar randomness => Garbling.garble construction scalar randomness
+  randomness := Seed.randomness 0
+  encoding := Wire.encoding
+  ciphertextBytes := 9699931
   scheme := fun field group => @Garbling.garbledCircuit field group construction
-  benchmarkGarble_eq := fun _ _ => rfl
+  ciphertextSize := by
+    intro field group parameter scalar randomness
+    dsimp only [Garbling.garbledCircuit]
+    have size := Wire.garble_length construction scalar randomness
+    simpa only [Garbling.PublicCircuit] using size
   lamportCompatible := fun field group => @Lamport.compatible field group
   evaluationOracle := fun randomness =>
     (randomness.fixedKeyOracle, randomness.encPRFOracle, randomness.hashOracle)
@@ -66,7 +71,7 @@ def solutionOf (privacy : AdaptivePrivacy) : Kriterion.Solution := {
   adaptivePrivacy := privacy
 }
 
-/-- The verifier and benchmark use this computable entry. -/
+/-- The verifier and metric use this computable entry. -/
 def solution : Kriterion.Solution := solutionOf adaptivePrivacy
 
 end Submission

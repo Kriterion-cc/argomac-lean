@@ -27,7 +27,10 @@ theorem replaceHashAt_answer (randomness : Garbling.Randomness) (hidden : BaseFi
     (miss : request ≠ .hash hidden) :
     (Garbling.oracleHandler request (replaceHashAt randomness hidden answer)).1 =
       (Garbling.oracleHandler request randomness).1 := by
-  cases request <;> simp_all [Garbling.oracleHandler, replaceHashAt, Function.update]
+  cases request <;> try rfl
+  rename_i input
+  change Function.update randomness.hashOracle hidden answer input = randomness.hashOracle input
+  exact Function.update_of_ne (fun same => miss (congrArg Garbling.OracleQuery.hash same)) _ _
 
 theorem oracleHandler_state (randomness : Garbling.Randomness)
     (request : Garbling.OracleQuery) :
@@ -53,7 +56,9 @@ theorem replaceHashAt_compatible (randomness : Garbling.Randomness) (hidden : Ba
         intro equal
         apply miss
         simp [transcriptHashInputs, equal]
-      simp only [OracleTranscriptCompatible, oracleHandler_state,
+      simp only [OracleTranscriptCompatible,
+        oracleHandler_state (replaceHashAt randomness hidden answer) entry.1,
+        oracleHandler_state randomness entry.1,
         replaceHashAt_answer randomness hidden answer entry.1 queryMiss, ih tailMiss]
 
 /-- Every good public transcript has exactly the same mass after the hash update. -/
@@ -176,7 +181,7 @@ theorem uniform_hidden_query_hit_bound {Result : Type*}
       apply ENNReal.tsum_le_tsum
       intro output
       by_cases member : output ∈ transcripts.support
-      · apply mul_le_mul_left'
+      · apply mul_le_mul_right
         exact (uniform_hidden_transcript_hit output.2).trans
           (ENNReal.div_le_div_right (by exact_mod_cast lengthBound output member) _)
       · simp only [PMF.mem_support_iff, not_not] at member

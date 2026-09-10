@@ -40,7 +40,8 @@ private theorem validProgrammed_formula_eq [FieldCertificate] [GroupCertificate]
       validProgrammedBaseMass rest outputKeys input key state after tag =
     validProgrammedTagMass rest outputKeys input key state after tag := by
   rw [fullCircuitSource_uniform_mass, validProgrammedTagMass, validProgrammedBaseMass]
-  ac_rfl
+  have reorder (p c f m : ENNReal) : p * (c * (f * m)) = c * (p * f * m) := by ac_rfl
+  exact reorder _ _ _ _
 
 private theorem validProgrammed_base_eq [FieldCertificate] [GroupCertificate] [Fintype Block]
     (rest : GarblingSourceRest) (outputKeys : FieldMacToECMac.OutputKeys)

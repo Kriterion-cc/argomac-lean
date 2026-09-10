@@ -7,7 +7,7 @@ import Cryptography.Primitives
 
 namespace Kriterion.ArgoMAC
 
-def coordinateBitCount : Nat := 254
+abbrev coordinateBitCount : Nat := 254
 
 namespace BitAdaptor
 

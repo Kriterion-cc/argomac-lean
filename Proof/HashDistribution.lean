@@ -28,7 +28,7 @@ theorem uniformEmbedding_observation_bound
     simp only [PMF.bind_apply, PMF.uniformOfFintype_apply, Function.comp_apply,
       ← ENNReal.tsum_mul_left, ← mul_assoc, cancel]
     exact ENNReal.summable.tsum_le_tsum_of_inj embed injective
-      (fun _ _ => zero_le _) (fun _ => le_rfl) ENNReal.summable
+      (fun _ _ => bot_le) (fun _ => le_rfl) ENNReal.summable
   have ratio_le : (Fintype.card A : ℝ) / Fintype.card B ≤ 1 := by
     apply (div_le_one (Nat.cast_pos.mpr Fintype.card_pos)).mpr
     exact_mod_cast Fintype.card_le_of_injective embed injective

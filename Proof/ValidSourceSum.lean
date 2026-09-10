@@ -12,7 +12,7 @@ attribute [local instance] Classical.propDecidable bitAdaptorTableFintype instFi
 /-- A nonnegative label factor preserves the source lower bound. -/
 theorem sourceScale_bound (a b x y : ℝ≥0∞) (bound : a * x ≤ y) : a * (b * x) ≤ b * y := by
   rw [mul_left_comm]
-  exact mul_le_mul_left' bound b
+  exact mul_le_mul_right bound b
 
 /-- This coin keeps the fields that determine the source flag. -/
 def validSourceCoin (rest : GarblingSourceRest) (key : InputMacKey) : SimulatorCoin :=

@@ -82,8 +82,12 @@ def nonZeroBaseSubtypeEquiv : NonZeroBase ≃ {value : BaseField // value ≠ 0}
 
 /-- The nonzero mask domain omits one field element. -/
 theorem card_nonZeroBase : Fintype.card NonZeroBase = baseFieldModulus - 1 := by
-  rw [Fintype.card_congr nonZeroBaseSubtypeEquiv, Fintype.card_subtype_compl]
-  simp [BaseField]
+  rw [Fintype.card_congr nonZeroBaseSubtypeEquiv]
+  have card {α : Type} [Fintype α] (zero : α) [Fintype {x : α // x ≠ zero}] :
+      Fintype.card {x : α // x ≠ zero} = Fintype.card α - 1 := by
+    classical
+    rw [Fintype.card_subtype_compl, Fintype.card_subtype_eq]
+  exact (card (0 : BaseField)).trans (congrArg (fun count => count - 1) (ZMod.card _))
 
 /-- Replacing a nonzero curve mask by a full field mask costs at most one field inverse. -/
 theorem curveMask_observation_bound [FieldCertificate] {Observation : Type*}
@@ -99,8 +103,9 @@ theorem curveMask_observation_bound [FieldCertificate] {Observation : Type*}
   rw [Nat.cast_sub positive, Nat.cast_one] at bound
   have denominator : (baseFieldModulus : ℝ) ≠ 0 := by exact_mod_cast (by decide : baseFieldModulus ≠ 0)
   convert bound using 1
-  field_simp
-  ring
+  · rfl
+  · field_simp
+    ring
 
 end
 

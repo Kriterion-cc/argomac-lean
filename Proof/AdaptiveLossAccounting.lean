@@ -10,7 +10,7 @@ theorem relativeLoss_product (first second : ℝ≥0∞) :
     mul_one, tsub_add_eq_tsub_tsub]
   apply tsub_le_tsub_left
   calc
-    (1 - first) * second ≤ 1 * second := mul_le_mul_right' tsub_le_self second
+    (1 - first) * second ≤ 1 * second := mul_le_mul_left tsub_le_self second
     _ = second := one_mul _
 
 /-- The invalid fixed and EncPRF factors use one pad loss. -/

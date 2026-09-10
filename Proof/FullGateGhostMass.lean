@@ -199,7 +199,7 @@ theorem fullGateGhostBad_mass_le [Fintype BaseField] [FieldCertificate] [GroupCe
     (fun coin => coin.2.2.2.1 ++ coin.2.2.2.2.2.2)
     (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter)
     (fullGateTranscriptSamples_length adversary parameter auxiliary scalar witness fallback fallbackLength)
-  have result := bound.trans (add_le_add_right (first.le.trans prefixBound) _)
+  have result := bound.trans (add_le_add_left (first.le.trans prefixBound) _)
   simpa only [fullGateGhostSamples, fullGateGhostBad, Set.mem_setOf_eq] using result
 
 

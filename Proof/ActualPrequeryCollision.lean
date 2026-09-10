@@ -88,7 +88,7 @@ private theorem bind_bound {Source Target : Type*}
       apply ENNReal.tsum_le_tsum
       intro value
       by_cases member : value ∈ source.support
-      · exact mul_le_mul_left' (pointwise value member) _
+      · exact mul_le_mul_right (pointwise value member) _
       · have zero : source value = 0 := by simpa only [PMF.mem_support_iff, not_not] using member
         simp only [zero, zero_mul, le_refl]
     _ = bound := by rw [ENNReal.tsum_mul_right, PMF.tsum_coe, one_mul]

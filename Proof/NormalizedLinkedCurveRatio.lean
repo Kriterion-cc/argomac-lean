@@ -89,7 +89,7 @@ theorem actualLinkedCurveSource_normalized_mass_ge
   have bound := actualLinkedCurveSource_mass_ge outputKeys pointRandomness bridgeKey r1 r2 mask source
     keys lifts randomizers residues curve points input curveMac randomness before after miss budget lengthBound
     encFits offsetsDistinct referenceActive state historyMembers fresh reference priorFits residualFits
-  have scaled := mul_le_mul_left' bound density⁻¹
+  have scaled := mul_le_mul_right bound density⁻¹
   apply le_trans _ scaled
   apply le_of_eq
   simp only [← ENNReal.tsum_mul_left]
@@ -103,7 +103,11 @@ theorem actualLinkedCurveSource_normalized_mass_ge
     rw [densityEq]
     calc
       _ = (density⁻¹ * density) * _ := by rw [cancel, one_mul]
-      _ = _ := by ac_rfl
+      _ = _ := by
+        have reorder (d a h c b f m : ENNReal) :
+            (d⁻¹ * d) * (a * (h * (c * (b * (f * m))))) =
+              d⁻¹ * (a * (h * (c * (b * (d * f * m))))) := by ac_rfl
+        exact reorder _ _ _ _ _ _ _
   · simp only [if_neg compatible, mul_zero]
 
 end

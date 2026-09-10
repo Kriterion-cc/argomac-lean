@@ -39,7 +39,9 @@ theorem maskSampleSplitEquiv_selected {Sample View Source Remainder : Type}
     view.symm ((garble source.1).1, source.2) =
       view.symm (shift (target - result (view sample).1) (view sample).1,
         (view sample).2) := by
-  dsimp [maskSampleSplitEquiv]
+  change view.symm ((garble (garble.symm
+    ((resultFiberSplitEquiv result shift shiftZero shiftAdd resultShift target)
+      (view sample).1).2)).1, (view sample).2) = _
   rw [garble.apply_symm_apply]
   rfl
 

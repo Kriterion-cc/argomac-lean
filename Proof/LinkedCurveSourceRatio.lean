@@ -68,10 +68,10 @@ theorem actualLinkedCurveSource_mass_ge
     randomness source lifts (inputSelectedLabelBit input) (inputMacCoordinateEquiv curveMac)
     (before ++ after) miss budget lengthBound encFits
   apply le_trans _ linked
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   apply ENNReal.tsum_le_tsum
   intro hash
-  apply mul_le_mul_left'
+  apply mul_le_mul_right
   by_cases compatible : OracleTranscriptCompatible Garbling.oracleHandler
       {randomness with hashOracle := hash} (before ++ after)
   · rw [if_pos compatible]
