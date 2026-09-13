@@ -18,6 +18,25 @@ The verifier copies `Submission.lean`, `Construction.lean`, `Proof.lean`,
 `Construction/`, and `Proof/` into a workspace it generates. It ignores every other
 root entry.
 
+## Proof structure
+
+`Proof.lean` exports four property roots.
+`Submission.lean` supplies their results to the challenge.
+
+| Root | Supporting proofs |
+| --- | --- |
+| `Proof/Correctness.lean` | `Proof/Correctness/` proves termination and evaluation. The root also proves `functionCorrect`. |
+| `Proof/Privacy.lean` | `Proof/Privacy/` proves transcript bounds, source ratios, and simulator laws. The root also proves `topologyConstant`. |
+| `Proof/LamportCompatibility.lean` | `Proof/LamportCompatibility/` proves label selection. The root supplies the executable compatibility bundle. |
+| `Proof/CiphertextSize.lean` | `Construction/ArgoMAC/Encoding.lean` proves the encoding lengths. |
+
+`Proof/Privacy/Source/Valid/` and `Proof/Privacy/Source/Invalid/` separate the input cases.
+`Proof/Shared/` contains arithmetic and probability lemmas that support multiple proof branches.
+Each root states its property explicitly.
+The dependencies form a directed acyclic graph because proof branches share lemmas.
+The construction supplies finite randomness.
+The module paths change, but existing public declaration names remain available through `Proof`.
+
 ## Build
 
 The construction and proof import the pinned Kriterion challenge library.
@@ -33,6 +52,8 @@ lake build
 
 The verifier generates the same library and entry layout for each submission.
 
+[Proof/README.md](Proof/README.md) records the upstream interface review, sampling laws, proof changes, compiler measurements, and fixed permutation slot counts.
+
 ## Status
 
 `Submission.solution` supplies every field of `Kriterion.Solution`.
@@ -47,10 +68,10 @@ It does not define an asymptotic family for every security parameter.
 | Field | Where |
 | --- | --- |
 | `randomness` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
-| `ciphertextSize` | `Construction/ArgoMAC/Encoding.lean` proves the complete public encoding has 9,699,931 bytes. |
-| `perfectCorrectness` | `Proof/RCBComplete.lean` with the termination instance in `Proof/Base7Termination.lean`. |
-| `lamportCompatible` | `Proof/Lamport.lean`. |
-| `adaptivePrivacy` | `Proof/ConcreteSmallSourceRatio.lean` proves the universal 100-bit bound. `Submission.adaptivePrivacy` supplies the challenge field. |
+| `ciphertextSize` | `Proof/CiphertextSize.lean` proves that the complete public encoding has 9,699,931 bytes. |
+| `perfectCorrectness` | `Proof/Correctness.lean` combines evaluation correctness and termination. |
+| `lamportCompatible` | `Proof/LamportCompatibility.lean` supplies the label selectors and their proof. |
+| `adaptivePrivacy` | `Proof/Privacy.lean` proves the universal 100-bit bound. `Submission.adaptivePrivacy` supplies the challenge field. |
 
 ## Fixed-key schedule
 
@@ -84,11 +105,11 @@ The source-ratio and correlated permutation arguments remain specific to ArgoMAC
 The challenge library supplies the permutation counting and fresh programming lemmas.
 The proof covers valid and invalid inputs.
 
-- `ValidEndpointRatio.lean` bounds the valid source by the real transcript.
-- `InvalidGhostEndpoint.lean` bounds the invalid source by the real transcript.
-- `ConcreteSmallSourceRatio.lean` combines both input cases for every small query budget.
-- `AdaptiveSourceBound.lean` combines the source ratio with the ideal transcript bound.
-- `AdaptiveLossAccounting.lean` places the full error below the 100-bit envelope.
+- `Proof/Privacy/Source/Valid/ValidEndpointRatio.lean` bounds the valid source by the real transcript.
+- `Proof/Privacy/Source/Invalid/InvalidGhostEndpoint.lean` bounds the invalid source by the real transcript.
+- `Proof/Privacy/ConcreteSmallSourceRatio.lean` combines both input cases for every small query budget.
+- `Proof/Privacy/AdaptiveSourceBound.lean` combines the source ratio with the ideal transcript bound.
+- `Proof/Privacy/Bounds/AdaptiveLossAccounting.lean` places the full error below the 100-bit envelope.
 - The large-budget case uses the bound of one on the decision advantage.
 
 ## Paper correspondence
@@ -104,7 +125,7 @@ The comparison uses BaBe.latex commit `e2dcf4d540b2708e13cd21090df759051119a116`
 | Curve permutations in the count | 3,810 | 6,350 |
 | Block formula | `π(L XOR t) XOR (L XOR t)` | `π(L XOR t) XOR L` |
 
-[PaperConstruction.lean](Proof/PaperConstruction.lean) proves the exact block and byte relations.
+[PaperConstruction.lean](Proof/Privacy/PaperConstruction.lean) proves the exact block and byte relations.
 The field relation keeps the XOR inside the reduction modulo the field prime.
 An output translation of a uniform permutation equates the block formulas for one fixed tweak.
 One shared translation cannot equate the formulas for two different tweaks and every label.
@@ -113,15 +134,15 @@ It does not claim that the two shared-bucket constructions have identical distri
 
 | Paper component | Checked entry component |
 | --- | --- |
-| Point masks and output reconstruction | `PointDistribution.lean`, `OutputRowDistribution.lean` |
-| Field-mask substitutions | `MaskRandomizerDistribution.lean`, `CircuitMaskDistribution.lean` |
-| Bit-adaptor permutation programming | `Gate.lean`, `AdaptivePermutationRatio.lean` |
-| Curve check and EncPRF link | `InvalidGhostEndpoint.lean`, `EncPRFTranscript.lean` |
-| H-coefficient transcript comparison | `HCoefficient.lean`, `ConcreteSmallSourceRatio.lean` |
-| Full concrete error | `AdaptiveArithmetic.lean`, `AdaptiveLossAccounting.lean` |
-| Three oracle-query phases | `ThreePhasePrivacy.lean` |
+| Point masks and output reconstruction | `Proof/Privacy/Distribution/PointDistribution.lean`, `Proof/Privacy/Distribution/OutputRowDistribution.lean` |
+| Field-mask substitutions | `Proof/Privacy/Distribution/MaskRandomizerDistribution.lean`, `Proof/Privacy/Distribution/CircuitMaskDistribution.lean` |
+| Bit-adaptor permutation programming | `Proof/Privacy/Programming/Gate.lean`, `Proof/Privacy/Source/AdaptivePermutationRatio.lean` |
+| Curve check and EncPRF link | `Proof/Privacy/Source/Invalid/InvalidGhostEndpoint.lean`, `Proof/Privacy/Transcript/EncPRFTranscript.lean` |
+| H-coefficient transcript comparison | `Proof/Shared/HCoefficient.lean`, `Proof/Privacy/ConcreteSmallSourceRatio.lean` |
+| Full concrete error | `Proof/Privacy/Bounds/AdaptiveArithmetic.lean`, `Proof/Privacy/Bounds/AdaptiveLossAccounting.lean` |
+| Three oracle-query phases | `Proof/Privacy/ThreePhasePrivacy.lean` |
 
-[ThreePhasePrivacy.lean](Proof/ThreePhasePrivacy.lean) defines queries before the public table, between the table and labels, and after the labels.
+[ThreePhasePrivacy.lean](Proof/Privacy/ThreePhasePrivacy.lean) defines queries before the public table, between the table and labels, and after the labels.
 Lean proves that the three-phase games have the distributions of the compiled two-phase games.
 Lean proves the 100-bit bound with total work `q0 + q1 + q2 + 1`.
 The circuit and auxiliary input are fixed independently of the oracle sample.
@@ -142,19 +163,19 @@ The proof does not assume adaptive privacy.
 The paper also requires an efficient simulator.
 The Kriterion simulator type contains probability distributions and no execution-cost field.
 The computability of `Submission.solution` does not establish simulator efficiency.
-[SimulatorPrivacy.lean](Proof/SimulatorPrivacy.lean) proves the exact sparse simulator's three-phase privacy.
-[SimulatorTotalImplementation.lean](Proof/SimulatorTotalImplementation.lean) proves privacy for the total finite implementation.
+[SimulatorPrivacy.lean](Proof/Privacy/Simulator/SimulatorPrivacy.lean) proves the exact sparse simulator's three-phase privacy.
+[SimulatorTotalImplementation.lean](Proof/Privacy/Simulator/SimulatorTotalImplementation.lean) proves privacy for the total finite implementation.
 The finite sampler uses at most 256 attempts for each integer draw.
 Its error relative to the exact ideal game is at most `(1813496 + q) / 2^256`.
-[SimulatorFiniteArithmetic.lean](Proof/SimulatorFiniteArithmetic.lean) proves that this error preserves the 100-bit bound.
+[SimulatorFiniteArithmetic.lean](Proof/Privacy/Simulator/SimulatorFiniteArithmetic.lean) proves that this error preserves the 100-bit bound.
 
 The executable oracle state stores sparse permutations, hash entries, and query records.
 The conditional completion distributions appear only in the proof.
 The executable simulator does not sample complete oracle functions.
-[SimulatorSampling.lean](Proof/SimulatorSampling.lean) checks the private sampler and its random-draw count.
-[SimulatorMachineCost.lean](Proof/SimulatorMachineCost.lean) checks sparse execution and storage bounds.
+[SimulatorSampling.lean](Proof/Privacy/Simulator/SimulatorSampling.lean) checks the private sampler and its random-draw count.
+[SimulatorMachineCost.lean](Proof/Privacy/Simulator/SimulatorMachineCost.lean) checks sparse execution and storage bounds.
 The executable implementation uses retained arrays and finite retry sampling.
-[SimulatorTotalImplementation.lean](Proof/SimulatorTotalImplementation.lean) connects its exact game to the original ideal game.
+[SimulatorTotalImplementation.lean](Proof/Privacy/Simulator/SimulatorTotalImplementation.lean) connects its exact game to the original ideal game.
 Its finite game preserves the 100-bit privacy bound.
 The cost theorem starts with empty sparse oracles.
 It derives the state bounds after all three query phases.

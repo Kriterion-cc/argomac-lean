@@ -13,31 +13,9 @@ namespace Submission
 
 open Kriterion Kriterion.BN254 Kriterion.ArgoMAC
 
-/-- This is the adaptive-privacy field of the obligation for the ArgoMAC construction. -/
-def AdaptivePrivacy : Prop :=
-  ∀ (field : FieldCertificate) (group : @GroupCertificate field),
-    ∃ simulator : GarbledCircuit.Simulator AffineInput (Option (@Point field)) Pipeline.Table
-      Garbling.Labels Garbling.Topology Security.CircuitSimulatorState,
-      GarbledCircuit.ConcreteAdaptivePrivacy (Aux := Unit)
-        (@Garbling.garbledCircuit field group construction) Garbling.topology simulator
-        (@uniformRandomTape Garbling.Randomness (@Fintype.ofFinite _ inferInstance)
-          (Seed.randomness 0))
-        Garbling.oracleHandler Security.circuitSimulatorOracleHandler 100
+abbrev AdaptivePrivacy := Security.AdaptivePrivacy
 
-/-- The checked simulator gives the required universal privacy bound. -/
-theorem adaptivePrivacy : AdaptivePrivacy := by
-  intro field group
-  letI := field
-  letI := group
-  refine ⟨Security.concreteCircuitSimulator, ?_⟩
-  have instances : (@Fintype.ofFinite Garbling.Randomness inferInstance) =
-      Security.garblingRandomnessFintype := Subsingleton.elim _ _
-  have tapes : @uniformRandomTape Garbling.Randomness (@Fintype.ofFinite _ inferInstance)
-      (Seed.randomness 0) = Security.randomTape (Seed.randomness 0) := by
-    unfold uniformRandomTape Security.randomTape
-    rw [Cryptography.uniformTape_eq, instances]
-  rw [tapes]
-  exact Security.concreteAdaptivePrivacy (Seed.randomness 0)
+theorem adaptivePrivacy : AdaptivePrivacy := Security.adaptivePrivacy
 
 /-- The supplied privacy proof closes every obligation field. -/
 def solutionOf (privacy : AdaptivePrivacy) : Kriterion.Solution := {
@@ -56,18 +34,17 @@ def solutionOf (privacy : AdaptivePrivacy) : Kriterion.Solution := {
   scheme := fun field group => @Garbling.garbledCircuit field group construction
   ciphertextSize := by
     intro field group parameter scalar randomness
-    dsimp only [Garbling.garbledCircuit]
-    have size := Wire.garble_length construction scalar randomness
-    simpa only [Garbling.PublicCircuit] using size
+    simpa only [Garbling.PublicCircuit] using
+      (@Wire.ciphertextSize field group parameter scalar randomness)
   lamportCompatible := fun field group => @Lamport.compatible field group
   evaluationOracle := fun randomness =>
     (randomness.fixedKeyOracle, randomness.encPRFOracle, randomness.hashOracle)
   topology := Garbling.topology
-  topologyConstant := fun _ _ => rfl
+  topologyConstant := Security.topologyConstant
   realOracle := Garbling.oracleHandler
   idealOracle := Security.circuitSimulatorOracleHandler
-  functionCorrect := fun _ _ _ _ => rfl
-  perfectCorrectness := fun field group => @RCBComplete.perfectCorrectness field group _
+  functionCorrect := fun field group => @functionCorrect field group
+  perfectCorrectness := fun field group => @perfectCorrectness field group
   adaptivePrivacy := privacy
 }
 
