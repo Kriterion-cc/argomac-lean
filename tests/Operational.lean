@@ -1,7 +1,7 @@
-import Proof.SimulatorCutoff
-import Proof.SimulatorFiniteArithmetic
-import Proof.SimulatorSamplingCost
-import Proof.SimulatorTotalSampling
+import Proof.Privacy.Simulator.SimulatorCutoff
+import Proof.Privacy.Simulator.SimulatorFiniteArithmetic
+import Proof.Privacy.Simulator.SimulatorSamplingCost
+import Proof.Privacy.Simulator.SimulatorTotalSampling
 
 open Kriterion.ArgoMAC Kriterion.ArgoMAC.Security
 open Kriterion.ArgoMAC.Security.SimulatorMachine
@@ -72,3 +72,7 @@ private def totalTrace :=
 #print axioms Cost.executeTotalCost_correct
 #print axioms Cost.executeTotalCost_resources
 #print axioms Cost.executeTotalCost_bits
+
+#print axioms SparsePermutation.forward_joint
+#print axioms SparsePermutation.inverse_joint
+#print axioms adaptive_joint_law

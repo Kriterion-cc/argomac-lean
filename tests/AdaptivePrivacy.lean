@@ -252,3 +252,5 @@ theorem transcript_eq_reference {oracle : OracleSpec.{uQuery, uAnswer}}
 #print axioms transcript_eq_reference
 
 end TranscriptRegression
+
+#print axioms ArgoMAC.Security.pipelineGateSchedule_query_counts
