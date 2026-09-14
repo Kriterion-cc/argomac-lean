@@ -150,8 +150,7 @@ theorem Construction.randomizedEncodingPrivate [FieldCertificate] [GroupCertific
     [TerminationCertificate]
     (construction : Construction) :
     Kriterion.RandomizedEncoding.Privacy construction.randomizedEncoding
-      construction.randomizedEncodingSimulator
-      (Kriterion.RandomizedEncoding.uniformDistribution OffsetRandomness (List Point)) := by
+      construction.randomizedEncodingSimulator := by
   intro input
   exact ⟨construction.offsetEquiv input.1 input.2,
     construction.outputs_eq_simulatedOutputs_reindex input.1 input.2⟩

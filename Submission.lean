@@ -1,54 +1,63 @@
-/-
-This file is the entry point of the submission.
-`challenge.yaml` names `Submission.solution` as the entry.
-`adaptivePrivacy` proves the universal privacy field.
-`solution` supplies the verifier and metric entry.
--/
-
 import Solution
 import Construction
 import Proof
 
 namespace Submission
-
 open Kriterion Kriterion.BN254 Kriterion.ArgoMAC
 
-abbrev AdaptivePrivacy := Security.AdaptivePrivacy
-
-theorem adaptivePrivacy : AdaptivePrivacy := Security.adaptivePrivacy
-
-/-- The supplied privacy proof closes every obligation field. -/
-def solutionOf (privacy : AdaptivePrivacy) : Kriterion.Solution := {
-  oracle := Garbling.oracleSpec
+/-- The wire adapter preserves the complete ciphertext and removes repeated input bits. -/
+def solution : Kriterion.Solution := {
+  FixedIndex := Pipeline.FixedKeyIndex
+  EncIndex := EncPRF.PermutationIndex
+  fixedFinite := inferInstance
+  encFinite := inferInstance
   Randomness := Garbling.Randomness
   randomnessFinite := inferInstance
+  randomness := Seed.randomness 0
   Public := Pipeline.Table
   EncodingKey := Garbling.EncodingKey
-  Labels := Garbling.Labels
-  EvaluationOracle := Garbling.EvaluationOracle
-  Topology := Garbling.Topology
   State := Security.CircuitSimulatorState
-  randomness := Seed.randomness 0
   encoding := Wire.encoding
   ciphertextBytes := 9699931
-  scheme := fun field group => @Garbling.garbledCircuit field group construction
+  evaluationOracle := fun tape => (tape.fixedKeyOracle, tape.encPRFOracle, tape.hashOracle)
+  oracleUniform := by
+    convert Security.oracleUniform (Seed.randomness 0) using 1
+  scheme := fun field group => @Lamport.wireCircuit field group
   ciphertextSize := by
-    intro field group parameter scalar randomness
-    simpa only [Garbling.PublicCircuit] using
-      (@Wire.ciphertextSize field group parameter scalar randomness)
+    intro field group parameter scalar tape
+    dsimp only [Lamport.wireCircuit, GarbledCircuit.mapLabels, Garbling.garbledCircuit]
+    have size := Wire.garble_length construction scalar tape
+    simpa only [Garbling.PublicCircuit] using size
   lamportCompatible := fun field group => @Lamport.compatible field group
-  evaluationOracle := fun randomness =>
-    (randomness.fixedKeyOracle, randomness.encPRFOracle, randomness.hashOracle)
-  topology := Garbling.topology
-  topologyConstant := Security.topologyConstant
-  realOracle := Garbling.oracleHandler
   idealOracle := Security.circuitSimulatorOracleHandler
-  functionCorrect := fun field group => @functionCorrect field group
-  perfectCorrectness := fun field group => @perfectCorrectness field group
-  adaptivePrivacy := privacy
+  idealView := Security.CircuitSimulatorState.view
+  functionCorrect := fun _ _ _ _ => rfl
+  perfectCorrectness := by
+    intro field group parameter scalar tape input
+    letI := field
+    letI := group
+    change some (Garbling.evaluate _ _ (Lamport.restore input
+      (Lamport.selectedLabels (tape.inputMacKey.encodeAffine input)))) = _
+    rw [Lamport.restore_selected]
+    exact RCBComplete.perfectCorrectness parameter scalar tape input
+  adaptivePrivacy := by
+    intro field group
+    letI := field
+    letI := group
+    let pack := fun labels : Garbling.Labels => Lamport.selectedLabels labels.inputMac
+    let restore := fun _ : Nat => (⟨508, 91⟩ : Garbling.Topology)
+    refine ⟨Security.concreteCircuitSimulator.mapLabels pack restore,
+      Security.concreteCircuitSimulator_rules.mapLabels pack restore, ?_⟩
+    have privacy := (Security.concreteAdaptivePrivacy (Aux := Unit) (Seed.randomness 0)).mapLabels
+      pack Lamport.restore (fun _ => 9699931) restore (fun _ => rfl)
+    have instances : (@Fintype.ofFinite Garbling.Randomness inferInstance) =
+        Security.garblingRandomnessFintype := Subsingleton.elim _ _
+    have tapes : @uniformRandomTape Garbling.Randomness (@Fintype.ofFinite _ inferInstance)
+        (Seed.randomness 0) = Security.randomTape (Seed.randomness 0) := by
+      unfold uniformRandomTape Security.randomTape
+      rw [Cryptography.uniformTape_eq, instances]
+    rw [tapes]
+    exact privacy
 }
-
-/-- The verifier and metric use this computable entry. -/
-def solution : Kriterion.Solution := solutionOf adaptivePrivacy
 
 end Submission

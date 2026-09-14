@@ -343,7 +343,7 @@ theorem idealOracleTranscriptCompatible_iff_real (state : SimulatorState) (refer
   | cons entry remaining inductionHypothesis =>
       rcases entry with ⟨request, answer⟩
       cases request <;>
-        simp only [OracleTranscriptCompatible, idealOracleHandler, oracleHandlerFor, Garbling.oracleHandler]
+        simp only [OracleTranscriptCompatible, idealOracleHandler, oracleHandlerFor, Garbling.oracleHandler, Cryptography.publicHandler, Cryptography.publicAnswer]
       all_goals
         apply and_congr
         · simp only [fixed, enc, hash] <;> rfl

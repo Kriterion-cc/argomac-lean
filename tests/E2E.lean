@@ -26,5 +26,3 @@ theorem argoMACGarbleEncodeEvaluateE2E [FieldCertificate] [GroupCertificate]
   simp only [ArgoMAC.Garbling.encode] at evaluated
   rw [evaluated]
   apply Option.bind_some
-
-#print axioms argoMACGarbleEncodeEvaluateE2E

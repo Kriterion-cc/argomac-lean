@@ -8,8 +8,7 @@ theorem argoMACRandomizedEncodingCorrect [FieldCertificate] [GroupCertificate] :
 
 theorem argoMACRandomizedEncodingPrivate [FieldCertificate] [GroupCertificate] :
     RandomizedEncoding.Privacy ArgoMAC.construction.randomizedEncoding
-      ArgoMAC.construction.randomizedEncodingSimulator
-      (RandomizedEncoding.uniformDistribution ArgoMAC.OffsetRandomness (List Point)) :=
+      ArgoMAC.construction.randomizedEncodingSimulator :=
   ArgoMAC.construction.randomizedEncodingPrivate
 
 theorem argoMACOutputCount [FieldCertificate] [GroupCertificate]
@@ -28,17 +27,9 @@ theorem argoMACPerfectCorrectness [FieldCertificate] [GroupCertificate]
 
 def argoMACLamportCompatible [FieldCertificate] [GroupCertificate] :
     GarbledCircuit.LamportCompatibility
-      (ArgoMAC.Garbling.garbledCircuit ArgoMAC.construction) affineLamportBits :=
+      ArgoMAC.Lamport.wireCircuit affineLamportBits :=
   ArgoMAC.Lamport.compatible
-
-#print axioms argoMACRandomizedEncodingCorrect
-#print axioms argoMACRandomizedEncodingPrivate
-#print axioms argoMACOutputCount
-#print axioms argoMACPerfectCorrectness
-#print axioms argoMACLamportCompatible
 
 theorem seedOffsetsClamped [FieldCertificate] [GroupCertificate] :
     ArgoMAC.Seed.offsets.IsClamped :=
   ArgoMAC.Seed.offsets_clamped
-
-#print axioms seedOffsetsClamped

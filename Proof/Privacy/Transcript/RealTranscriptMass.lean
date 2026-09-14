@@ -249,7 +249,7 @@ theorem realOracleTranscriptCompatible_iff (randomness : Garbling.Randomness)
   | cons entry remaining inductionHypothesis =>
       rcases entry with ⟨request, answer⟩
       cases request <;>
-        simp only [OracleTranscriptCompatible, Garbling.oracleHandler, fixedOracleTranscriptRecords,
+        simp only [OracleTranscriptCompatible, Garbling.oracleHandler, Cryptography.publicHandler, Cryptography.publicAnswer, fixedOracleTranscriptRecords,
           NonFixedTranscriptCompatible, inductionHypothesis, permutationTranscriptMatches_cons]
       all_goals try tauto
       case fixedInverse index output =>

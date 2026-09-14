@@ -18,15 +18,6 @@ open Cryptography.Assumptions
 universe uKey uCounter uCTPRFIndex uEncPRFIndex uHashInput uCPAAux uSample
   uQuery uAnswer uResult uState
 
-/-- These are the standard assumptions in `thm:gc_opt_final`. -/
-abbrev BaBeAssumptions
-    (CTPRFIndex : Type uCTPRFIndex) (EncPRFIndex : Type uEncPRFIndex)
-    (Key : Type uKey) (Counter : Type uCounter)
-    (CPAAux : Type uCPAAux)
-    [Fintype CTPRFIndex] [Fintype EncPRFIndex] :=
-  StandardAssumptions CTPRFIndex EncPRFIndex Block
-    Key Block Block Counter CPAAux
-
 /-- The fixed AES block size in the paper is 128 bits. -/
 def blockBits : Nat := 128
 

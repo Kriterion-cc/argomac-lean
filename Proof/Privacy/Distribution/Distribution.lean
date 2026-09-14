@@ -3,6 +3,7 @@ This file defines the complete uniform ArgoMAC security tape.
 -/
 
 import Proof.Privacy.Distribution.ProjectiveDistribution
+import Cryptography.Assumptions
 
 namespace Kriterion.ArgoMAC.Security
 
@@ -250,6 +251,39 @@ theorem randomTape_fullSupport (witness randomness : Garbling.Randomness)
     (parameter : Nat) :
     randomness ∈ (randomTape witness parameter).support := by
   simp [randomTape]
+
+/-- The public tables have the joint uniform law required by the challenge. -/
+theorem oracleUniform (witness : Garbling.Randomness) :
+    Cryptography.Assumptions.StandardAssumptions Pipeline.FixedKeyIndex EncPRF.PermutationIndex
+      Garbling.Randomness witness
+      (fun tape => (tape.fixedKeyOracle, tape.encPRFOracle, tape.hashOracle)) := by
+  classical
+  let normalize (tape : Garbling.Randomness) : Garbling.Randomness :=
+    { tape with
+      fixedKeyOracle := ⟨fun _ => Equiv.refl Block⟩
+      encPRFOracle := ⟨fun _ => Equiv.refl Block⟩
+      hashOracle := fun _ => (0, 0) }
+  let Rest := {tape : Garbling.Randomness // normalize tape = tape}
+  letI : Fintype Rest := Fintype.ofFinite Rest
+  letI : Nonempty Rest := ⟨⟨normalize witness, rfl⟩⟩
+  letI : Nonempty Garbling.Randomness := ⟨witness⟩
+  let split : Garbling.Randomness ≃ Garbling.EvaluationOracle × Rest := {
+    toFun := fun tape => ((tape.fixedKeyOracle, tape.encPRFOracle, tape.hashOracle), ⟨normalize tape, rfl⟩)
+    invFun := fun pair => { pair.2.1 with
+      fixedKeyOracle := pair.1.1
+      encPRFOracle := pair.1.2.1
+      hashOracle := pair.1.2.2 }
+    left_inv := fun tape => by cases tape; rfl
+    right_inv := fun pair => by
+      rcases pair with ⟨⟨fixed, enc, hash⟩, ⟨tape, equal⟩⟩
+      apply Prod.ext
+      · rfl
+      · exact Subtype.ext equal
+  }
+  rw [Cryptography.Assumptions.StandardAssumptions, Cryptography.uniformTape_eq]
+  have mapped := congrArg (PMF.map Prod.fst) (uniform_map_equiv split)
+  rw [uniform_map_fst] at mapped
+  simpa only [PMF.map_comp, Function.comp_def, split, Equiv.coe_fn_mk] using mapped
 
 end
 

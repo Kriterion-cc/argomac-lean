@@ -110,8 +110,9 @@ theorem realTranscript_update_enc_iff (randomness : Garbling.Randomness)
   | cons entry tail ih =>
       rcases entry with ⟨query, answer⟩
       cases query <;>
-        simp only [OracleTranscriptCompatible, Garbling.oracleHandler] at compatible ⊢
+        simp only [OracleTranscriptCompatible, Garbling.oracleHandler, Cryptography.publicHandler, Cryptography.publicAnswer] at compatible ⊢
       all_goals have tailLaw := ih compatible.2
+      all_goals simp only [Garbling.oracleHandler] at tailLaw
       all_goals rw [propext tailLaw]
       all_goals simp only [encOracleTranscriptRecords, PermutationTranscriptMatches,
         List.mem_cons, forall_eq_or_imp]

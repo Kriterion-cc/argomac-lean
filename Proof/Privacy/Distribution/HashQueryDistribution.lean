@@ -29,7 +29,7 @@ theorem replaceHashAt_answer (randomness : Garbling.Randomness) (hidden : BaseFi
   cases request <;> try rfl
   rename_i input
   change Function.update randomness.hashOracle hidden answer input = randomness.hashOracle input
-  exact Function.update_of_ne (fun same => miss (congrArg Garbling.OracleQuery.hash same)) _ _
+  exact Function.update_of_ne (fun same => miss (congrArg Cryptography.PublicQuery.hash same)) _ _
 
 theorem oracleHandler_state (randomness : Garbling.Randomness)
     (request : Garbling.OracleQuery) :

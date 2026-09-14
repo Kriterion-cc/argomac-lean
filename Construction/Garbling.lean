@@ -33,34 +33,15 @@ structure Labels where
 
 abbrev PublicCircuit := Pipeline.Table
 
-abbrev EvaluationOracle := PermutationOracle Pipeline.FixedKeyIndex Block × PermutationOracle EncPRF.PermutationIndex Block × EncPRF.HashOracle
-/-- This query type exposes each public oracle in both permutation directions. -/
-inductive OracleQuery
-  | fixedForward (index : Pipeline.FixedKeyIndex) (input : Block)
-  | fixedInverse (index : Pipeline.FixedKeyIndex) (output : Block)
-  | encForward (index : EncPRF.PermutationIndex) (input : Block)
-  | encInverse (index : EncPRF.PermutationIndex) (output : Block)
-  | hash (input : BaseField)
+abbrev EvaluationOracle := PublicOracle Pipeline.FixedKeyIndex EncPRF.PermutationIndex
+abbrev OracleQuery := PublicQuery Pipeline.FixedKeyIndex EncPRF.PermutationIndex
+abbrev OracleAnswer := @PublicQuery.Answer Pipeline.FixedKeyIndex EncPRF.PermutationIndex
+abbrev oracleSpec := publicOracleSpec Pipeline.FixedKeyIndex EncPRF.PermutationIndex
 
-/-- This function fixes the answer type for each ArgoMAC oracle query. -/
-def OracleAnswer : OracleQuery → Type
-  | .fixedForward _ _ | .fixedInverse _ _ => Block
-  | .encForward _ _ | .encInverse _ _ => Block
-  | .hash _ => Block × Block
-
-/-- This specification is the public ArgoMAC oracle surface. -/
-abbrev oracleSpec : OracleSpec := {
-  Query := OracleQuery
-  Answer := OracleAnswer
-}
-
-/-- The real handler uses the exact oracles in the garbling random tape. -/
-def oracleHandler : OracleHandler oracleSpec Randomness
-  | .fixedForward index input, randomness => (randomness.fixedKeyOracle.permutation index input, randomness)
-  | .fixedInverse index output, randomness => ((randomness.fixedKeyOracle.permutation index).symm output, randomness)
-  | .encForward index input, randomness => (randomness.encPRFOracle.permutation index input, randomness)
-  | .encInverse index output, randomness => ((randomness.encPRFOracle.permutation index).symm output, randomness)
-  | .hash input, randomness => (randomOracleAnswer randomness.hashOracle input, randomness)
+/-- The handler exposes every oracle that evaluation reads. -/
+def oracleHandler : OracleHandler oracleSpec Randomness :=
+  publicHandler fun randomness =>
+    (randomness.fixedKeyOracle, randomness.encPRFOracle, randomness.hashOracle)
 
 structure Topology where
   coordinateBits : Nat
@@ -127,7 +108,7 @@ def garbledCircuit [FieldCertificate] [GroupCertificate] (construction : Constru
   function := fun scalar input => checkedScalarMultiplication scalar.value input
   garble := fun _ scalar randomness => garble construction scalar randomness
   encode := fun key input => encode key (BitInput.ofAffine input)
-  evaluate := fun oracle table labels => some (evaluate oracle table labels)
+  evaluate := fun oracle table _ labels => some (evaluate oracle table labels)
 }
 
 def topology (_scalar : NonZeroScalar) : Topology := {
@@ -136,3 +117,41 @@ def topology (_scalar : NonZeroScalar) : Topology := {
 }
 
 end Kriterion.ArgoMAC.Garbling
+
+namespace Kriterion.ArgoMAC.Lamport
+open BN254 Cryptography
+
+def keyPairs (key : InputMacKey) : GarbledCircuit.LamportSecretKey :=
+  Vector.ofFn fun index =>
+    if low : index.val < 254 then
+      let item := key.x.get ⟨index.val, low⟩
+      (item.falseLabel, item.trueLabel)
+    else
+      let item := key.y.get ⟨index.val - 254, by
+        change index.val - 254 < 254
+        omega⟩
+      (item.falseLabel, item.trueLabel)
+
+def selectedLabels (mac : InputMac) : GarbledCircuit.LamportSignature :=
+  Vector.ofFn fun index =>
+    if low : index.val < 254 then
+      mac.x.get ⟨index.val, low⟩
+    else
+      mac.y.get ⟨index.val - 254, by
+        change index.val - 254 < 254
+        omega⟩
+
+/-- The evaluator reconstructs its internal labels from its input and 508 blocks. -/
+def restore (input : AffineInput) (labels : GarbledCircuit.LamportSignature) : Garbling.Labels := {
+  input := BitInput.ofAffine input
+  inputMac := {
+    x := Vector.ofFn fun index => labels[index.val]'(by have : index.val < 254 := index.isLt; omega)
+    y := Vector.ofFn fun index => labels[254 + index.val]'(by have : index.val < 254 := index.isLt; omega)
+  }
+}
+
+/-- This adapter removes the repeated input from the transmitted labels. -/
+def wireCircuit [FieldCertificate] [GroupCertificate] :=
+  (Garbling.garbledCircuit construction).mapLabels (fun labels => selectedLabels labels.inputMac) restore
+
+end Kriterion.ArgoMAC.Lamport
