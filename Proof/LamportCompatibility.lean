@@ -14,9 +14,8 @@ theorem encodeSelectsLabels [FieldCertificate] [GroupCertificate]
 
 def compatible [FieldCertificate] [GroupCertificate] :
     GarbledCircuit.LamportCompatibility
-      (Garbling.garbledCircuit construction) affineLamportBits := {
+      wireCircuit affineLamportBits := {
   keyPairs := fun key => keyPairs key.randomness.inputMacKey
-  selectedLabels := fun labels => selectedLabels labels.inputMac
   encodeSelectsLabels := by
     intro key input
     exact encodeSelectsLabels key input

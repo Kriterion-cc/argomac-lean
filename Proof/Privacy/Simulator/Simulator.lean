@@ -1214,7 +1214,7 @@ theorem realIdealOracleHandlers_related
         (idealOracleHandler query state).2 := by
   rcases related with ⟨fixed, enc, hash⟩
   cases query <;>
-    simp only [Garbling.oracleHandler, idealOracleHandler, oracleHandlerFor]
+    simp only [Garbling.oracleHandler, Cryptography.publicHandler, Cryptography.publicAnswer, idealOracleHandler, oracleHandlerFor]
   · exact ⟨by rw [fixed],
       by simp [RealIdealOracleRelated, recordFixed, fixed, enc, hash]⟩
   · exact ⟨by rw [fixed],

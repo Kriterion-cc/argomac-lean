@@ -1,4 +1,9 @@
 import Submission
+import Components
+import Correctness
+import E2E
+import Operational
+import Lean
 
 open Kriterion Kriterion.BN254
 
@@ -18,207 +23,6 @@ theorem hashLiftRoundingArithmeticHas100Bits :
     Cryptography.Assumptions.WorkPerAdvantage 100 1
       ArgoMAC.Security.hashLiftRoundingError :=
   ArgoMAC.Security.hashLiftRoundingArithmeticHas100Bits
-
-#print axioms paperCTPRFHas100Bits
-#print axioms bucketedCTPRFHas100Bits
-#print axioms hashLiftRoundingArithmeticHas100Bits
-#print axioms ArgoMAC.Security.vectorFunctionEquiv
-#print axioms ArgoMAC.Security.Garbling.Randomness.data_injective
-#print axioms ArgoMAC.Security.randomTape_fullSupport
-#print axioms ArgoMAC.Security.decodeResult_retargetPointGateResults
-#print axioms Cryptography.OracleProgram.run_project
-#print axioms ArgoMAC.Security.pointLayerUsesLinkedInputKey
-#print axioms ArgoMAC.Security.recordFixed_preservesInvariant
-#print axioms ArgoMAC.Security.recordEnc_preservesInvariant
-#print axioms ArgoMAC.Security.addCommitment_preservesInvariant
-#print axioms ArgoMAC.Security.initialState_invariant
-#print axioms ArgoMAC.Security.SimulatorInvariant.transcriptsConsistent
-#print axioms ArgoMAC.Security.idealOracleHandler_preservesInvariant
-#print axioms ArgoMAC.Security.oracleProgram_run_result_of_related
-#print axioms ArgoMAC.Security.initialState_realIdealOracleRelated
-#print axioms ArgoMAC.Security.realIdealOracleHandlers_related
-#print axioms ArgoMAC.Security.oracleProgram_real_ideal_result
-#print axioms ArgoMAC.Security.oracleProgram_real_initial_result
-#print axioms ArgoMAC.Security.programPermutation_apply
-#print axioms ArgoMAC.Security.programPermutation_symm
-#print axioms ArgoMAC.Security.programPermutation_preserves
-#print axioms ArgoMAC.Security.programPermutation_forward_eq_of_fresh
-#print axioms ArgoMAC.Security.programPermutation_inverse_eq_of_fresh
-#print axioms ArgoMAC.Security.map_uniform_swapProgramPair
-#print axioms ArgoMAC.Security.map_uniform_swapProgramTapeStep
-#print axioms ArgoMAC.Security.map_uniform_swapProgramTapeSchedule
-#print axioms ArgoMAC.Security.map_uniform_swapFreshProgrammingSample
-#print axioms ArgoMAC.Security.map_uniform_updateProgramPair
-#print axioms ArgoMAC.Security.updateProgramPair_apply_of_ne
-#print axioms ArgoMAC.Security.map_uniform_swapFreshHashProgrammingSample
-#print axioms ArgoMAC.Security.swapFixedStateTarget_involutive
-#print axioms ArgoMAC.Security.swapHashStateTarget_involutive
-#print axioms ArgoMAC.Security.swapFixedStateTarget_preservesInvariant
-#print axioms ArgoMAC.Security.swapHashStateTarget_preservesInvariant
-#print axioms ArgoMAC.Security.carryIdealHandler_swapFixed
-#print axioms ArgoMAC.Security.carryIdealHandler_swapHash
-#print axioms ArgoMAC.Security.oracleProgram_run_stateEquiv_of_safe
-#print axioms ArgoMAC.Security.oracleProgram_run_swapFixed_of_safe
-#print axioms ArgoMAC.Security.oracleProgram_run_swapHash_of_safe
-#print axioms ArgoMAC.Security.programFixed_preservesInvariant
-#print axioms ArgoMAC.Security.programEnc_preservesInvariant
-#print axioms ArgoMAC.Security.programHash_apply
-#print axioms ArgoMAC.Security.programHash_preservesInvariant
-#print axioms Cryptography.freshPermutationPairCheck_eq_true
-#print axioms ArgoMAC.Security.freshHashInputCheck_eq_true
-#print axioms ArgoMAC.Security.tryProgramFixed_preservesInvariant
-#print axioms ArgoMAC.Security.tryProgramEnc_preservesInvariant
-#print axioms ArgoMAC.Security.tryProgramHash_preservesInvariant
-#print axioms ArgoMAC.Security.tryProgramFixed_badOrFresh
-#print axioms ArgoMAC.Security.tryProgramEnc_badOrFresh
-#print axioms ArgoMAC.Security.tryProgramHash_badOrFresh
-#print axioms ArgoMAC.Security.tryProgramFixed_bad_of_bad
-#print axioms ArgoMAC.Security.hashGate_evaluate_of_matches
-#print axioms ArgoMAC.Security.padGate_evaluate_of_matches
-#print axioms ArgoMAC.Security.programHashGate_evaluate
-#print axioms ArgoMAC.Security.programPadGate_evaluate
-#print axioms ArgoMAC.Security.programGate_evaluate
-#print axioms ArgoMAC.Security.programGate_preservesInvariant
-#print axioms ArgoMAC.Security.programGate_badOrFreshAll
-#print axioms ArgoMAC.Security.liftHashBlocks_value
-#print axioms ArgoMAC.Security.liftHashBlocks_hashBlocksValue
-#print axioms ArgoMAC.Security.targetPadBlocks_value
-#print axioms ArgoMAC.Security.programGateForTarget_evaluate
-#print axioms ArgoMAC.Security.programGateForTarget_preservesInvariant
-#print axioms ArgoMAC.Security.programGateForTarget_badOrFreshAll
-#print axioms ArgoMAC.Security.programFixedSlot_fixedTranscript_of_fresh
-#print axioms ArgoMAC.Security.programHashGate_fixedTranscript_of_fresh
-#print axioms ArgoMAC.Security.programPadGate_fixedTranscript_of_fresh
-#print axioms ArgoMAC.Security.GateDirective.apply_fixedTranscript_of_fresh
-#print axioms ArgoMAC.Security.GateDirective.satisfied_of_programRecords
-#print axioms ArgoMAC.Security.programFixedSlot_fixedTranscript_length_of_fresh
-#print axioms ArgoMAC.Security.programHashGate_fixedTranscript_length_of_fresh
-#print axioms ArgoMAC.Security.programPadGate_fixedTranscript_length_of_fresh
-#print axioms ArgoMAC.Security.GateDirective.apply_fixedTranscript_length_of_fresh
-#print axioms ArgoMAC.Security.gateScheduleActiveSlotCount_le
-#print axioms ArgoMAC.Security.gateScheduleProgramRecords_suffix
-#print axioms ArgoMAC.Security.digitGateSchedule_length
-#print axioms ArgoMAC.Security.biquadraticXGateSchedule_length
-#print axioms ArgoMAC.Security.biquadraticYGateSchedule_length
-#print axioms ArgoMAC.Security.biquadraticZGateSchedule_length
-#print axioms ArgoMAC.Security.biquadraticRowGateSchedule_length
-#print axioms ArgoMAC.Security.BiquadraticRowRequest.schedule_length
-#print axioms ArgoMAC.Security.CurveGateRequest.schedule_length
-#print axioms ArgoMAC.Security.pointGateSchedule_length
-#print axioms ArgoMAC.Security.pipelineGateSchedule_length
-#print axioms ArgoMAC.Security.pipelineGateSchedule_length_value
-#print axioms ArgoMAC.Security.programGateSchedule_encOracle
-#print axioms ArgoMAC.Security.programGateSchedule_hashOracle
-#print axioms ArgoMAC.Security.linkedPointInputMac_programGateSchedule
-#print axioms ArgoMAC.Security.linkedPipelineGateSchedule_programGateSchedule
-#print axioms ArgoMAC.Security.linkedPipelineGateSchedule_length
-#print axioms ArgoMAC.Security.GateDirective.apply_preservesInvariant
-#print axioms ArgoMAC.Security.GateDirective.apply_bad_of_bad
-#print axioms ArgoMAC.Security.programGateSchedule_bad_of_bad
-#print axioms ArgoMAC.Security.programGateSchedule_preservesInvariant
-#print axioms ArgoMAC.Security.programGateSchedule_badOrFresh
-#print axioms ArgoMAC.Security.programGateSchedule_fresh_of_notBad
-#print axioms ArgoMAC.Security.programGateSchedule_fixedTranscript_length_of_fresh
-#print axioms ArgoMAC.Security.programGateSchedule_fixedTranscript_of_fresh
-#print axioms ArgoMAC.Security.programGateSchedule_fixedTranscript_suffix_of_fresh
-#print axioms ArgoMAC.Security.programGateSchedule_fixedTranscript_suffix_of_notBad
-#print axioms ArgoMAC.Security.programGateSchedule_fixedTranscript_length_of_notBad
-#print axioms ArgoMAC.Security.programGateSchedule_fixedTranscript_length_le_of_notBad
-#print axioms ArgoMAC.Security.programGateSchedule_satisfies_of_fresh
-#print axioms ArgoMAC.Security.programGateSchedule_satisfies_of_notBad
-#print axioms ArgoMAC.Security.digitGateSchedule_evaluate
-#print axioms ArgoMAC.Security.digitGateSchedule_evaluateValue
-#print axioms ArgoMAC.Security.biquadraticXGateSchedule_evaluate
-#print axioms ArgoMAC.Security.biquadraticYGateSchedule_evaluate
-#print axioms ArgoMAC.Security.biquadraticZGateSchedule_evaluate
-#print axioms ArgoMAC.Security.CurveGateRequest.evaluate
-#print axioms ArgoMAC.Security.BiquadraticRowRequest.evaluate
-#print axioms ArgoMAC.Security.pointGateSchedule_evaluate
-#print axioms ArgoMAC.Security.linkedPipelineGateSchedule_evaluate
-#print axioms ArgoMAC.Security.programDigitGateSchedule_evaluateValue
-#print axioms ArgoMAC.Security.programBiquadraticXGateSchedule_evaluate
-#print axioms ArgoMAC.Security.programBiquadraticRowGateSchedule_evaluate
-#print axioms ArgoMAC.Security.fromBits_retargetBits
-#print axioms ArgoMAC.Security.CurveGateRequest.retarget_table
-#print axioms ArgoMAC.Security.CurveGateRequest.retarget_result
-#print axioms ArgoMAC.Security.BiquadraticXRequest.retarget_table
-#print axioms ArgoMAC.Security.BiquadraticXRequest.retarget_result
-#print axioms ArgoMAC.Security.BiquadraticYRequest.retarget_table
-#print axioms ArgoMAC.Security.BiquadraticYRequest.retarget_result
-#print axioms ArgoMAC.Security.BiquadraticZRequest.retarget_table
-#print axioms ArgoMAC.Security.BiquadraticZRequest.retarget_result
-#print axioms ArgoMAC.Security.BiquadraticRowRequest.retarget_table
-#print axioms ArgoMAC.Security.BiquadraticRowRequest.retarget_result
-#print axioms ArgoMAC.Security.retargetPointGateRequests_get
-#print axioms ArgoMAC.Security.retargetPointGateRequests_result_get
-#print axioms ArgoMAC.Security.retargetPointGateRequests_table_get
-#print axioms ArgoMAC.Security.programRetargetedBiquadraticRow_evaluate
-#print axioms ArgoMAC.Security.retargetPointGateSchedule_evaluate_get
-#print axioms ArgoMAC.Security.recordGateConstructionQueries_preservesInvariant
-#print axioms ArgoMAC.Security.recordGateConstructionQueries_length
-#print axioms ArgoMAC.Security.recordGateConstructionQueries_origin
-#print axioms ArgoMAC.Security.map_uniformOfFintype_equivBetween
-#print axioms ArgoMAC.Security.map_uniform_prod_snd
-#print axioms ArgoMAC.Security.map_uniform_prod_fst
-#print axioms ArgoMAC.Security.uniform_prod_eq_bind
-#print axioms ArgoMAC.Security.map_uniform_prod_of_uniform_fiber
-#print axioms ArgoMAC.Security.map_uniform_garblingRandomness_fixedKeyOracle
-#print axioms ArgoMAC.Security.map_randomTape_fixedKeyOracle
-#print axioms ArgoMAC.Security.map_uniform_swapProgramTapeSchedule_snd
-#print axioms ArgoMAC.Security.swapProgramHashTapeSchedule_snd
-#print axioms ArgoMAC.Security.map_uniform_fixedHashBlocks
-#print axioms ArgoMAC.Security.map_uniform_fixedDaviesMeyerBlocks
-#print axioms ArgoMAC.Security.digitBitsK_independentOfSlope
-#print axioms ArgoMAC.Security.map_uniform_curveCoefficientTransport
-#print axioms ArgoMAC.Security.curveGarble_coefficients
-#print axioms ArgoMAC.Security.map_uniform_xCoefficientTransport
-#print axioms ArgoMAC.Security.biquadraticGarbleX_coefficients
-#print axioms ArgoMAC.Security.map_uniform_yCoefficientTransport
-#print axioms ArgoMAC.Security.biquadraticGarbleY_coefficients
-#print axioms ArgoMAC.Security.map_uniform_zCoefficientTransport
-#print axioms ArgoMAC.Security.biquadraticGarbleZ_coefficients
-#print axioms ArgoMAC.Security.map_uniform_fixedDaviesMeyerPadBlocks
-#print axioms ArgoMAC.Security.map_uniform_fixedEncryptedFieldLift
-#print axioms ArgoMAC.Security.map_uniform_realBitAdaptorTrueRowLift
-#print axioms ArgoMAC.Security.map_randomTape_dependentRealBitAdaptorTrueRowLift
-#print axioms ArgoMAC.Security.map_uniform_digitOffset
-#print axioms ArgoMAC.Security.map_uniform_twoGoodHashDigitOffsetSum
-#print axioms ArgoMAC.Security.fixedHashToField_eq_goodResidue
-#print axioms ArgoMAC.Security.biquadraticZeroPad_eq_goodHashSum
-#print axioms ArgoMAC.Security.map_uniform_goodHashLiftEquiv
-#print axioms ArgoMAC.Security.map_uniform_goodHashLiftEquiv_symm
-#print axioms ArgoMAC.Security.goodHashLiftEquiv_fst
-#print axioms ArgoMAC.Security.goodHashLiftValue_lt_goodCount
-#print axioms ArgoMAC.Security.goodHashLift_toNat
-#print axioms ArgoMAC.Security.hashLiftRemainder_lt_baseFieldModulus
-#print axioms ArgoMAC.Security.hashLiftFiberCount
-#print axioms ArgoMAC.Security.map_uniform_fullHashLiftBlockEquiv
-#print axioms ArgoMAC.Security.fixedDaviesMeyerHashLift_eq
-#print axioms ArgoMAC.Security.map_uniform_fixedDaviesMeyerHashLift
-#print axioms ArgoMAC.Security.map_uniform_hashLiftSplitEquiv
-#print axioms ArgoMAC.Security.map_uniform_fixedDaviesMeyerHashSplit
-#print axioms ArgoMAC.Security.map_uniform_fixedOracleProduct_fixedDaviesMeyerHashSplit
-#print axioms ArgoMAC.Security.map_uniform_garblingRandomness_fixedDaviesMeyerHashSplit
-#print axioms ArgoMAC.Security.map_uniform_garblingRandomness_dependentDaviesMeyerHashSplit
-#print axioms ArgoMAC.Security.map_randomTape_fixedDaviesMeyerHashSplit
-#print axioms ArgoMAC.Security.map_randomTape_dependentDaviesMeyerHashSplit
-#print axioms ArgoMAC.Security.map_randomTape_dependentGateDaviesMeyerHashSplit
-#print axioms ArgoMAC.Security.uniform_hashLiftBadSet_mass
-#print axioms ArgoMAC.Security.fixedDaviesMeyerHashSplit_badMass
-#print axioms ArgoMAC.Security.randomTape_fixedDaviesMeyerHashSplit_badMass
-#print axioms ArgoMAC.Security.randomTape_dependentDaviesMeyerHashSplit_badMass
-#print axioms ArgoMAC.Security.randomTape_dependentGateDaviesMeyerHashSplit_badMass
-#print axioms ArgoMAC.Security.uniform_hashLiftBadSet_mass_le
-#print axioms ArgoMAC.Security.randomTape_dependentHashLiftBadEvent_mass
-#print axioms ArgoMAC.Security.finiteBadEventUnionMass_le
-#print axioms ArgoMAC.Security.selectedHashLiftBadUnion_mass_le
-#print axioms ArgoMAC.Security.selectedDependentHashLiftBadUnion_mass_le
-#print axioms ArgoMAC.Security.hashLiftAggregateMass_toReal
-#print axioms ArgoMAC.Security.selectedHashLiftBadUnion_toReal_le
-#print axioms ArgoMAC.Security.selectedDependentHashLiftBadUnion_toReal_le
-#print axioms ArgoMAC.Security.selectedGateMetadataSchedule_length
-#print axioms ArgoMAC.Security.selectedGateHashBadUnion_mass_le
-#print axioms ArgoMAC.Security.selectedGateHashBadUnion_toReal_le
 
 namespace TranscriptRegression
 
@@ -249,8 +53,16 @@ theorem transcript_eq_reference {oracle : OracleSpec.{uQuery, uAnswer}}
   | query request next ih => simp [reference, ih]
   | sample distribution next ih => simp [reference, ih]
 
-#print axioms transcript_eq_reference
-
 end TranscriptRegression
 
-#print axioms ArgoMAC.Security.pipelineGateSchedule_query_counts
+-- Every imported construction, proof, and test must use only the standard Lean axioms.
+run_cmd do
+  let env ← Lean.getEnv
+  for (name, _) in env.constants.toList do
+    let origin := (env.getModuleIdxFor? name).bind fun index => env.header.moduleNames[index.toNat]?
+    if (`Kriterion).isPrefixOf name || (`Submission).isPrefixOf name ||
+        origin.any (fun moduleName => #[`Construction, `Proof, `Components, `Correctness, `E2E, `Operational].contains moduleName.getRoot) ||
+        origin.isNone then
+      let illegal := (← Lean.collectAxioms name).filter fun axiomName =>
+        !#[`propext, `Classical.choice, `Quot.sound].contains axiomName
+      unless illegal.isEmpty do Lean.throwError "disallowed axioms in {name}: {illegal}"

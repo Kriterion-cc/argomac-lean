@@ -9,26 +9,6 @@ namespace Kriterion.ArgoMAC.Lamport
 
 open BN254 Cryptography
 
-def keyPairs (key : InputMacKey) : GarbledCircuit.LamportSecretKey :=
-  Vector.ofFn fun index =>
-    if low : index.val < 254 then
-      let item := key.x.get ⟨index.val, low⟩
-      (item.falseLabel, item.trueLabel)
-    else
-      let item := key.y.get ⟨index.val - 254, by
-        change index.val - 254 < 254
-        omega⟩
-      (item.falseLabel, item.trueLabel)
-
-def selectedLabels (mac : InputMac) : GarbledCircuit.LamportSignature :=
-  Vector.ofFn fun index =>
-    if low : index.val < 254 then
-      mac.x.get ⟨index.val, low⟩
-    else
-      mac.y.get ⟨index.val - 254, by
-        change index.val - 254 < 254
-        omega⟩
-
 theorem affineLamportBits_eq_append (input : AffineInput) :
     affineLamportBits input = coordinateBits input.y ++ coordinateBits input.x := by
   apply BitVec.eq_of_toNat_eq
@@ -149,6 +129,23 @@ theorem selectedLabels_eq (key : InputMacKey) (input : AffineInput) :
       then (keyPairs key)[index].2 else (keyPairs key)[index].1
     rw [bitEq]
     rw [keyPairsGetHigh key index bound high]
+    rfl
+
+/-- The wire adapter restores exactly the internal labels for the chosen input. -/
+theorem restore_selected (input : AffineInput) (mac : InputMac) :
+    restore input (selectedLabels mac) = ⟨BitInput.ofAffine input, mac⟩ := by
+  apply congrArg (Garbling.Labels.mk (BitInput.ofAffine input))
+  apply InputMac.ext
+  · apply Vector.ext
+    intro index bound
+    simp only [restore, selectedLabels, Vector.getElem_ofFn]
+    rw [dif_pos (show index < 254 from bound)]
+    rfl
+  · apply Vector.ext
+    intro index bound
+    simp only [restore, selectedLabels, Vector.getElem_ofFn]
+    rw [dif_neg (by omega)]
+    simp only [Nat.add_sub_cancel_left]
     rfl
 
 

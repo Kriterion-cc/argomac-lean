@@ -67,7 +67,7 @@ theorem fixedOracleRoundTrip (randomness : ArgoMAC.Garbling.Randomness)
     let forward := ArgoMAC.Garbling.oracleHandler (.fixedForward index input) randomness
     ArgoMAC.Garbling.oracleHandler (.fixedInverse index forward.1) forward.2 =
       (input, randomness) := by
-  simp [ArgoMAC.Garbling.oracleHandler]; rfl
+  simp [ArgoMAC.Garbling.oracleHandler, Cryptography.publicHandler, Cryptography.publicAnswer]; rfl
 
 theorem encPRFTransformsSelectedLabels
     (oracle : Cryptography.PermutationOracle ArgoMAC.EncPRF.PermutationIndex
@@ -151,20 +151,3 @@ theorem fixedKeyCounts :
       ArgoMAC.Pipeline.digitsPerBucket = 91 :=
   ⟨rfl, rfl, ArgoMAC.Pipeline.pointBucketCountValue,
     ArgoMAC.Pipeline.curveBucketCountValue, rfl⟩
-
-#print axioms generatorIsOnCurve
-#print axioms zeroIsNotOnCurve
-#print axioms endomorphismRoot
-#print axioms digitEndomorphismsMatchScalar
-#print axioms base7StepCorrect
-#print axioms coordinateRowsUseRCB
-#print axioms digitAdaptorCorrect
-#print axioms fixedKeyRowCorrect
-#print axioms encPRFRoundTrip
-#print axioms encPRFTransformsSelectedLabels
-#print axioms curveMembershipReleasesBridge
-#print axioms biquadraticXCorrect
-#print axioms homogeneousDecodeBranches
-#print axioms fieldLayerMatchesRows
-#print axioms pipelineMatchesRows
-#print axioms fixedKeyCounts

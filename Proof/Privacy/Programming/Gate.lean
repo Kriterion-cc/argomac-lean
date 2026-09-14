@@ -604,6 +604,28 @@ def programGateSchedule (state : SimulatorState)
     (schedule : List GateDirective) : SimulatorState :=
   schedule.foldl (fun current directive => directive.apply current) state
 
+/-- Checked programming retains every earlier permutation record. -/
+theorem programFixedSlot_preservesRecords (state : SimulatorState)
+    (location : Pipeline.FixedKeyLocation) (window : Nat)
+    (slot : Pipeline.FixedKeySlot) (label block : Block) :
+    state.fixedTranscript ⊆ (programFixedSlot state location window slot label block).fixedTranscript := by
+  unfold programFixedSlot tryProgramFixed
+  split <;> simp [programFixed, markBad]
+
+theorem GateDirective.apply_preservesRecords (directive : GateDirective) (state : SimulatorState) :
+    state.fixedTranscript ⊆ (directive.apply state).fixedTranscript := by
+  unfold GateDirective.apply programGateForTarget programGate
+  split
+  · exact List.Subset.trans (programFixedSlot_preservesRecords ..) (programFixedSlot_preservesRecords ..)
+  · exact List.Subset.trans (programFixedSlot_preservesRecords ..)
+      (List.Subset.trans (programFixedSlot_preservesRecords ..) (programFixedSlot_preservesRecords ..))
+
+theorem programGateSchedule_preservesRecords (state : SimulatorState) (schedule : List GateDirective) :
+    state.fixedTranscript ⊆ (programGateSchedule state schedule).fixedTranscript := by
+  induction schedule generalizing state with
+  | nil => exact List.Subset.refl _
+  | cons directive remaining ih => exact List.Subset.trans (directive.apply_preservesRecords state) (ih _)
+
 @[simp] theorem programFixedSlot_encOracle (state : SimulatorState)
     (location : Pipeline.FixedKeyLocation) (window : Nat)
     (slot : Pipeline.FixedKeySlot) (label block : Block) :
