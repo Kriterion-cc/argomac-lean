@@ -116,4 +116,44 @@ theorem samplerBatchMemory_cost {count : Nat} (plan : Vector DrawSpec count) (at
         obtain ⟨_, rfl⟩ := supported
         omega
 
+/-- The complete batch preserves registers nine through fifteen. -/
+theorem samplerBatchMemory_caller {count : Nat} (plan : Vector DrawSpec count) (attempts remaining index : Nat)
+    (base final : Memory) (cost : Nat) (register : Register) (caller : 9 ≤ register.val)
+    (supported : (final, cost) ∈ (samplerBatchMemory plan attempts remaining index base).support) :
+    final.registers register = base.registers register := by
+  induction remaining generalizing index base final cost with
+  | zero =>
+      simp only [samplerBatchMemory, PMF.mem_support_pure_iff, Prod.mk.injEq] at supported
+      exact congrArg (fun memory => memory.registers register) supported.1
+  | succ remaining ih =>
+      simp only [samplerBatchMemory] at supported
+      split at supported
+      · obtain ⟨⟨memory, spent⟩, stepSupport, supported⟩ := (PMF.mem_support_bind_iff _ _ _).mp supported
+        obtain ⟨⟨tail, tailCost⟩, tailSupport, equal⟩ := (PMF.mem_support_map_iff _ _ _).mp supported
+        obtain ⟨rfl, rfl⟩ := Prod.mk.inj equal
+        exact (ih (index + 1) memory tail tailCost tailSupport).trans
+          (batchStepMemory_caller _ attempts index base memory spent register caller stepSupport)
+      · simp only [PMF.mem_support_pure_iff, Prod.mk.injEq] at supported
+        exact congrArg (fun memory => memory.registers register) supported.1
+
+/-- The complete batch preserves all caller stacks. -/
+theorem samplerBatchMemory_bits {count : Nat} (plan : Vector DrawSpec count) (attempts remaining index : Nat)
+    (base final : Memory) (cost : Nat)
+    (supported : (final, cost) ∈ (samplerBatchMemory plan attempts remaining index base).support) :
+    final.bits = base.bits := by
+  induction remaining generalizing index base final cost with
+  | zero =>
+      simp only [samplerBatchMemory, PMF.mem_support_pure_iff, Prod.mk.injEq] at supported
+      exact congrArg Memory.bits supported.1
+  | succ remaining ih =>
+      simp only [samplerBatchMemory] at supported
+      split at supported
+      · obtain ⟨⟨memory, spent⟩, stepSupport, supported⟩ := (PMF.mem_support_bind_iff _ _ _).mp supported
+        obtain ⟨⟨tail, tailCost⟩, tailSupport, equal⟩ := (PMF.mem_support_map_iff _ _ _).mp supported
+        obtain ⟨rfl, rfl⟩ := Prod.mk.inj equal
+        exact (ih (index + 1) memory tail tailCost tailSupport).trans
+          (batchStepMemory_bits _ attempts index base memory spent stepSupport)
+      · simp only [PMF.mem_support_pure_iff, Prod.mk.injEq] at supported
+        exact congrArg Memory.bits supported.1
+
 end Kriterion.ArgoMAC.ArithmeticSimulator

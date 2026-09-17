@@ -27,3 +27,5 @@ import Construction.Simulator.MemoryLayout
 import Construction.Simulator.QueryInput
 import Construction.Simulator.SamplerBatch
 import Construction.Simulator.FreshQuery
+import Construction.Simulator.OracleMetadata
+import Construction.Simulator.SwapMetadata

@@ -1,3 +1,10 @@
+import Proof.Privacy.Simulator.Arithmetic.QueryInputReturn
+import Proof.Privacy.Simulator.Arithmetic.SamplerBatch
+import Proof.Privacy.Simulator.Arithmetic.OracleMetadata
+import Proof.Privacy.Simulator.Arithmetic.SwapMetadata
+import Proof.Privacy.Simulator.Arithmetic.KnownQueryBlock
+import Proof.Privacy.Source.SharedRetainedPostquery
+import Proof.Privacy.Programming.SharedScheduleCounts
 import Proof.Privacy.Simulator.Arithmetic.FreshQuerySource
 import Proof.Privacy.Programming.SharedScheduleRecords
 import Proof.Privacy.Simulator.Arithmetic.QueryInputProtocol
