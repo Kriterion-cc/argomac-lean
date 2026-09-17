@@ -1,3 +1,12 @@
+import Proof.Privacy.Distribution.SharedAdaptiveGateMask
+import Proof.Privacy.Source.Valid.SharedPipelineEventRatio
+import Proof.Privacy.Distribution.SharedHashRounding
+import Proof.Privacy.Source.Invalid.SharedInvalidMaskEntrance
+import Proof.Privacy.Bounds.SharedCurveLoss
+import Proof.Privacy.Simulator.SharedGameDistribution
+import Proof.Privacy.Simulator.Arithmetic.OutputTargetsMachine
+import Proof.Privacy.Simulator.Arithmetic.SelectedLabelsProtocol
+import Proof.Privacy.Simulator.Arithmetic.PublicHandlerTyped
 import Proof.Privacy.Simulator.Arithmetic.OfflineMachineProtocol
 import Proof.Privacy.Simulator.Arithmetic.HashQueryMemory
 import Proof.Privacy.Simulator.Arithmetic.PermutationFrame
