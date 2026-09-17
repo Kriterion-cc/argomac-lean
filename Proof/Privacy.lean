@@ -1,4 +1,11 @@
-import Proof.Privacy.Simulator.Arithmetic.RuntimeTrialBlock
+import Proof.Privacy.Simulator.Arithmetic.SwapTable
+import Proof.Privacy.Source.SharedAdaptiveRatio
+import Proof.Privacy.Simulator.Arithmetic.WordInputBlock
+import Proof.Privacy.Simulator.Arithmetic.TableBlock
+import Proof.Privacy.Source.SharedBucketCounts
+import Proof.Privacy.Simulator.Arithmetic.RuntimeSampler
+import Proof.Privacy.Simulator.Arithmetic.WordOutput
+import Proof.Privacy.Collision.SharedCrossBranchBound
 import Proof.Privacy.Simulator.Arithmetic.SampleToRam
 import Proof.Privacy.Simulator.SharedOracleProgram
 import Proof.Privacy.Simulator.SharedSimulator

@@ -12,4 +12,8 @@ import Construction.Simulator.WideSampler
 import Construction.Simulator.IntegerTrial
 import Construction.Simulator.BoundedSampler
 import Construction.Simulator.SampleToRam
-import Construction.Simulator.RuntimeTrial
+import Construction.Simulator.RuntimeSampler
+import Construction.Simulator.WordOutput
+import Construction.Simulator.WordInput
+import Construction.Simulator.TableLookup
+import Construction.Simulator.SwapTable
