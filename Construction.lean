@@ -34,3 +34,13 @@ import Construction.Simulator.PermutationForward
 import Construction.Simulator.PointBatch
 import Construction.Simulator.StoredForward
 import Construction.Simulator.StoredInverse
+import Construction.Simulator.PublicWire
+import Construction.Simulator.WireSegments
+import Construction.Simulator.PublicHandler
+import Construction.Simulator.HashHandler
+import Construction.Simulator.HashOutput
+import Construction.Simulator.PointHorner
+import Construction.Simulator.HomogeneousPoint
+import Construction.Simulator.PointNegation
+import Construction.Simulator.ClampPoint
+import Construction.Simulator.OverlayMetadata
