@@ -1,3 +1,11 @@
+import Proof.Privacy.Simulator.Arithmetic.EncLinkPhysicalIndex
+import Proof.Privacy.Simulator.Arithmetic.EncLinkCost
+import Proof.Privacy.Simulator.Arithmetic.EncLinkProgram
+import Proof.Privacy.Simulator.Arithmetic.RunReserve
+import Proof.Privacy.Simulator.Arithmetic.GateDriverCost
+import Proof.Privacy.Simulator.Arithmetic.SharedSourceCutoff
+import Proof.Privacy.Simulator.Arithmetic.RecordedPublicOperational
+import Proof.Privacy.Simulator.Arithmetic.PublicHistoryResultPhysical
 import Proof.Privacy.Simulator.Arithmetic.CheckedSlotBlock
 import Proof.Privacy.SharedConcreteAdaptivePrivacy
 import Proof.Privacy.Simulator.Arithmetic.PhaseDispatch

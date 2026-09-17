@@ -58,7 +58,7 @@ theorem recordedPublicHandler_query (attempts : Nat) :
 
 /-- The core retains the complete forward block and its caller return. -/
 theorem recordedPublicHandler_forward (attempts : Nat) :
-    ContainsStoredForward (recordedPublicHandler attempts) attempts 
+    ContainsStoredForward (recordedPublicHandler attempts) attempts
       (recordedPublicRedirect ∘ publicForwardLabels) := by
   intro pc valid
   have bound : pc.val < 178 := by
@@ -81,7 +81,7 @@ theorem recordedPublicHandler_forward (attempts : Nat) :
 
 /-- The core retains the complete inverse block and its caller return. -/
 theorem recordedPublicHandler_inverse (attempts : Nat) :
-    ContainsStoredInverse (recordedPublicHandler attempts) attempts 
+    ContainsStoredInverse (recordedPublicHandler attempts) attempts
       (recordedPublicRedirect ∘ publicInverseLabels) := by
   intro pc valid
   have bound : pc.val < 192 := by
@@ -104,7 +104,7 @@ theorem recordedPublicHandler_inverse (attempts : Nat) :
 
 /-- The core retains the complete hash block and its caller return. -/
 theorem recordedPublicHandler_hash (attempts : Nat) :
-    ContainsHashHandler (recordedPublicHandler attempts) 
+    ContainsHashHandler (recordedPublicHandler attempts)
       (recordedPublicRedirect ∘ publicHashLabels) := by
   intro pc valid
   have bound : pc.val < 73 := by
@@ -127,7 +127,7 @@ theorem recordedPublicHandler_hash (attempts : Nat) :
 
 /-- The core retains the complete overlayScan block and its caller return. -/
 theorem recordedPublicHandler_overlayScan (attempts : Nat) :
-    ContainsSwapTable (recordedPublicHandler attempts) 
+    ContainsSwapTable (recordedPublicHandler attempts)
       (recordedPublicRedirect ∘ publicOverlayScanLabels) := by
   intro pc valid
   have bound : pc.val < 13 := by
