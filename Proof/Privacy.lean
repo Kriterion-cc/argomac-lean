@@ -1,3 +1,13 @@
+import Proof.Privacy.Simulator.Arithmetic.EncLinkArithmetic
+import Proof.Privacy.Simulator.Arithmetic.InternalForwardSource
+import Proof.Privacy.Simulator.Arithmetic.HistoryAppend
+import Proof.Privacy.Simulator.Arithmetic.GateDirectiveScratch
+import Proof.Privacy.Simulator.Arithmetic.GateDirectiveSource
+import Proof.Privacy.Simulator.Arithmetic.SelectedLabelStoreMachine
+import Proof.Privacy.Source.SharedFullTranscriptPrefix
+import Proof.Privacy.Source.Invalid.SharedCurveGuardFromPipeline
+import Proof.Privacy.Source.Invalid.SharedCurveSupportedRatio
+import Proof.Privacy.Source.Valid.SharedPipelineSupportedRatio
 import Proof.Privacy.Source.Valid.SharedPipelinePhaseSum
 import Proof.Privacy.Source.SharedRetainedTableAlignment
 import Proof.Privacy.Transcript.SharedGateEndpoint
