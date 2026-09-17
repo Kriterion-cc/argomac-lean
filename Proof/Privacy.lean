@@ -1,3 +1,10 @@
+import Proof.Privacy.Simulator.Arithmetic.OfflineMachineProtocol
+import Proof.Privacy.Simulator.Arithmetic.HashQueryMemory
+import Proof.Privacy.Simulator.Arithmetic.PermutationFrame
+import Proof.Privacy.Simulator.Arithmetic.StoredForwardFrame
+import Proof.Privacy.Simulator.Arithmetic.PublicHandlerCounts
+import Proof.Privacy.Simulator.Arithmetic.PublicHandlerBits
+import Proof.Privacy.Source.Invalid.SharedCurveEventRatio
 import Proof.Privacy.Source.SharedRetainedContext
 import Proof.Privacy.Source.Invalid.SharedCurveGlobalRatio
 import Proof.Privacy.Transcript.SharedIdealTranscript

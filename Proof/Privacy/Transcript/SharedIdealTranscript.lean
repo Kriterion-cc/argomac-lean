@@ -6,6 +6,18 @@ namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography
 noncomputable section
 
+/-- Both shared transcript phases retain the same nonfixed oracle constraints. -/
+theorem sharedNonFixedTranscriptCompatible_append
+    (oracle : PublicOracle Shared.FixedKeyIndex EncPRF.PermutationIndex)
+    (before after : List (Sigma sharedRealOracleSpec.Answer)) :
+    SharedNonFixedTranscriptCompatible oracle (before ++ after) ↔
+      SharedNonFixedTranscriptCompatible oracle before ∧ SharedNonFixedTranscriptCompatible oracle after := by
+  induction before with
+  | nil => simp [SharedNonFixedTranscriptCompatible]
+  | cons entry remaining ih =>
+      rcases entry with ⟨request, answer⟩
+      cases request <;> simp only [List.cons_append, SharedNonFixedTranscriptCompatible, ih, and_assoc]
+
 /-- The recording handler gives the same answers as the shared public oracle. -/
 theorem sharedIdealTranscriptCompatible_iff (state : Shared.Simulator.OracleState)
     (transcript : List (Sigma sharedRealOracleSpec.Answer)) :
