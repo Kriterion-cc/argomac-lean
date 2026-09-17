@@ -1,3 +1,11 @@
+import Proof.Privacy.Source.Valid.SharedPipelinePhaseSum
+import Proof.Privacy.Source.SharedRetainedTableAlignment
+import Proof.Privacy.Transcript.SharedGateEndpoint
+import Proof.Privacy.Source.Invalid.SharedCurvePhaseMass
+import Proof.Privacy.Source.SharedNonfixedSourceMass
+import Proof.Privacy.Simulator.Arithmetic.PublicHandlerOperational
+import Proof.Privacy.Simulator.Arithmetic.HashLiftMachine
+import Proof.Privacy.Simulator.Arithmetic.GateBlocksMachine
 import Proof.Privacy.Source.Valid.SharedPipelineEndpointRatio
 import Proof.Privacy.Source.Valid.SharedPipelineSourceView
 import Proof.Privacy.Source.SharedFullGateSourceMass
