@@ -29,3 +29,8 @@ import Construction.Simulator.SamplerBatch
 import Construction.Simulator.FreshQuery
 import Construction.Simulator.OracleMetadata
 import Construction.Simulator.SwapMetadata
+import Construction.Simulator.OnlineInput
+import Construction.Simulator.PermutationForward
+import Construction.Simulator.PointBatch
+import Construction.Simulator.StoredForward
+import Construction.Simulator.StoredInverse
