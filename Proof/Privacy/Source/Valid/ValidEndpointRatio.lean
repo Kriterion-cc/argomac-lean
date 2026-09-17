@@ -14,8 +14,8 @@ attribute [local instance] Classical.propDecidable publicInputMacKeyFintype bitA
 /-- The full query budget gives a lower coefficient than the valid transcript length. -/
 theorem validSourceRatio_coefficient_le (length budget : Nat) (denominator : ℝ≥0∞)
     (bounded : length ≤ budget) :
-    1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / denominator ≤
-      1 - ((182 * length : Nat) : ℝ≥0∞) / denominator := by
+    1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / denominator ≤
+      1 - ((184 * length : Nat) : ℝ≥0∞) / denominator := by
   apply tsub_le_tsub_left
   gcongr
   omega
@@ -78,7 +78,7 @@ theorem validGhostEndpoint_mass_ge [FieldCertificate] [GroupCertificate]
     (firstCompatible : OracleTranscriptCompatible idealOracleHandler referenceBefore before)
     (secondCompatible : OracleTranscriptCompatible idealOracleHandler referenceAfter after)
     (budget : Nat) (small : budget < 2 ^ 100) (bounded : (before ++ after).length ≤ budget) :
-    (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
+    (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
       sourceGoodMass (fullGateGhostSamples adversary parameter auxiliary scalar.value witness fallback)
         (fun coin => PMF.pure coin.1.2) {coin | fullGateGhostBad coin}
         (table, selected, before, labels, decision, after) ≤

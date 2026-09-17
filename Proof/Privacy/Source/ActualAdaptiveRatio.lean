@@ -127,7 +127,7 @@ theorem actualPipelineProgrammedSource_mass_ratio
       circuitResidualQueryCount (circuitRawGatePrescription keys slopes lifts tables)
         (circuitBucketInputBit input) (circuitBucketInputLabel curveInputMac pointInputMac)
         (before ++ after) index ≤ Fintype.card Block) :
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       ((∏ index, ((Fintype.card Block : ℝ≥0∞) ^ circuitBucketSize index)⁻¹) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>
@@ -206,7 +206,7 @@ theorem circuitResidualQueryCounts_fit [Fintype Block] [Fintype Pipeline.FixedKe
     (gates : RawCircuitGate → RawGatePrescription) (selected : RawLabelBucket → Bool)
     (publicLabel : RawLabelBucket → Block)
     (transcript : List (Sigma Garbling.oracleSpec.Answer))
-    (fits : 91 + transcript.length ≤ Fintype.card Block) (index : Pipeline.FixedKeyIndex) :
+    (fits : 92 + transcript.length ≤ Fintype.card Block) (index : Pipeline.FixedKeyIndex) :
     circuitBucketSize index + circuitResidualQueryCount gates selected publicLabel transcript index ≤
       Fintype.card Block :=
   (Nat.add_le_add (circuitBucketSize_le index)
@@ -242,7 +242,7 @@ theorem circuitMaskProgrammedSource_mass_ratio
       (_residualFits : ∀ index, circuitBucketSize index +
         circuitResidualQueryCount gates (circuitBucketInputBit input)
           (circuitBucketInputLabel curveMac pointMac) (before ++ after) index ≤ Fintype.card Block),
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       ((∏ index, ((Fintype.card Block : ℝ≥0∞) ^ circuitBucketSize index)⁻¹) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>

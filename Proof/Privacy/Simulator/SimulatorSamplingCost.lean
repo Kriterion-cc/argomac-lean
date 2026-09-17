@@ -167,10 +167,10 @@ theorem inputKey_bound : Bounded inputKeyWithCost 4067 :=
 def rowWithCost : Code (RowArrays × Nat) 9920 :=
   pair (gateWithCost 5 4) (pair (gateWithCost 4 4) (gateWithCost 5 5))
 
-def publicWithCost : Code (PublicArrays × Nat) 906533 :=
+def publicWithCost : Code (PublicArrays × Nat) 916453 :=
   pair (gateWithCost 3 5) (vector rowWithCost FieldMacToECMac.outputMacCount)
 
-def offlineWithCost : Code (OfflineArrays × Nat) 907550 :=
+def offlineWithCost : Code (OfflineArrays × Nat) 917470 :=
   pair publicWithCost (pair inputKeyWithCost fieldWithCost)
 
 theorem row_law : rowWithCost.law.map Prod.fst = rowArrays.law := by
@@ -188,14 +188,14 @@ theorem offline_law : offlineWithCost.law.map Prod.fst = offlineArrays.law := by
 theorem row_bound : Bounded rowWithCost 29821 :=
   pair_bound _ _ (gate_bound 5 4) (pair_bound _ _ (gate_bound 4 4) (gate_bound 5 5))
 
-theorem public_bound : Bounded publicWithCost 2725264 :=
+theorem public_bound : Bounded publicWithCost 2755086 :=
   pair_bound _ _ (gate_bound 3 5) (vector_bound _ row_bound FieldMacToECMac.outputMacCount)
 
 /-- This bound includes every sampled array push and every value-record constructor. -/
-theorem offline_bound : Bounded offlineWithCost 2729337 :=
+theorem offline_bound : Bounded offlineWithCost 2759159 :=
   pair_bound _ _ public_bound (pair_bound _ _ inputKey_bound field_bound)
 
-abbrev OnlineCoin [FieldCertificate] := (Fin 90 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)
+abbrev OnlineCoin [FieldCertificate] := (Fin 91 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)
 
 /-- Each scalar round charges division, remainder, a test, and three loop operations.
 The addition count comes from the executed group algorithm. -/
@@ -211,8 +211,8 @@ def arrayFunction {A : Type} {draws : Nat} (code : Code (A × Nat) draws) (count
     Code ((Fin count → A) × Nat) (count * draws) :=
   mapped (vector code count) (fun values => values.get) 1
 
-def onlineWithCost [FieldCertificate] : Code (OnlineCoin × Nat) 181 :=
-  pair (arrayFunction pointWithCost 90) (arrayFunction scaleWithCost FieldMacToECMac.outputMacCount)
+def onlineWithCost [FieldCertificate] : Code (OnlineCoin × Nat) 183 :=
+  pair (arrayFunction pointWithCost 91) (arrayFunction scaleWithCost FieldMacToECMac.outputMacCount)
 
 theorem point_law [FieldCertificate] : pointWithCost.law.map Prod.fst = point.law := by
   simp only [pointWithCost, point, Code.map_law, PMF.map_comp, Function.comp_def]
@@ -251,9 +251,9 @@ theorem arrayFunction_bound {A : Type} {draws limit : Nat} (code : Code (A × Na
     Bounded (arrayFunction code count) (count * (limit + 1) + 1) :=
   mapped_bound _ (vector_bound _ bounded count) _ _
 
-/-- The online bound includes 90 scalar loops and at most 45720 group additions. -/
-theorem online_bound [FieldCertificate] : Bounded onlineWithCost 183699 :=
-  pair_bound _ _ (arrayFunction_bound _ point_bound 90) (arrayFunction_bound _ scale_bound FieldMacToECMac.outputMacCount)
+/-- The online bound includes 91 scalar loops and at most 46228 group additions. -/
+theorem online_bound [FieldCertificate] : Bounded onlineWithCost 185740 :=
+  pair_bound _ _ (arrayFunction_bound _ point_bound 91) (arrayFunction_bound _ scale_bound FieldMacToECMac.outputMacCount)
 
 private theorem pair_size {A B : Type} {first second : Nat}
     (left : Code (A × Nat) first) (right : Code (B × Nat) second)
@@ -302,7 +302,7 @@ theorem online_size [FieldCertificate] : onlineWithCost.DrawSizeLe (2 ^ 256) := 
   have pointSize : pointWithCost.DrawSizeLe (2 ^ 256) :=
     Code.map_drawSizeLe _ _ (Code.map_drawSizeLe _ _ (by change scalarFieldModulus ≤ 2 ^ 256; decide))
   have scaleSize : scaleWithCost.DrawSizeLe (2 ^ 256) := Code.map_drawSizeLe _ _ scale_drawSizeLe
-  exact pair_size _ _ (mapped_size _ (vector_size _ pointSize 90) _ _)
+  exact pair_size _ _ (mapped_size _ (vector_size _ pointSize 91) _ _)
     (mapped_size _ (vector_size _ scaleSize FieldMacToECMac.outputMacCount) _ _)
 
 end Kriterion.ArgoMAC.Security.SimulatorSamplingCost

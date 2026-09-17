@@ -94,7 +94,7 @@ private theorem bind_bound {Source Target : Type*}
 
 theorem retainedBirthdayFlag_mass_le [Fintype Block] (rows : Rows) :
     (retainedBirthdayFlag adversary parameter auxiliary rows).toOuterMeasure {flag | flag = true} ≤
-      243390420 / (2 : ENNReal) ^ 128 := by
+      248799096 / (2 : ENNReal) ^ 128 := by
   rw [retainedBirthdayFlag_resample]
   apply bind_bound
   intro visible
@@ -131,8 +131,8 @@ theorem retainedJointSourceFlags_snd (rows : Rows) (mask : BaseField) :
 theorem retainedJointSourceFlags_mass_le [Fintype Block] (rows : Rows) (mask : BaseField) :
     (retainedJointSourceFlags adversary parameter auxiliary rows mask).toOuterMeasure
       {flags | flags.1 = true ∨ flags.2 = true} ≤
-        243390420 / (2 : ENNReal) ^ 128 +
-          (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
+        248799096 / (2 : ENNReal) ^ 128 +
+          (184 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
   have first := retainedBirthdayFlag_mass_le adversary parameter auxiliary rows
   rw [← retainedJointSourceFlags_fst adversary parameter auxiliary rows mask,
     PMF.toOuterMeasure_map_apply, Set.preimage_setOf_eq] at first
@@ -160,8 +160,8 @@ theorem retainedSource_rawOffset_injective (sample : PublicSample) (bridgeKey ma
 theorem retainedJointSourceFlags_mixture_mass_le [Fintype Block] (source : PMF (Rows × BaseField)) :
     (source.bind (fun fields => retainedJointSourceFlags adversary parameter auxiliary fields.1 fields.2)).toOuterMeasure
       {flags | flags.1 = true ∨ flags.2 = true} ≤
-        243390420 / (2 : ENNReal) ^ 128 +
-          (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
+        248799096 / (2 : ENNReal) ^ 128 +
+          (184 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
   apply bind_bound
   intro fields
   exact retainedJointSourceFlags_mass_le adversary parameter auxiliary fields.1 fields.2

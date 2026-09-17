@@ -216,14 +216,14 @@ theorem smul_ne_zero_of_coprime [FieldCertificate] [GroupCertificate] (scalar : 
 def generatorOffset : FieldMacToECMac.AffineOffset := ⟨{ x := 1, y := 2 }, generatorOnCurve⟩
 
 /-- Every free offset is the generator. -/
-def freeOffsets : Vector FieldMacToECMac.AffineOffset 90 := Vector.replicate 90 generatorOffset
+def freeOffsets : Vector FieldMacToECMac.AffineOffset 91 := Vector.replicate 91 generatorOffset
 
 def geometric : Nat → ScalarField
   | 0 => 0
   | count + 1 => 1 + radix * geometric count
 
 /-- The clamped first offset is this multiple of the generator. -/
-@[irreducible] def clampScalar : ScalarField := -(radix * geometric 90)
+@[irreducible] def clampScalar : ScalarField := -(radix * geometric 91)
 
 def generatorCoordinates : Coordinates := some (1, 2)
 
@@ -267,7 +267,7 @@ theorem pointHorner_replicate [FieldCertificate] [GroupCertificate] (point : Poi
         one_smul, mul_smul]
 
 theorem freeOffsetPoints_freeOffsets [FieldCertificate] :
-    FieldMacToECMac.freeOffsetPoints freeOffsets = List.replicate 90 generatorOffset.point := by
+    FieldMacToECMac.freeOffsetPoints freeOffsets = List.replicate 91 generatorOffset.point := by
   simp [FieldMacToECMac.freeOffsetPoints, freeOffsets]
 
 theorem clampedFirst_freeOffsets [FieldCertificate] [GroupCertificate] :

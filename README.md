@@ -1,212 +1,101 @@
 # argomac-lean
 
-The ArgoMAC garbled circuit for BN254 scalar multiplication, in Lean 4.
-
-This repository is the baseline submission for the Kriterion challenge
-`scalar-multiplication`.
-
-## Layout
-
-| Path                                 | Content                                   |
-| ------------------------------------ | ----------------------------------------- |
-| `Construction.lean`, `Construction/` | The computable construction.              |
-| `Proof.lean`, `Proof/`               | The proof.                                |
-| `Submission.lean`                    | The entry point the verifier reads.       |
-| `tests/`                             | Acceptance checks. Kriterion ignores them. |
-
-The verifier copies `Submission.lean`, `Construction.lean`, `Proof.lean`,
-`Construction/`, and `Proof/` into a workspace it generates. It ignores every other
-root entry.
-
-## Proof structure
-
-`Proof.lean` exports four property roots.
-`Submission.lean` supplies their results to the challenge.
-
-| Root | Supporting proofs |
-| --- | --- |
-| `Proof/Correctness.lean` | `Proof/Correctness/` proves termination and evaluation. The root also proves `functionCorrect`. |
-| `Proof/Privacy.lean` | `Proof/Privacy/` proves transcript bounds, source ratios, and simulator laws. The root also proves `topologyConstant`. |
-| `Proof/LamportCompatibility.lean` | `Proof/LamportCompatibility/` proves label selection. The root supplies the executable compatibility bundle. |
-| `Proof/CiphertextSize.lean` | `Construction/ArgoMAC/Encoding.lean` proves the encoding lengths. |
-
-`Proof/Privacy/Source/Valid/` and `Proof/Privacy/Source/Invalid/` separate the input cases.
-`Proof/Shared/` contains arithmetic and probability lemmas that support multiple proof branches.
-Each root states its property explicitly.
-The dependencies form a directed acyclic graph because proof branches share lemmas.
-The construction supplies finite randomness.
-The module paths change, but existing public declaration names remain available through `Proof`.
-
-## Build
-
-The construction and proof import the pinned Kriterion challenge library.
-The library uses Lean 4.33.1, Mathlib 4.33.1, and VCV-io.
-Kriterion includes this repository as a submodule.
-You can run the full build from its challenge directory:
-
-```sh
-cd examples/bn254-scalar-multiplication
-lake exe cache get
-lake build
-```
-
-The verifier generates the same library and entry layout for each submission.
-
-[Proof/README.md](Proof/README.md) records the upstream interface review, sampling laws, proof changes, compiler measurements, and fixed permutation slot counts.
+This repository contains the ArgoMAC construction for BN254 scalar multiplication.
+The Kriterion verifier reads `Submission.solution`.
 
 ## Status
 
-`Submission.solution` supplies every field of `Kriterion.Solution`.
-`Submission.adaptivePrivacy` proves the unchanged universal 100-bit privacy obligation.
-The theorem applies to the entry variant described below.
-The theorem uses ideal permutations and an ideal hash oracle.
-The theorem covers one selected input encoding per garbling.
-It does not prove security for concrete AES, concrete SHA256, repeated label releases, or the complete BaBe protocol.
-The theorem fixes BN254 and 128-bit blocks.
-It does not define an asymptotic family for every security parameter.
+This revision does not yet satisfy the revised challenge.
+`Submission.lean` has two open proof goals.
+The first goal needs a complete simulator machine.
+The second goal needs the combined adaptive privacy bound.
+The challenge budget remains provisional.
+The [challenge draft](https://github.com/Kriterion-cc/kriterion-challenge/pull/1) defines the revised obligation.
 
-| Field | Where |
+The construction uses 92 digits and three shared permutation slots.
+The construction retains complete homogeneous addition formulas.
+Those formulas require 13 point-adaptor families.
+The paper needs corrected coordinate formulas and an updated adaptor count.
+
+## Layout
+
+| Path | Content |
 | --- | --- |
-| `randomness` | `Construction/ArgoMAC/Seed.lean` derives the complete tape from the seed. It proves the clamped offset with plain `ZMod` arithmetic and a Bezout argument, without the field certificate. |
-| `ciphertextSize` | `Proof/CiphertextSize.lean` proves that the complete public encoding has 9,699,931 bytes. |
-| `perfectCorrectness` | `Proof/Correctness.lean` combines evaluation correctness and termination. |
-| `lamportCompatible` | `Proof/LamportCompatibility.lean` supplies the label selectors and their proof. |
-| `adaptivePrivacy` | `Proof/Privacy.lean` proves the universal 100-bit bound. `Submission.adaptivePrivacy` supplies the challenge field. |
+| `Construction.lean`, `Construction/` | These files define the computable construction and machine components. |
+| `Proof.lean`, `Proof/` | These files contain the construction proofs and simulator proofs. |
+| `Submission.lean` | This file connects the construction to the challenge obligation. |
+| `tests/` | These files check the construction, parameters, simulator components, and axioms. |
 
-## Fixed-key schedule
+The verifier copies the construction, proof, and submission files into its generated workspace.
+The challenge baseline test also compiles `tests/AdaptivePrivacy.lean` and its imports.
+The generated workspace uses Lean 4.33.1, Mathlib 4.33.1, and the challenge library.
 
-The construction indexes each fixed-key permutation by an adaptor kind, a coordinate bit
-position, and a slot (`Pipeline.FixedKeyIndex`). One bucket holds one label pair. The 91 output
-digits share the bucket and differ by an injective tweak on the permutation input
-(`Pipeline.FixedKeyLocation.tweak`). A bucket has three hash permutations and two pad
-permutations. Each permutation therefore serves one branch of every gate in its bucket, and no
-gate reads two labels through one permutation.
+## Verified construction
 
-The schedule uses the bucketing method in `gc_rpm_proof.tex`.
-The entry changes the concrete schedule and feed-forward formula.
-A point permutation serves 91 gates.
-A curve permutation serves one gate.
+`Construction/SharedGarbling.lean` exposes the three-slot public interface.
+The hash and pad roles share slots zero and one.
+The third slot serves only the hash role.
+The tape type enforces this equality.
+`Proof/SharedOracle.lean` proves the uniform public-oracle law for that tape type.
 
-The field encoding biases the pad blocks.
-The active collision proof includes this bias.
-
-## Adaptive privacy
-
-The Kriterion obligation uses two adaptive query phases and the original uniform random tape.
-VCV-io supplies uniform sampling, oracle execution, public query logs, and query bounds.
-The interpreter preserves arbitrary private samples.
-VCV-io state projections transport related oracle states.
-Its logger records public answers and omits private samples.
-Its logger erasure rule preserves the output distribution.
-The proof uses VCV-io total variation, identical-until-bad, and conditional event bounds.
-Regression theorems preserve the execution distribution and every ordered public transcript.
-The refactor removes the unused bounded bridge and its security wrappers.
-The source-ratio and correlated permutation arguments remain specific to ArgoMAC.
-The challenge library supplies the permutation counting and fresh programming lemmas.
-The proof covers valid and invalid inputs.
-
-- `Proof/Privacy/Source/Valid/ValidEndpointRatio.lean` bounds the valid source by the real transcript.
-- `Proof/Privacy/Source/Invalid/InvalidGhostEndpoint.lean` bounds the invalid source by the real transcript.
-- `Proof/Privacy/ConcreteSmallSourceRatio.lean` combines both input cases for every small query budget.
-- `Proof/Privacy/AdaptiveSourceBound.lean` combines the source ratio with the ideal transcript bound.
-- `Proof/Privacy/Bounds/AdaptiveLossAccounting.lean` places the full error below the 100-bit envelope.
-- The large-budget case uses the bound of one on the decision advantage.
+`Proof/SharedGarbling.lean` proves correctness for every input and every tape.
+The proof covers equal points, identity results, and off-curve rejection.
+The selected labels satisfy the Lamport interface.
+The canonical public encoding contains 9,806,076 bytes.
+`tests/Correctness.lean` checks these properties for the shared circuit.
+`tests/Components.lean` checks the 92-digit count and the shared role mapping.
 
 ## Paper correspondence
 
 The comparison uses BaBe.latex commit `e2dcf4d540b2708e13cd21090df759051119a116`.
 
-| Item | Paper | Entry |
+| Item | Paper | Construction |
 | --- | --- | --- |
-| Digits | 92 | 91 |
-| Point adaptor families in the count | 9 | 13 |
-| Slots per bucket | 3 | 3 hash slots and 2 separate pad slots |
-| Point permutations in the count | 6,858 | 16,510 |
-| Curve permutations in the count | 3,810 | 6,350 |
-| Block formula | `π(L XOR t) XOR (L XOR t)` | `π(L XOR t) XOR L` |
+| Digits | 92 | 92 |
+| Shared slots per bucket | 3 | 3 |
+| Point-adaptor families | 9 | 13 |
+| Block formula | `π(L XOR t) XOR (L XOR t)` | `π(L XOR t) XOR (L XOR t)` |
 
-[PaperConstruction.lean](Proof/Privacy/PaperConstruction.lean) proves the exact block and byte relations.
-The field relation keeps the XOR inside the reduction modulo the field prime.
-An output translation of a uniform permutation equates the block formulas for one fixed tweak.
-One shared translation cannot equate the formulas for two different tweaks and every label.
-The repository therefore proves this variant directly.
-It does not claim that the two shared-bucket constructions have identical distributions.
+`Proof/Privacy/PaperConstruction.lean` proves the block formula and tweak relations.
+The point tweaks range from 0 through 91.
+Curve gates use tweak 92.
+The challenge's `starter/PAPER_CORRECTIONS.md` records the coordinate counterexamples.
 
-| Paper component | Checked entry component |
-| --- | --- |
-| Point masks and output reconstruction | `Proof/Privacy/Distribution/PointDistribution.lean`, `Proof/Privacy/Distribution/OutputRowDistribution.lean` |
-| Field-mask substitutions | `Proof/Privacy/Distribution/MaskRandomizerDistribution.lean`, `Proof/Privacy/Distribution/CircuitMaskDistribution.lean` |
-| Bit-adaptor permutation programming | `Proof/Privacy/Programming/Gate.lean`, `Proof/Privacy/Source/AdaptivePermutationRatio.lean` |
-| Curve check and EncPRF link | `Proof/Privacy/Source/Invalid/InvalidGhostEndpoint.lean`, `Proof/Privacy/Transcript/EncPRFTranscript.lean` |
-| H-coefficient transcript comparison | `Proof/Shared/HCoefficient.lean`, `Proof/Privacy/ConcreteSmallSourceRatio.lean` |
-| Full concrete error | `Proof/Privacy/Bounds/AdaptiveArithmetic.lean`, `Proof/Privacy/Bounds/AdaptiveLossAccounting.lean` |
-| Three oracle-query phases | `Proof/Privacy/ThreePhasePrivacy.lean` |
+## Simulator proofs
 
-[ThreePhasePrivacy.lean](Proof/Privacy/ThreePhasePrivacy.lean) defines queries before the public table, between the table and labels, and after the labels.
-Lean proves that the three-phase games have the distributions of the compiled two-phase games.
-Lean proves the 100-bit bound with total work `q0 + q1 + q2 + 1`.
-The circuit and auxiliary input are fixed independently of the oracle sample.
-The theorem does not permit oracle-dependent circuit selection.
-The ideal simulator can sample hidden coins early.
-It keeps the table private during the first phase and retains all oracle state updates.
+`Proof/Privacy/Simulator/SharedSimulator.lean` uses one transcript for the three shared slots.
+Lean proves its oracle-consistency rules and selected-gate equations.
+The shared collision checks detect domain and range conflicts between the role names.
+The shared assignment theorem gives the exact permutation probability for both branches.
+`SharedOracleProgram.lean` proves the source program's online distribution law.
+These results do not yet prove the complete shared-slot adaptive privacy bound.
+The older source transport proofs still assume five independent permutation roles.
 
-## Simulator
+`Construction/Simulator/` contains fixed arithmetic machine components.
+The corresponding proofs appear in `Proof/Privacy/Simulator/Arithmetic/`.
+The word sampler produces a uniform 256-bit word in 1,798 instructions.
+Its program table costs 13 additional units.
+The bounded sampler has an exact retry law and a failure bound of `2^-256`.
+The RAM caller preserves its saved address across the sampler call.
+Its 256-attempt budget is at most 461,855 units, including its program table.
+These component budgets do not establish the complete simulator budget.
 
-The simulator samples 90 free points and 91 nonzero homogeneous scales.
-It samples all free gate targets.
-It changes one low target in each coordinate to fix the required result.
-The operation preserves the public table.
+The source simulator samples 91 free points and 92 nonzero scales.
+Its existing resource bounds count higher-level operations.
+Those bounds do not prove the revised arithmetic instruction budget.
+The complete proof also needs RAM oracle tables, canonical serialization, and an implementation-error bound.
 
-The proof uses only `propext`, `Classical.choice`, and `Quot.sound`.
-The proof does not assume adaptive privacy.
+## Validation
 
-The paper also requires an efficient simulator.
-The Kriterion simulator type contains probability distributions and no execution-cost field.
-The computability of `Submission.solution` does not establish simulator efficiency.
-[SimulatorPrivacy.lean](Proof/Privacy/Simulator/SimulatorPrivacy.lean) proves the exact sparse simulator's three-phase privacy.
-[SimulatorTotalImplementation.lean](Proof/Privacy/Simulator/SimulatorTotalImplementation.lean) proves privacy for the total finite implementation.
-The finite sampler uses at most 256 attempts for each integer draw.
-Its error relative to the exact ideal game is at most `(1813496 + q) / 2^256`.
-[SimulatorFiniteArithmetic.lean](Proof/Privacy/Simulator/SimulatorFiniteArithmetic.lean) proves that this error preserves the 100-bit bound.
+The generated workspace uses these commands:
 
-The executable oracle state stores sparse permutations, hash entries, and query records.
-The conditional completion distributions appear only in the proof.
-The executable simulator does not sample complete oracle functions.
-[SimulatorSampling.lean](Proof/Privacy/Simulator/SimulatorSampling.lean) checks the private sampler and its random-draw count.
-[SimulatorMachineCost.lean](Proof/Privacy/Simulator/SimulatorMachineCost.lean) checks sparse execution and storage bounds.
-The executable implementation uses retained arrays and finite retry sampling.
-[SimulatorTotalImplementation.lean](Proof/Privacy/Simulator/SimulatorTotalImplementation.lean) connects its exact game to the original ideal game.
-Its finite game preserves the 100-bit privacy bound.
-The cost theorem starts with empty sparse oracles.
-It derives the state bounds after all three query phases.
-It includes fallback private draws and fallback external queries.
+```sh
+lake build Construction Proof
+lake build Submission
+```
 
-The cost model counts source-level primitives.
-Field operations and group operations each count as one primitive.
-The local counters also count word, index, array, list, record, and comparison operations.
-The rejection counter charges four control operations per sampled bit block.
-The total encoder records its completed local work.
-An integer draw selects zero if every attempt fails.
-The simulator then continues execution.
-The model excludes proof erasure, Lean compiler allocation, serialization, and the adversary's private computation.
-
-For total adversary query budget `q`, define `n = q + 905765`, `D = 1813496 + q`, and `B = D * 257 * 256`.
-The checked bounds have these forms:
-
-| Resource | Bound |
-| --- | --- |
-| Private local work | 53,997,367 local operations |
-| Sparse oracle work | `n * (10 * n + 16)` |
-| Supplied fair bits | `B` |
-| Rejection-control allowance | `4 * B` |
-| Fallback selection allowance | `D` |
-
-These bounds apply to the fixed BN254 instance.
-They give a strict polynomial bound in the query budget under the stated primitive model.
-They do not establish an asymptotic security family or a Lean instruction-count bound.
-The verifier and byte metric use the computable `Submission.solution` entry.
-
-## Source
-
-The paper source is
-<https://github.com/babylonlabs-io/BaBe.latex/tree/e2dcf4d540b2708e13cd21090df759051119a116>.
+The first command checks the exported construction and proof modules.
+The second command remains a required acceptance test.
+The current second command fails at the two open adaptive privacy goals.
+The axiom checks permit only `propext`, `Classical.choice`, and `Quot.sound`.
+No completed proof uses an assumed adaptive privacy theorem.

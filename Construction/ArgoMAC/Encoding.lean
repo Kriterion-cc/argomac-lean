@@ -107,7 +107,7 @@ private theorem biquadratic_length (value : Biquadratic.Table) :
 
 private theorem pointMAC_length (rows : FieldMacToECMac.Rows)
     (randomness : FieldMacToECMac.Randomness) (oracles : FieldMacToECMac.Oracles) (key : InputMacKey) :
-    (pointMAC.encode (FieldMacToECMac.garble rows randomness oracles key)).length = 9659195 := by
+    (pointMAC.encode (FieldMacToECMac.garble rows randomness oracles key)).length = 9765340 := by
   simp only [pointMAC, Encoding.map, Encoding.pair, List.length_append]
   rw [Encoding.vector_length biquadratic 32683 _ _ (by
         intro index; simp [FieldMacToECMac.garble, FieldMacToECMac.garbleRow]),
@@ -120,7 +120,7 @@ private theorem pointMAC_length (rows : FieldMacToECMac.Rows)
 /-- Every scalar and random tape produces the same complete ciphertext length. -/
 theorem garble_length (construction : Construction) (scalar : NonZeroScalar)
     (randomness : Garbling.Randomness) :
-    (encoding.encode (Garbling.garble construction scalar randomness).1).length = 9699931 := by
+    (encoding.encode (Garbling.garble construction scalar randomness).1).length = 9806076 := by
   simp [encoding, Encoding.map, Encoding.pair, Garbling.garble, Pipeline.garble, pointMAC_length]
 
 end Wire

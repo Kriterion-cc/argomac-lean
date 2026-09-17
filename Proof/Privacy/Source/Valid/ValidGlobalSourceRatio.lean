@@ -38,7 +38,7 @@ def validGlobalSourceMass_real_le [fieldCert : FieldCertificate] [groupCert : Gr
   letI : Nonempty GarblingSourceRest := ⟨(garblingOracleKeyEquiv witness).2⟩
   let bound := weightedSubtypeMass_lower
     (fun rest : GarblingSourceRest => (PMF.uniformOfFintype GarblingSourceRest) rest)
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞))
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞))
     (fun rest => NonFixedTranscriptCompatible rest.reference (before ++ after))
     _
     (fun rest => retainedRealPublicMass rest (outputKeys rest) table input

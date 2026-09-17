@@ -23,7 +23,7 @@ theorem invalidRestEventMass_global_normalized [FieldCertificate] [GroupCertific
     (nonfixed : NonFixedTranscriptCompatible nonfixedWitness (before ++ after))
     (budget : Nat) (small : budget < 2 ^ 100) (bounded : (before ++ after).length ≤ budget) :
     letI : Nonempty GarblingSourceRest := ⟨(garblingOracleKeyEquiv sourceWitness).2⟩
-    (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
+    (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
       (∑' rest : GarblingSourceRest, (PMF.uniformOfFintype GarblingSourceRest) rest *
         invalidRestEventMass scalar table input key reference before after rest) ≤
     ∑' rest : GarblingSourceRest, (PMF.uniformOfFintype GarblingSourceRest) rest *

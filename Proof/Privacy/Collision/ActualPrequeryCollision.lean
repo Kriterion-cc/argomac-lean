@@ -82,7 +82,7 @@ theorem actualSourcePrequeryFlag_resample (source : ActualPrefixSourceKernel adv
 theorem actualSourcePrequeryFlag_mass_le [Fintype Block]
     (source : ActualPrefixSourceKernel adversary) :
     (actualSourcePrequeryFlag adversary parameter auxiliary source).toOuterMeasure {flag | flag = true} ≤
-      (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
+      (184 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
   rw [actualSourcePrequeryFlag_resample]
   apply Probability.bind_event_le
   intro coin _
@@ -95,7 +95,7 @@ theorem actualSourcePrequeryFlag_mass_le [Fintype Block]
   apply (sourcePrequeryLabelCollision_mass_le coin.oracles coin.bridgeKey sample _
     (fixedOracleTranscriptRecords selected.2.2)).trans
   apply ENNReal.div_le_div_right
-  exact_mod_cast Nat.mul_le_mul_left 182 ((fixedOracleTranscriptRecords_length_le selected.2.2).trans
+  exact_mod_cast Nat.mul_le_mul_left 184 ((fixedOracleTranscriptRecords_length_le selected.2.2).trans
     (runOracleProgramWithTranscript_length_le _ _ _ _ member))
 
 end

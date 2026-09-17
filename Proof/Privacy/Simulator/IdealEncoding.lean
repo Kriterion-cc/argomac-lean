@@ -33,7 +33,7 @@ theorem decodeHomogeneous_homogeneousOfPoint [FieldCertificate]
 
 /-- The first row fixes the output. The other rows use the free point sample. -/
 def outputTargets [FieldCertificate] [GroupCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
     Vector FieldMacToECMac.HomogeneousValue FieldMacToECMac.outputMacCount :=
   let points : Vector Point FieldMacToECMac.outputMacCount :=
@@ -42,7 +42,7 @@ def outputTargets [FieldCertificate] [GroupCertificate]
   Vector.ofFn fun index => homogeneousOfPoint (points.get index) (scales index)
 
 theorem decodePointMacs_outputTargets [FieldCertificate] [GroupCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
     Garbling.decodePointMacs (outputTargets point free scales) =
       some ((point - radix • pointHorner radix free.toList) :: free.toList) := by
@@ -68,7 +68,7 @@ theorem decodePointMacs_outputTargets [FieldCertificate] [GroupCertificate]
 
 /-- The simulator rows decode to the requested output for every free sample. -/
 theorem decodeResult_outputTargets [FieldCertificate] [GroupCertificate]
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
     (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
     Garbling.decodeResult { point := input, pointMacs := outputTargets point free scales } =
       some point := by
@@ -109,7 +109,7 @@ theorem decodeResult_outputTargets [FieldCertificate] [GroupCertificate]
 
 theorem retargetedPointGateResults_eq_outputTargets [FieldCertificate] [GroupCertificate]
     (requests : PointGateRequests) (input : AffineInput) (point : Point)
-    (free : Vector Point 90) (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
+    (free : Vector Point 91) (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
     pointGateResults
       (retargetPointGateRequests requests input (outputTargets point free scales)) input =
       outputTargets point free scales := by
@@ -121,7 +121,7 @@ theorem retargetedPointGateResults_eq_outputTargets [FieldCertificate] [GroupCer
 /-- Retargeted point rows decode to the requested simulator output. -/
 theorem decodeResult_retargetPointGateResults [FieldCertificate] [GroupCertificate]
     (requests : PointGateRequests) (input : AffineInput) (point : Point)
-    (free : Vector Point 90) (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
+    (free : Vector Point 91) (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
     Garbling.decodeResult {
       point := input
       pointMacs := pointGateResults

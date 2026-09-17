@@ -78,7 +78,7 @@ def validProgrammedSourceMass_real_le [FieldCertificate] [GroupCertificate] [Fin
     (members : ∀ record, record ∈ state.fixedTranscript ↔ record ∈ fixedOracleTranscriptRecords before)
     (queries : Nat) (small : queries < 2 ^ 100) (lengthBound : (before ++ after).length ≤ queries) :=
   restrictedTagMass_lower
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞))
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞))
     (retainedRealPublicMass rest outputKeys table input (curveKey.encodeAffine input) (before ++ after))
     _
     (fun tag => (Fintype.card (EncPRF.PermutationIndex → Block) : ℝ≥0∞)⁻¹ *

@@ -134,7 +134,7 @@ theorem tableWithCost_value (arrays : OfflineArrays) :
   rfl
 
 theorem tableWithCost_count (arrays : OfflineArrays) :
-    (tableWithCost arrays).2 = 15063 := by
+    (tableWithCost arrays).2 = 15228 := by
   simp only [tableWithCost, curveTableWithCost_count, rowTableWithCost_count,
     Vector.toList_map, List.map_map, Function.comp_def]
   rw [List.map_const', List.sum_replicate_nat]

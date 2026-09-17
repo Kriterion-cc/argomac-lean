@@ -40,14 +40,14 @@ theorem operational_small_error [FieldCertificate] [GroupCertificate] [Terminati
 
 /-- This residual counts private samples, online samples, and all sparse oracle operations. -/
 noncomputable def cutoffResidual (queries : Nat) : ℝ :=
-  ((1813496 + queries : Nat) : ℝ) / (2 : ℝ) ^ 256
+  ((1833324 + queries : Nat) : ℝ) / (2 : ℝ) ^ 256
 
 /-- The finite retry residual fits one inverse block per unit of adversary work. -/
 theorem cutoffResidual_le (queries : Nat) :
     cutoffResidual queries ≤ ((queries + 1 : Nat) : ℝ) / (2 : ℝ) ^ 128 := by
-  have countBound : 1813496 + queries ≤ (queries + 1) * 2 ^ 128 := by omega
+  have countBound : 1833324 + queries ≤ (queries + 1) * 2 ^ 128 := by omega
   unfold cutoffResidual
-  have castBound : ((1813496 + queries : Nat) : ℝ) ≤ ((queries + 1 : Nat) : ℝ) * 2 ^ 128 := by
+  have castBound : ((1833324 + queries : Nat) : ℝ) ≤ ((queries + 1 : Nat) : ℝ) * 2 ^ 128 := by
     exact_mod_cast countBound
   apply (div_le_iff₀ (by positivity : (0 : ℝ) < 2 ^ 256)).mpr
   calc
@@ -59,7 +59,7 @@ theorem cutoffEnvelope_has100Bits (queries : Nat) :
     WorkPerAdvantage 100 (queries + 1) (adaptiveErrorEnvelope queries + cutoffResidual queries) := by
   have countBound : adaptiveConstantCount + adaptiveQueryCount * queries + (queries + 1) ≤
       (queries + 1) * 2 ^ 28 := by
-    change 246408450 + 824 * queries + (queries + 1) ≤ (queries + 1) * 268435456
+    change 251850146 + 833 * queries + (queries + 1) ≤ (queries + 1) * 268435456
     omega
   have castBound : ((adaptiveConstantCount + adaptiveQueryCount * queries + (queries + 1) : Nat) : ℝ) ≤
       ((queries + 1 : Nat) : ℝ) * 2 ^ 28 := by exact_mod_cast countBound

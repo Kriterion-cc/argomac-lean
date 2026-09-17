@@ -199,7 +199,7 @@ def idealGateSourceRun [FieldCertificate] [GroupCertificate] {Aux Observation : 
   (PMF.uniformOfFintype OutputRowRest).bind fun rest =>
     (PMF.uniformOfFintype PublicSample).bind fun sample =>
       (choose (publicMaskTable sample) (outputSourceOracleRest rest)).bind fun selected =>
-        (PMF.uniformOfFintype ((Fin 90 → Point) × (Fin outputMacCount → NonZeroBase))).bind fun coin =>
+        (PMF.uniformOfFintype ((Fin 91 → Point) × (Fin outputMacCount → NonZeroBase))).bind fun coin =>
           observe (publicMaskTable sample) selected
             (retargetGateView sample selected.1 ((decodePoint selected.1).map fun point =>
               ⟨selected.1, outputTargets (scalarMultiplication scalar point) (Vector.ofFn coin.1) coin.2⟩) rest)
@@ -364,7 +364,7 @@ private theorem fullAdaptiveGateSource_rounding_bound [FieldCertificate] [GroupC
           ((RawCircuitGate → BaseField × HashLiftQuotient) × CircuitMaskTables)).bind fun source =>
             retainedGateSourceRun scalar (maskRetainedTape randomness)
               (sharedCircuitMaskSample randomness source.1 source.2) choose observe)).toOuterMeasure
-                event).toReal| ≤ (301752 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384 := by
+                event).toReal| ≤ (305054 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384 := by
   have full := sharedHashSource_observation_eq witness parameter
     (fun retained source => fullGateSourceRun scalar retained source choose observe fallback)
   change fullAdaptiveGateSource scalar witness parameter choose observe fallback =
@@ -385,11 +385,11 @@ private theorem fullAdaptiveGateSource_rounding_bound [FieldCertificate] [GroupC
   have mapped := congrArg
     ((PMF.uniformOfFintype ((RawCircuitGate → BaseField × HashLiftQuotient) × CircuitHashRest)).bind)
     (funext fun pair => fullGateSourceKernel_good scalar choose observe fallback pair)
-  have count : (Fintype.card RawCircuitGate : ℝ) = 301752 := by
+  have count : (Fintype.card RawCircuitGate : ℝ) = 305054 := by
     exact_mod_cast rawCircuitGate_card
   rw [count] at bound
   exact gateObservation_transport (Observation := Observation) (event := event)
-    (error := (301752 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384) full (good.trans mapped.symm) bound
+    (error := (305054 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384) full (good.trans mapped.symm) bound
 
 /-- The full source reaches the ideal output source before the final transcript comparison. -/
 theorem adaptiveGateSource_observation_bound [FieldCertificate] [GroupCertificate]
@@ -402,7 +402,7 @@ theorem adaptiveGateSource_observation_bound [FieldCertificate] [GroupCertificat
     (event : Set Observation) :
     |((fullAdaptiveGateSource scalar witness parameter choose observe fallback).toOuterMeasure event).toReal -
       ((idealGateSourceRun scalar choose observe).toOuterMeasure event).toReal| ≤
-      (301752 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384 + (2 : ℝ) ^ (-240 : ℤ) := by
+      (305054 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384 + (2 : ℝ) ^ (-240 : ℤ) := by
   have rounding := fullAdaptiveGateSource_rounding_bound scalar witness parameter choose observe fallback event
   have output := sharedGateSource_ideal_observation_bound scalar witness parameter choose observe event
   have triangle := abs_sub_le

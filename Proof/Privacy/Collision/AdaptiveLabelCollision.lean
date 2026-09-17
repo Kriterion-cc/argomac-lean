@@ -97,7 +97,7 @@ def actualGateLabelUse (oracle : SimulatorOracleCoin) (bridgeKey : BaseField)
     (gate : RawCircuitGate) (bit : Bool) (outputBlock : Block) : PrequeryLabelUse :=
   ⟨circuitGateWire gate, bit,
     circuitGateLabelPad oracle bridgeKey gate bit ^^^ (rawCircuitLocation gate).tweak,
-    circuitGateLabelPad oracle bridgeKey gate bit ^^^ outputBlock⟩
+    circuitGateLabelPad oracle bridgeKey gate bit ^^^ (rawCircuitLocation gate).tweak ^^^ outputBlock⟩
 
 /-- The use gives the exact actual gate domain. -/
 theorem actualGateLabelUse_domain (oracle : SimulatorOracleCoin) (bridgeKey : BaseField)
@@ -115,8 +115,9 @@ theorem actualGateLabelUse_range (oracle : SimulatorOracleCoin) (bridgeKey : Bas
     (key : InputMacKey) (gate : RawCircuitGate) (bit : Bool) (outputBlock : Block) :
     let use := actualGateLabelUse oracle bridgeKey gate bit outputBlock
     inputKeyLabel key use.index use.bit ^^^ use.rangeShift =
-      outputBlock ^^^ BitAdaptor.encode (circuitGateKey (EncPRF.transformKey oracle.encOracle
-        (EncPRF.whiteningKeys oracle.hashOracle bridgeKey) key) key gate) bit := by
+      outputBlock ^^^ (BitAdaptor.encode (circuitGateKey (EncPRF.transformKey oracle.encOracle
+        (EncPRF.whiteningKeys oracle.hashOracle bridgeKey) key) key gate) bit ^^^
+          (rawCircuitLocation gate).tweak) := by
   dsimp only [actualGateLabelUse]
   rw [circuitGateLabel_sourceShift]
   ac_rfl
@@ -146,14 +147,14 @@ private theorem uniform_inputKeyLabel_xor_mass [Fintype Block]
     PMF.uniformOfFintype_apply] at mass
   exact mass
 
-/-- Every fixed prefix query adds at most 182 inverse-block units of collision mass. -/
+/-- Every fixed prefix query adds at most 184 inverse-block units of collision mass. -/
 theorem prequeryLabelCollision_mass_le [Fintype Block]
     (history : List (PermutationRecord Pipeline.FixedKeyIndex Block))
     (uses : ∀ query : Fin history.length, Fin (circuitBucketSize (history.get query).index) →
       PrequeryLabelUse) :
     (PMF.uniformOfFintype InputMacKey).toOuterMeasure
       {key | prequeryLabelCollision history uses key} ≤
-        (182 * history.length : Nat) / (Fintype.card Block : ENNReal) := by
+        (184 * history.length : Nat) / (Fintype.card Block : ENNReal) := by
   classical
   rw [show {key | prequeryLabelCollision history uses key} =
       ⋃ query, ⋃ row, {key |
@@ -182,7 +183,7 @@ theorem prequeryLabelCollision_mass_le [Fintype Block]
             rw [uniform_inputKeyLabel_xor_mass, uniform_inputKeyLabel_xor_mass]
             exact le_of_eq (two_mul _).symm)
         _ = _ := by simp [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm]
-    _ ≤ ∑ _query : Fin history.length, (182 : ENNReal) / Fintype.card Block := by
+    _ ≤ ∑ _query : Fin history.length, (184 : ENNReal) / Fintype.card Block := by
       apply Finset.sum_le_sum
       intro query _
       apply ENNReal.div_le_div_right
@@ -334,7 +335,7 @@ theorem idealPrequeryLabelCollisionFlag_mass_le [Fintype Block] {Extra : Type*}
     (uses : (prestate : LabelPrefixState adversary.State) → Extra → PrefixLabelUses prestate) :
     (idealPrequeryLabelCollisionFlag adversary parameter scalar auxiliary extra uses).toOuterMeasure
       {flag | flag = true} ≤
-        (182 * adversary.firstQueryBudget parameter : Nat) / (Fintype.card Block : ENNReal) := by
+        (184 * adversary.firstQueryBudget parameter : Nat) / (Fintype.card Block : ENNReal) := by
   rw [idealPrequeryLabelCollisionFlag_resample]
   apply Probability.bind_event_le
   intro prestate member
@@ -344,7 +345,7 @@ theorem idealPrequeryLabelCollisionFlag_mass_le [Fintype Block] {Extra : Type*}
   simp only [decide_eq_true_eq]
   apply (prequeryLabelCollision_mass_le _ _).trans
   apply ENNReal.div_le_div_right
-  exact_mod_cast Nat.mul_le_mul_left 182
+  exact_mod_cast Nat.mul_le_mul_left 184
     (idealCircuitPrefix_length_le adversary parameter scalar auxiliary prestate member)
 
 /-- The actual block size gives the concrete pre-encode collision loss. -/
@@ -353,7 +354,7 @@ theorem idealPrequeryLabelCollisionFlag_mass_le_blocks [Fintype Block] {Extra : 
     (uses : (prestate : LabelPrefixState adversary.State) → Extra → PrefixLabelUses prestate) :
     (idealPrequeryLabelCollisionFlag adversary parameter scalar auxiliary extra uses).toOuterMeasure
       {flag | flag = true} ≤
-        (182 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
+        (184 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
   have card : Fintype.card Block = 2 ^ 128 :=
     (Fintype.card_congr BitVec.equivFin.toEquiv).trans (Fintype.card_fin _)
   simpa only [card, Nat.cast_pow, Nat.cast_ofNat] using

@@ -10,7 +10,7 @@ def ready (arrays : OfflineArrays) : PrivateCache × Pipeline.Table :=
   ((cacheWithCost arrays).1, (tableWithCost arrays).1)
 
 /-- This sampler retains the original private sample distribution. -/
-def offlineReady : Code (PrivateCache × Pipeline.Table) 907550 := offlineArrays.map ready
+def offlineReady : Code (PrivateCache × Pipeline.Table) 917470 := offlineArrays.map ready
 
 /-- Each gate record has four array getter fields. The charge covers their reads,
 getter closures, product temporaries, and output record writes. -/
@@ -41,7 +41,7 @@ theorem coinWithCost_value (arrays : OfflineArrays) :
     arrayMapEquiv, rowArraysEquiv, Function.comp_def]
   rfl
 
-theorem coinWithCost_count (arrays : OfflineArrays) : (coinWithCost arrays).2 = 9508 := by
+theorem coinWithCost_count (arrays : OfflineArrays) : (coinWithCost arrays).2 = 9612 := by
   simp only [coinWithCost, curveCoinWithCost, rowCoinWithCost, Vector.toList_map,
     List.map_map, Function.comp_def]
   rw [List.map_const', List.sum_replicate_nat]
@@ -78,7 +78,7 @@ def readyWithCost (arrays : OfflineArrays) : (PrivateCache × Pipeline.Table) ×
 theorem readyWithCost_value (arrays : OfflineArrays) : (readyWithCost arrays).1 = ready arrays := by
   simp only [readyWithCost, cacheFromCoinWithCost_value, ready]
 
-theorem readyWithCost_count (arrays : OfflineArrays) : (readyWithCost arrays).2 = 84331 := by
+theorem readyWithCost_count (arrays : OfflineArrays) : (readyWithCost arrays).2 = 85254 := by
   simp only [readyWithCost, cacheFromCoinWithCost_value, coinWithCost_count,
     cacheWithCost_count, tableWithCost_count]
 

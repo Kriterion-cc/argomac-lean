@@ -54,7 +54,7 @@ theorem actualIndependentCurveSource_mass_ge
         (partialActiveDomains (circuitRawGatePrescription keys (circuitSourceSlope source) lifts (circuitSourceTable source)) (curveOnlyExposed (circuitBucketInputBit input)) (fun bucket _ => circuitBucketInputLabel curveMac curveMac bucket))
           index) ≤ Fintype.card Block) :
     (Fintype.card (EncPRF.PermutationIndex → Block) : ℝ≥0∞)⁻¹ *
-      ((1 - ((182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞) +
+      ((1 - ((184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞) +
       508 / (Fintype.card Block : ℝ≥0∞))) *
       ((∏ index, ((Fintype.card Block : ℝ≥0∞) ^ circuitBucketSize index)⁻¹) *
         fixedTranscriptFactor state.fixedTranscript *

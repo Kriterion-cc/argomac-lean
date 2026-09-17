@@ -263,10 +263,10 @@ theorem nextStateCorrect (state : DecompositionState) :
   push_cast
   linear_combination ((nextState state).b : BN254.ScalarField) * omegaQuadratic
 
-/-- This certificate records the proved 91-round termination result. -/
+/-- This certificate records the proved 92-round termination result. -/
 class TerminationCertificate : Prop where
-  terminal : ∀ scalar, after 91 (shortInitial scalar) = ⟨0, 0⟩
-  initialCorrect : ∀ scalar, stateValue (shortInitial scalar) = scalar
+  terminal : ∀ scalar, after 92 (glvInitial scalar) = ⟨0, 0⟩
+  initialCorrect : ∀ scalar, stateValue (glvInitial scalar) = scalar
 
 /-- The fixed recurrence always returns the requested number of digits. -/
 theorem decomposeLength (rounds : Nat) (state : DecompositionState) :
@@ -305,26 +305,26 @@ abbrev Construction := Unit
 /-- `construction` is the one fixed ArgoMAC construction. -/
 def construction : Construction := ()
 
-/-- `digits` returns the 91 fixed recurrence digits. -/
+/-- `digits` returns the 92 fixed recurrence digits. -/
 def Construction.digits (_construction : Construction)
     (scalar : BN254.ScalarField) : List Digit :=
-  decompose 91 (shortInitial scalar)
+  decompose 92 (glvInitial scalar)
 
-/-- The fixed recurrence returns 91 digits. -/
+/-- The fixed recurrence returns 92 digits. -/
 theorem Construction.digitCount (construction : Construction)
-    (scalar : BN254.ScalarField) : (construction.digits scalar).length = 91 := by
-  exact decomposeLength 91 _
+    (scalar : BN254.ScalarField) : (construction.digits scalar).length = 92 := by
+  exact decomposeLength 92 _
 
 /-- The fixed recurrence reconstructs the input scalar. -/
 theorem Construction.scalarReconstruction [TerminationCertificate]
     (construction : Construction) (scalar : BN254.ScalarField) :
     scalarHorner radix ((construction.digits scalar).map digitScalar) = scalar := by
-  have invariant := reconstructionWithTail 91
-    (shortInitial scalar)
+  have invariant := reconstructionWithTail 92
+    (glvInitial scalar)
   rw [TerminationCertificate.terminal scalar] at invariant
   simp [stateValue] at invariant
   change scalarHorner radix
-    ((decompose 91 (shortInitial scalar)).map digitScalar) = scalar
+    ((decompose 92 (glvInitial scalar)).map digitScalar) = scalar
   rw [invariant]
   exact TerminationCertificate.initialCorrect scalar
 

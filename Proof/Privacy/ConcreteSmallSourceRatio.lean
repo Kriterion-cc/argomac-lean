@@ -10,8 +10,8 @@ noncomputable section
 
 /-- The exact block cardinality gives the public source-ratio denominator. -/
 theorem sourceRatio_blockCard [Fintype Block] (budget : Nat) (good real : ℝ≥0∞)
-    (bound : (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) * good ≤ real) :
-    (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128) * good ≤ real := by
+    (bound : (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) * good ≤ real) :
+    (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128) * good ≤ real := by
   have card : Fintype.card Block = 2 ^ 128 :=
     (Fintype.card_congr BitVec.equivFin.toEquiv).trans (Fintype.card_fin _)
   simpa only [card, Nat.cast_pow, Nat.cast_ofNat] using bound
@@ -24,7 +24,7 @@ theorem concreteSmallSourceRatio [FieldCertificate] [GroupCertificate] [Terminat
     (witness : Garbling.Randomness)
     (small : adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter < 2 ^ 100)
     (transcript : FullGateTranscript adversary.State) :
-    (1 - (((186 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) + 508 : Nat) : ℝ≥0∞) /
+    (1 - (((188 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) + 508 : Nat) : ℝ≥0∞) /
       (2 : ℝ≥0∞) ^ 128)) *
       sourceGoodMass
         (fullGateGhostSamples adversary parameter auxiliary scalar.value witness

@@ -86,7 +86,7 @@ theorem linkedHiddenSourceMass_programmed_ge
       (_residualFits : ∀ index, circuitBucketSize index +
         circuitResidualQueryCount gates (circuitBucketInputBit input)
           (circuitBucketInputLabel curveMac pointMac) (before ++ after) index ≤ Fintype.card Block),
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       (((PMF.uniformOfFintype FullCircuitSource) (lifts, sourceCiphertexts source)) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>
