@@ -21,7 +21,7 @@ theorem sharedRealSource_pipeline_ratio [Fintype Block]
     (rows : FieldMacToECMac.Rows) (state : Shared.Simulator.OracleState)
     (queries : List (PermutationRecord Shared.FixedKeyIndex Block))
     (transcript : List (Sigma sharedRealOracleSpec.Answer))
-    (fixed : sharedFixedTranscriptRecords transcript = state.fixedTranscript ++ queries)
+    (fixed : (sharedFixedTranscriptRecords transcript).Perm (state.fixedTranscript ++ queries))
     (reference : PermutationOracle Shared.FixedKeyIndex Block)
     (nonfixed : SharedNonFixedTranscriptCompatible
       (reference, rest.encPRFOracle, rest.hashOracle) transcript)

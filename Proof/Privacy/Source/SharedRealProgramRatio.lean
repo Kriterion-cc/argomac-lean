@@ -17,7 +17,7 @@ theorem sharedRealSource_program_ratio [Fintype Block]
     (source : FullCircuitSource) (state : Shared.Simulator.OracleState) (values : List FixedCommand)
     (queries : List (PermutationRecord Shared.FixedKeyIndex Block))
     (transcript : List (Sigma sharedRealOracleSpec.Answer))
-    (fixed : sharedFixedTranscriptRecords transcript = state.fixedTranscript ++ queries)
+    (fixed : (sharedFixedTranscriptRecords transcript).Perm (state.fixedTranscript ++ queries))
     (fresh : FreshRecordSchedule state.fixedTranscript (Shared.Simulator.commandRecords values))
     [Nonempty (TranscriptOracle state.fixedTranscript)]
     (reference : TranscriptOracle (programRecordHistory state.fixedTranscript
@@ -45,8 +45,14 @@ theorem sharedRealSource_program_ratio [Fintype Block]
           (fun oracle => Shared.Simulator.commands {state with fixedOracle := oracle.1} values)).toOuterMeasure
           {next | PermutationTranscriptMatches next.fixedOracle queries}) ≤
       sharedLinkedHiddenSourceMass rest (context.source hidden) (context.lifts hidden) context.input mac transcript := by
-  rw [sharedLinkedHiddenSourceMass_context rest context hidden mac labels linked transcript reference.1 nonfixed,
-    fixed]
+  rw [sharedLinkedHiddenSourceMass_context rest context hidden mac labels linked transcript reference.1 nonfixed]
+  have recordLaw (oracle : PermutationOracle Shared.FixedKeyIndex Block) :
+      PermutationTranscriptMatches oracle (sharedFixedTranscriptRecords transcript) =
+        PermutationTranscriptMatches oracle (state.fixedTranscript ++ queries) := by
+    apply propext
+    exact ⟨fun matchRecord record member => matchRecord record (fixed.mem_iff.mpr member),
+      fun matchRecord record member => matchRecord record (fixed.mem_iff.mp member)⟩
+  simp_rw [recordLaw]
   exact SharedRetained.retained_program_ratio context rest.oracleCoin rest.algebraic.field.bridgeKey
     linked hidden anchor pointGood source state values queries fresh reference domains active activeFits
     priorFits residualFits

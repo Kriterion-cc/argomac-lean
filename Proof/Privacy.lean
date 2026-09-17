@@ -1,3 +1,12 @@
+import Proof.Privacy.Source.SharedRetainedContext
+import Proof.Privacy.Source.Invalid.SharedCurveGlobalRatio
+import Proof.Privacy.Transcript.SharedIdealTranscript
+import Proof.Privacy.Simulator.Arithmetic.OutputTargetRows
+import Proof.Privacy.Simulator.Arithmetic.PublicHandlerRun
+import Proof.Privacy.Simulator.Arithmetic.HashProgram
+import Proof.Privacy.Simulator.Arithmetic.FreshQueryMemory
+import Proof.Privacy.Simulator.Arithmetic.OverlayMemory
+import Proof.Privacy.Simulator.Arithmetic.OfflineWireSource
 import Proof.Privacy.Simulator.Arithmetic.PublicHandlerTail
 import Proof.Privacy.Simulator.Arithmetic.PublicHandlerDispatch
 import Proof.Privacy.Source.SharedRealSourceLower
