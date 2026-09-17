@@ -17,3 +17,9 @@ import Construction.Simulator.WordOutput
 import Construction.Simulator.WordInput
 import Construction.Simulator.TableLookup
 import Construction.Simulator.SwapTable
+import Construction.Simulator.ByteOutput
+import Construction.Simulator.PointSampler
+import Construction.Simulator.KnownQuery
+import Construction.Simulator.PairStore
+import Construction.Simulator.TotalSampler
+import Construction.Simulator.OracleScratch
