@@ -1,3 +1,13 @@
+import Proof.Privacy.Simulator.Arithmetic.FreshQuerySource
+import Proof.Privacy.Programming.SharedScheduleRecords
+import Proof.Privacy.Simulator.Arithmetic.QueryInputProtocol
+import Proof.Privacy.Simulator.Arithmetic.PointSamplerBlock
+import Proof.Privacy.Simulator.Arithmetic.FreshQuery
+import Proof.Privacy.Simulator.Arithmetic.PrivateSchedule
+import Proof.Privacy.Simulator.Arithmetic.SamplerBatchMemory
+import Proof.Privacy.Source.SharedRetainedMass
+import Proof.Privacy.Source.SharedActiveMass
+import Proof.Privacy.Distribution.SharedProgramQueryMass
 import Proof.Privacy.Simulator.Arithmetic.ByteOutputWire
 import Proof.Privacy.Simulator.Arithmetic.PrivateSamplers
 import Proof.Privacy.Simulator.Arithmetic.OracleScratch

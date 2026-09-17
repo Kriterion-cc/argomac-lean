@@ -23,3 +23,7 @@ import Construction.Simulator.KnownQuery
 import Construction.Simulator.PairStore
 import Construction.Simulator.TotalSampler
 import Construction.Simulator.OracleScratch
+import Construction.Simulator.MemoryLayout
+import Construction.Simulator.QueryInput
+import Construction.Simulator.SamplerBatch
+import Construction.Simulator.FreshQuery
