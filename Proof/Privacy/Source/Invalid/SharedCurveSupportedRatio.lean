@@ -1,5 +1,6 @@
 import Proof.Privacy.Source.Invalid.SharedCurveFullSourceMass
 import Proof.Privacy.Source.SharedGateSourceReference
+import Proof.Privacy.Source.SharedGateSourceLength
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography
@@ -77,6 +78,55 @@ theorem sharedFullCurveGood_real_le_supported [FieldCertificate] [GroupCertifica
   exact sharedFullCurveGood_real_le adversary parameter auxiliary scalar witness fallback output.1 first last
     output.2.1 output.2.2.2.1 output.2.2.2.2.1 output.2.2.1 output.2.2.2.2.2 sample.2 invalid bits mac
     firstCompatible lastCompatible enc budget small lengthBound
+
+/-- Every supported retained curve weight obeys both adaptive query budgets. -/
+theorem sharedCurvePhaseWeight_length_le [FieldCertificate] [GroupCertificate] {Aux : Type}
+    (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
+    (parameter : Nat) (auxiliary : Aux) (rest : GarblingSourceRest) (keys : FieldMacToECMac.OutputKeys)
+    (sample : (PermutationOracle Shared.FixedKeyIndex Block) × InputMacKey) (tag : FullCircuitSource)
+    (output : SharedFullGateTranscript adversary.State)
+    (nonzero : sharedCurveSourcePhaseWeight adversary parameter auxiliary rest keys sample tag output ≠ 0) :
+    (output.2.2.1 ++ output.2.2.2.2.2).length ≤
+      adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter := by
+  unfold sharedCurveSourcePhaseWeight at nonzero
+  dsimp only at nonzero
+  split at nonzero
+  next good =>
+    exact sharedGateSourcePhases_length_le adversary parameter auxiliary
+      (retainedFullTable rest keys tag)
+      ⟨Shared.expandOracle sample.1, sample.2, rest.encPRFOracle, rest.hashOracle⟩
+      (fun input => selectedGateView (circuitMaskSampleGarble rest.algebraic.field.bridgeKey
+        rest.algebraic.field.curveMask.value
+        (FieldMacToECMac.rowsForOutputKeys keys rest.algebraic.point.pointRandomness)
+        input (retainedFullSource rest tag)) input) output nonzero
+  next bad => exact False.elim (nonzero rfl)
+
+/-- The invalid endpoint comparison uses only the advertised adversary query budget. -/
+theorem sharedFullCurveGood_real_le_budget [FieldCertificate] [GroupCertificate] [Fintype Block] {Aux : Type}
+    (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
+    (parameter : Nat) (auxiliary : Aux) (scalar : NonZeroScalar) (witness : Shared.Randomness)
+    (fallback : MaskRetainedTape → (RawCircuitGate → FullHashLift) × CircuitHashRest →
+      PMF (SharedFullGateTranscript adversary.State)) (output : SharedFullGateTranscript adversary.State)
+    (invalid : ¬ OnCurve output.2.1.1)
+    (small : adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter ≤ 2 ^ 101) :
+    (1 - ((60199524 + 372 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) : Nat) : ENNReal) /
+      (2 : ENNReal) ^ 128) *
+      sourceGoodMass (sharedFullGateTranscriptSamples adversary parameter auxiliary scalar.value witness fallback)
+        (fun coin => PMF.pure coin.2.2) {coin | sharedFullCurveBad scalar.value coin} output ≤
+      (realAdaptiveTranscriptWithState sharedInternalCircuit
+        (uniformRandomTape Shared.Randomness witness) sharedRealOracleHandler adversary parameter scalar auxiliary) output := by
+  by_cases zero : sourceGoodMass
+      (sharedFullGateTranscriptSamples adversary parameter auxiliary scalar.value witness fallback)
+      (fun coin => PMF.pure coin.2.2) {coin | sharedFullCurveBad scalar.value coin} output = 0
+  · simp only [zero, mul_zero, zero_le]
+  have sumNonzero := zero
+  rw [sharedFullCurveGood_weight_sum] at sumNonzero
+  obtain ⟨rest, restNonzero⟩ := nonzeroTerm _ sumNonzero
+  obtain ⟨tag, tagNonzero⟩ := nonzeroTerm _ ((mul_ne_zero_iff.mp restNonzero).2)
+  obtain ⟨sample, sampleNonzero⟩ := nonzeroTerm _ ((mul_ne_zero_iff.mp tagNonzero).2)
+  exact sharedFullCurveGood_real_le_supported adversary parameter auxiliary scalar witness fallback output invalid _ small
+    (sharedCurvePhaseWeight_length_le adversary parameter auxiliary rest _ sample tag output
+      ((mul_ne_zero_iff.mp sampleNonzero).2))
 
 end
 end Kriterion.ArgoMAC.Security

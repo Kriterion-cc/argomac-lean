@@ -46,6 +46,13 @@ theorem encLinkFinish_ram (memory : Memory)
   simp [encLinkFinish, executeLinear, LinearInstruction.execute, Arithmetic.eval,
     Function.update_of_ne inputSafe.symm, Function.update_of_ne countSafe.symm]
 
+/-- The finish block returns the decreased loop count in register two. -/
+theorem encLinkFinish_counter (memory : Memory)
+    (countSafe : memory.ram 33#256 ≠ 38#256) :
+    (executeLinear encLinkFinish memory).registers 2 = memory.ram 38#256 - 1#256 := by
+  simp [encLinkFinish, executeLinear, LinearInstruction.execute, Arithmetic.eval,
+    Function.update_of_ne countSafe.symm]
+
 /-- Every linear link block preserves all bit stacks. -/
 theorem encLinkFinish_bits (memory : Memory) :
     (executeLinear encLinkFinish memory).bits = memory.bits := by
