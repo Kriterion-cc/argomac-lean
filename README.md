@@ -21,7 +21,7 @@ The paper needs corrected coordinate formulas and an updated adaptor count.
 | Path | Content |
 | --- | --- |
 | `Construction.lean`, `Construction/` | These files define the computable construction and machine components. |
-| `Proof.lean`, `Proof/` | These files contain the construction proofs and simulator proofs. |
+| `Proof.lean`, `Proof/` | These files contain the construction proofs and simulator witnesses. |
 | `Submission.lean` | This file connects the construction to the challenge obligation. |
 | `tests/` | These files check the construction, parameters, simulator components, and axioms. |
 
@@ -72,7 +72,7 @@ The complete arithmetic machine proof also passes Lean.
 The older source transport proofs still assume five independent permutation roles.
 
 `Construction/Simulator/` contains fixed arithmetic machine components.
-The corresponding proofs appear in `Proof/Privacy/Simulator/Arithmetic/`.
+The simulator witnesses and their proofs appear in `Proof/Privacy/Simulator/Arithmetic/`.
 The word sampler produces a uniform 256-bit word in 1,798 instructions.
 Its program table costs 13 additional units.
 The bounded sampler has an exact retry law and a failure bound of `2^-256`.

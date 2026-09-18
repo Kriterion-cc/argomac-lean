@@ -1,5 +1,5 @@
 import Construction.Simulator.EncLinkArithmetic
-import Construction.Simulator.EncLinkIndex
+import Proof.Privacy.Simulator.Arithmetic.EncLinkIndexCode
 import Construction.Simulator.InternalForward
 import Construction.Simulator.HashHandler
 import Construction.Simulator.WordInput

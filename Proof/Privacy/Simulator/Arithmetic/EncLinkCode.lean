@@ -1,4 +1,4 @@
-import Construction.Simulator.EncLink
+import Proof.Privacy.Simulator.Arithmetic.EncLinkMachine
 import Proof.Privacy.Simulator.Arithmetic.EncLinkArithmetic
 import Proof.Privacy.Simulator.Arithmetic.EncLinkIndex
 import Proof.Privacy.Simulator.Arithmetic.InternalForwardBlock

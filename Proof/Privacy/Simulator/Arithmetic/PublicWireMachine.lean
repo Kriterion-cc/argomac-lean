@@ -33,11 +33,11 @@ theorem publicWire_fits : (wireSegmentsProgram publicWire).length < 2 ^ 256 := b
   exact lt_of_le_of_lt bound (by decide)
 
 /-- The checked package keeps the large fixed program symbolic during type checking. -/
-private opaque publicWireProgramPackage :
+private noncomputable def publicWireProgramPackage :
     {program : List LinearInstruction // program = wireSegmentsProgram publicWire} :=
-  ⟨wireSegmentsProgram publicWire, rfl⟩
+  Classical.choice ⟨⟨wireSegmentsProgram publicWire, rfl⟩⟩
 
-def publicWireProgram : List LinearInstruction := publicWireProgramPackage.val
+noncomputable def publicWireProgram : List LinearInstruction := publicWireProgramPackage.val
 
 theorem publicWireProgram_eq : publicWireProgram = wireSegmentsProgram publicWire :=
   publicWireProgramPackage.property
@@ -47,7 +47,7 @@ theorem publicWireProgram_fits : publicWireProgram.length < 2 ^ 256 := by
   exact publicWire_fits
 
 /-- The serializer contains only fixed loads, arithmetic instructions, and bit writes. -/
-def publicWireMachine : Machine := linearMachine publicWireProgram publicWireProgram_fits
+noncomputable def publicWireMachine : Machine := linearMachine publicWireProgram publicWireProgram_fits
 
 /-- The serializer returns the complete canonical public wire and retains source RAM. -/
 theorem publicWireMachine_run [FieldCertificate] (coin : SimulatorSampling.OfflineCoin)

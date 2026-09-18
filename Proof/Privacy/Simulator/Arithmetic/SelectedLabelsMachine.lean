@@ -7,11 +7,11 @@ open Cryptography.BoundedMachine Security.SimulatorSampling GarbledCircuit.Simul
 attribute [local irreducible] selectedLabelsFor selectedLabelsProgram
 
 /-- The checked package keeps the fixed label program symbolic during type checking. -/
-private opaque selectedLabelsCodePackage : {program : List LinearInstruction // program = selectedLabelsProgram} :=
-  ⟨selectedLabelsProgram, rfl⟩
+private noncomputable def selectedLabelsCodePackage : {program : List LinearInstruction // program = selectedLabelsProgram} :=
+  Classical.choice ⟨⟨selectedLabelsProgram, rfl⟩⟩
 
 /-- The compiled label code contains only fixed arithmetic, RAM reads, and bit writes. -/
-def selectedLabelsCode : List LinearInstruction := selectedLabelsCodePackage.val
+noncomputable def selectedLabelsCode : List LinearInstruction := selectedLabelsCodePackage.val
 
 theorem selectedLabelsCode_eq : selectedLabelsCode = selectedLabelsProgram := selectedLabelsCodePackage.property
 
@@ -23,7 +23,7 @@ theorem selectedLabelsCode_fits : selectedLabelsCode.length < 2 ^ 256 := by
   decide
 
 /-- The standalone label machine charges every table entry. -/
-def selectedLabelsMachine : Machine := linearMachine selectedLabelsCode selectedLabelsCode_fits
+noncomputable def selectedLabelsMachine : Machine := linearMachine selectedLabelsCode selectedLabelsCode_fits
 
 /-- The label host block retains its exact source memory and instruction charge. -/
 theorem selectedLabelsHost_continue [BN254.FieldCertificate] (host : Machine)

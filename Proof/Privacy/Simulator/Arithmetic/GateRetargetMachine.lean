@@ -30,11 +30,11 @@ theorem retargetProgram_length (kind : RetargetKind) : (retargetProgram kind).le
 attribute [local irreducible] retargetProgram gateRetarget gatePolynomial polynomial
 
 /-- The checked package keeps the fixed instruction lists symbolic. -/
-private opaque retargetCodePackage (kind : RetargetKind) :
-    {program : List LinearInstruction // program = retargetProgram kind} := ⟨retargetProgram kind, rfl⟩
+private noncomputable def retargetCodePackage (kind : RetargetKind) :
+    {program : List LinearInstruction // program = retargetProgram kind} := Classical.choice ⟨⟨retargetProgram kind, rfl⟩⟩
 
-/-- The executable retarget code contains only the checked fixed instructions. -/
-def retargetCode (kind : RetargetKind) : List LinearInstruction := (retargetCodePackage kind).val
+/-- The retarget code contains only the checked fixed instructions. -/
+noncomputable def retargetCode (kind : RetargetKind) : List LinearInstruction := (retargetCodePackage kind).val
 
 theorem retargetCode_eq (kind : RetargetKind) : retargetCode kind = retargetProgram kind :=
   (retargetCodePackage kind).property
@@ -47,7 +47,7 @@ theorem retargetCode_fits (kind : RetargetKind) : (retargetCode kind).length < 2
   cases kind <;> decide
 
 /-- The standalone machine adds exactly one halt to the compiled request program. -/
-def retargetMachine (kind : RetargetKind) : Machine := linearMachine (retargetCode kind) (retargetCode_fits kind)
+noncomputable def retargetMachine (kind : RetargetKind) : Machine := linearMachine (retargetCode kind) (retargetCode_fits kind)
 
 /-- The host returns the exact compiled retarget memory and charges every emitted instruction. -/
 theorem retargetHost_continue [BN254.FieldCertificate] (kind : RetargetKind) (host : Machine)

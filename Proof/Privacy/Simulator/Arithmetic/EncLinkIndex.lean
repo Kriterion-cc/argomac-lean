@@ -1,4 +1,4 @@
-import Construction.Simulator.EncLinkIndex
+import Proof.Privacy.Simulator.Arithmetic.EncLinkIndexCode
 import Proof.Privacy.Simulator.Arithmetic.QueryInputProtocol
 import Proof.Privacy.Simulator.Arithmetic.LinearProgram
 

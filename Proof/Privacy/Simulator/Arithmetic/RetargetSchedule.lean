@@ -10,23 +10,23 @@ def retargetInput : List LinearInstruction :=
     .arithmetic .fieldMul 7 5 5, .arithmetic .fieldMul 8 6 6]
 
 /-- The request loader selects its private data and requested output word. -/
-def retargetAt (kind : RetargetKind) (sourceOffset : Nat) (targetBase : Register)
+noncomputable def retargetAt (kind : RetargetKind) (sourceOffset : Nat) (targetBase : Register)
     (targetOffset : Nat) : List LinearInstruction :=
   [.constant 10 (BitVec.ofNat 256 sourceOffset), .arithmetic .add 10 11 10,
     .constant 13 (BitVec.ofNat 256 targetOffset), .arithmetic .add 13 targetBase 13] ++ retargetCode kind
 
 /-- The curve request uses the private bridge word as its target. -/
-def retargetCurveProgram : List LinearInstruction :=
+noncomputable def retargetCurveProgram : List LinearInstruction :=
   retargetInput ++ retargetAt .curve 913657 11 0
 
 /-- Each point row updates its X, Y, and Z low targets. -/
-def retargetPointRow (row : Fin 92) : List LinearInstruction :=
+noncomputable def retargetPointRow (row : Fin 92) : List LinearInstruction :=
   retargetAt .x (1017 + 9920 * row.val + 6867) 14 (3 * row.val) ++
   retargetAt .y (1017 + 9920 * row.val + 3815) 14 (3 * row.val + 1) ++
   retargetAt .z (1017 + 9920 * row.val) 14 (3 * row.val + 2)
 
 /-- The point pass updates all 276 coordinate requests before their gate phase. -/
-def retargetPointProgram : List LinearInstruction :=
+noncomputable def retargetPointProgram : List LinearInstruction :=
   retargetInput ++ (List.ofFn retargetPointRow).flatten
 
 theorem retargetAt_length (kind : RetargetKind) (sourceOffset : Nat) (targetBase : Register) (targetOffset : Nat) :
@@ -47,16 +47,16 @@ theorem retargetPointProgram_length : retargetPointProgram.length = 1533922 := b
 
 attribute [local irreducible] retargetPointProgram retargetCurveProgram
 
-private opaque retargetCurvePackage : {program : List LinearInstruction // program = retargetCurveProgram} :=
-  ⟨retargetCurveProgram, rfl⟩
+private noncomputable def retargetCurvePackage : {program : List LinearInstruction // program = retargetCurveProgram} :=
+  Classical.choice ⟨⟨retargetCurveProgram, rfl⟩⟩
 
-private opaque retargetPointPackage : {program : List LinearInstruction // program = retargetPointProgram} :=
-  ⟨retargetPointProgram, rfl⟩
+private noncomputable def retargetPointPackage : {program : List LinearInstruction // program = retargetPointProgram} :=
+  Classical.choice ⟨⟨retargetPointProgram, rfl⟩⟩
 
 /-- The checked packages keep both large arithmetic passes symbolic. -/
-def retargetCurveCode : List LinearInstruction := retargetCurvePackage.val
+noncomputable def retargetCurveCode : List LinearInstruction := retargetCurvePackage.val
 
-def retargetPointCode : List LinearInstruction := retargetPointPackage.val
+noncomputable def retargetPointCode : List LinearInstruction := retargetPointPackage.val
 
 theorem retargetCurveCode_eq : retargetCurveCode = retargetCurveProgram := retargetCurvePackage.property
 

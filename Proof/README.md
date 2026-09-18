@@ -1,7 +1,7 @@
 # Proof map
 
 The local challenge checks `Submission.solution : Kriterion.Solution`.
-The ArgoMAC source uses the challenge library in `..`.
+The Lake configuration pins the external challenge library.
 The construction uses 92 digits and three shared permutation slots.
 The canonical ciphertext contains 9,806,076 bytes.
 
@@ -24,7 +24,7 @@ The upper 254 labels encode the input y-coordinate.
 
 The paper's coordinate formulas fail on some required inputs.
 The construction uses complete homogeneous addition formulas with 13 point-adaptor families.
-The [paper corrections](../../PAPER_CORRECTIONS.md) record the required changes.
+The [paper corrections](https://github.com/Kriterion-cc/kriterion-challenge/blob/3322a36abd962aa5960e65d7f2d8b9f72478d1e3/bn254-scalar-multiplication/PAPER_CORRECTIONS.md) record the required changes.
 The challenge's `tests/PaperFormulaChecks.lean` checks the counterexamples.
 
 ## Adaptive privacy

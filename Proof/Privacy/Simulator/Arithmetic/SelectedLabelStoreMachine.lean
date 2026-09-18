@@ -6,12 +6,12 @@ open Cryptography.BoundedMachine Security.SimulatorSampling
 attribute [local irreducible] selectedLabelStores selectedLabelStoreProgram Lamport.selectedLabels
 
 /-- The checked package keeps the fixed store program symbolic. -/
-private opaque selectedLabelStoreCodePackage :
+private noncomputable def selectedLabelStoreCodePackage :
     {program : List LinearInstruction // program = selectedLabelStoreProgram} :=
-  ⟨selectedLabelStoreProgram, rfl⟩
+  Classical.choice ⟨⟨selectedLabelStoreProgram, rfl⟩⟩
 
 /-- The store code contains only fixed arithmetic and RAM instructions. -/
-def selectedLabelStoreCode : List LinearInstruction := selectedLabelStoreCodePackage.val
+noncomputable def selectedLabelStoreCode : List LinearInstruction := selectedLabelStoreCodePackage.val
 
 theorem selectedLabelStoreCode_eq : selectedLabelStoreCode = selectedLabelStoreProgram :=
   selectedLabelStoreCodePackage.property
@@ -24,7 +24,7 @@ theorem selectedLabelStoreCode_fits : selectedLabelStoreCode.length < 2 ^ 256 :=
   decide
 
 /-- The standalone machine charges every store instruction. -/
-def selectedLabelStoreMachine : Machine := linearMachine selectedLabelStoreCode selectedLabelStoreCode_fits
+noncomputable def selectedLabelStoreMachine : Machine := linearMachine selectedLabelStoreCode selectedLabelStoreCode_fits
 
 /-- The host block returns after exactly 7112 instructions. -/
 theorem selectedLabelStoreHost_continue [BN254.FieldCertificate] (host : Machine)

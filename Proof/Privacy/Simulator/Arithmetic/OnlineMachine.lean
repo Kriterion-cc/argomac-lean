@@ -1,7 +1,7 @@
 import Construction.Simulator.MemoryLayout
 import Construction.Simulator.OnlineInput
 import Construction.Simulator.OutputTargets
-import Construction.Simulator.EncLink
+import Proof.Privacy.Simulator.Arithmetic.EncLinkMachine
 import Proof.Privacy.Simulator.Arithmetic.OnlineSamplingCode
 import Proof.Privacy.Simulator.Arithmetic.SelectedLabelStoreMachine
 import Proof.Privacy.Simulator.Arithmetic.RetargetSchedule
@@ -53,12 +53,12 @@ def onlineBranchLabels (start length : Nat) (inside : start + length ≤ 3178048
   if active : pc < length then ⟨start + pc, by omega⟩
   else if pc = length then normal else 317804844
 
-private opaque onlineCurvePackage (attempts : Nat) :
+private noncomputable def onlineCurvePackage (attempts : Nat) :
     {code : Vector (Instruction 1315722) 1315722 // code = (gateLoop curveGatePlan attempts (by decide)).code} :=
-  ⟨(gateLoop curveGatePlan attempts (by decide)).code, rfl⟩
-private opaque onlinePointPackage (attempts : Nat) :
+  Classical.choice ⟨⟨(gateLoop curveGatePlan attempts (by decide)).code, rfl⟩⟩
+private noncomputable def onlinePointPackage (attempts : Nat) :
     {code : Vector (Instruction 314720226) 314720226 // code = (gateLoop pointGatePlan attempts (by decide)).code} :=
-  ⟨(gateLoop pointGatePlan attempts (by decide)).code, rfl⟩
+  Classical.choice ⟨⟨(gateLoop pointGatePlan attempts (by decide)).code, rfl⟩⟩
 def onlineCurveCode (attempts : Nat) : Vector (Instruction 1315722) 1315722 := (onlineCurvePackage attempts).val
 def onlinePointCode (attempts : Nat) : Vector (Instruction 314720226) 314720226 := (onlinePointPackage attempts).val
 theorem onlineCurveCode_eq (attempts : Nat) : onlineCurveCode attempts = (gateLoop curveGatePlan attempts (by decide)).code :=
@@ -128,9 +128,9 @@ def onlineInstruction (attempts : Nat) (pc : Fin 317804845) : Instruction 317804
   else .halt
 
 /-- The fixed table retains its symbolic instruction function. -/
-private opaque onlineMachineCodePackage (attempts : Nat) :
+private noncomputable def onlineMachineCodePackage (attempts : Nat) :
     {code : Vector (Instruction 317804845) 317804845 // code = Vector.ofFn (onlineInstruction attempts)} :=
-  ⟨Vector.ofFn (onlineInstruction attempts), rfl⟩
+  Classical.choice ⟨⟨Vector.ofFn (onlineInstruction attempts), rfl⟩⟩
 def onlineMachineCode (attempts : Nat) : Vector (Instruction 317804845) 317804845 :=
   (onlineMachineCodePackage attempts).val
 
