@@ -1,4 +1,5 @@
 import Construction
+import Proof.Privacy.Simulator.Arithmetic.OnlineMachineSetup
 
 open Kriterion Kriterion.BN254
 
@@ -145,9 +146,25 @@ theorem pipelineMatchesRows [FieldCertificate]
 
 theorem fixedKeyCounts :
     ArgoMAC.Pipeline.pointDigitAdaptorsPerOutput = 13 ∧
-      ArgoMAC.Pipeline.digitAdaptorCount = 1188 ∧
+      ArgoMAC.Pipeline.digitAdaptorCount = 1201 ∧
       ArgoMAC.Pipeline.pointBucketCount = 16510 ∧
       ArgoMAC.Pipeline.curveBucketCount = 6350 ∧
-      ArgoMAC.Pipeline.digitsPerBucket = 91 :=
+      ArgoMAC.Pipeline.digitsPerBucket = 92 :=
   ⟨rfl, rfl, ArgoMAC.Pipeline.pointBucketCountValue,
     ArgoMAC.Pipeline.curveBucketCountValue, rfl⟩
+
+/-- The two role names select the same public permutation. -/
+theorem sharedRolesUseSamePermutation
+    (oracle : Cryptography.PermutationOracle ArgoMAC.Shared.FixedKeyIndex Cryptography.Block)
+    (kind : ArgoMAC.Pipeline.FixedKeyKind) (position : Fin ArgoMAC.coordinateBitCount)
+    (slot : Fin 2) :
+    (ArgoMAC.Shared.expandOracle oracle).permutation ⟨kind, position, .hash slot.castSucc⟩ =
+      (ArgoMAC.Shared.expandOracle oracle).permutation ⟨kind, position, .pad slot⟩ :=
+  ArgoMAC.Shared.shared_slots oracle kind position slot
+
+/-- The online layout reserves the correction point before the selected targets. -/
+theorem onlineCorrectionPointDoesNotOverlapTargets :
+    ArgoMAC.ArithmeticSimulator.onlineSampleBase + 365 + 3 = ArgoMAC.ArithmeticSimulator.onlineTargetBase ∧
+      ArgoMAC.ArithmeticSimulator.onlineTargetBase + 276 = ArgoMAC.ArithmeticSimulator.onlineOriginalBase ∧
+      ArgoMAC.ArithmeticSimulator.onlineOriginalBase + 508 = ArgoMAC.ArithmeticSimulator.onlineLinkedBase := by
+  decide

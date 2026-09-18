@@ -41,7 +41,7 @@ theorem actualCurveProgrammedSource_mass_ratio
       Fintype.card (ResidualFixedQueryDomain (fixedOracleTranscriptRecords (before ++ after))
         (partialActiveDomains (circuitRawGatePrescription keys slopes lifts tables) (curveOnlyExposed (circuitBucketInputBit input)) (fun bucket _ => circuitBucketInputLabel curveMac pointMac bucket))
           index) ≤ Fintype.card Block) :
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       ((∏ index, ((Fintype.card Block : ℝ≥0∞) ^ circuitBucketSize index)⁻¹) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>
@@ -137,8 +137,11 @@ theorem curveGateProgramRecords_referenceActive
     ((circuitRawGatePrescription keys slopes lifts tables gate).label slot ^^^
       (rawCircuitLocation gate).tweak) =
     (circuitRawGatePrescription keys slopes lifts tables gate).offset slot ^^^
-      (circuitRawGatePrescription keys slopes lifts tables gate).label slot at matched
+      ((circuitRawGatePrescription keys slopes lifts tables gate).label slot ^^^
+        (rawCircuitLocation gate).tweak) at matched
   rw [labelLaw] at matched
+  dsimp only [rawBucketOffset, rawBucketTweak, circuitRawGatePrescription]
+  rw [BitVec.xor_assoc, BitVec.xor_comm (rawCircuitLocation gate).tweak]
   exact matched
 
 

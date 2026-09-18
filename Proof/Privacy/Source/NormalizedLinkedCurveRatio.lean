@@ -67,7 +67,7 @@ theorem actualLinkedCurveSource_normalized_mass_ge
         if OracleTranscriptCompatible Garbling.oracleHandler
           {randomness with hashOracle := hash} (before ++ after) then
           (Fintype.card (EncPRF.PermutationIndex → Block) : ℝ≥0∞)⁻¹ *
-      ((1 - ((182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞) +
+      ((1 - ((184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞) +
       508 / (Fintype.card Block : ℝ≥0∞))) *
       (fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>

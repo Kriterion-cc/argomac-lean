@@ -29,10 +29,10 @@ theorem point_uniform [FieldCertificate] [GroupCertificate] : Uniform point := b
   unfold Uniform point
   rw [Code.map_law, scalar_uniform, samplePoint_uniform]
 
-/-- The online sampler uses 90 points and 91 nonzero scales. -/
+/-- The online sampler uses 91 points and 92 nonzero scales. -/
 def online [FieldCertificate] :
-    Code ((Fin 90 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)) 181 :=
-  (point.arrayFunction 90).pair (scale.arrayFunction FieldMacToECMac.outputMacCount)
+    Code ((Fin 91 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)) 183 :=
+  (point.arrayFunction 91).pair (scale.arrayFunction FieldMacToECMac.outputMacCount)
 
 theorem online_uniform [FieldCertificate] [GroupCertificate] : Uniform online :=
   uniform_pair (point.arrayFunction_uniform point_uniform _)
@@ -50,7 +50,7 @@ def attachOracles (oracles : SimulatorOracleCoin) (coin : OfflineCoin) : Circuit
   (coinEquiv (coin, oracles)).state
 
 /-- This program samples only the private data of the offline simulator. -/
-def garble (oracles : SimulatorOracleCoin) : Code (Pipeline.Table × CircuitSimulatorState) 907550 :=
+def garble (oracles : SimulatorOracleCoin) : Code (Pipeline.Table × CircuitSimulatorState) 917470 :=
   offline.map fun coin =>
     let state := attachOracles oracles coin
     (state.table, state)
@@ -71,7 +71,7 @@ theorem garble_law [FieldCertificate] [GroupCertificate]
 /-- This program separates online random draws from the selected-path computation. -/
 def encode [FieldCertificate] [GroupCertificate] (state : CircuitSimulatorState)
     (input : AffineInput) (output : Option Point) :
-    Code (Garbling.Labels × CircuitSimulatorState) (if output.isSome then 181 else 0) :=
+    Code (Garbling.Labels × CircuitSimulatorState) (if output.isSome then 183 else 0) :=
   match output with
   | none => .pure (state.labels input,
       { state with oracle := (programGateSchedule state.oracle

@@ -103,7 +103,7 @@ theorem circuitHash_observation_bound {Observation : Type*}
       observe).toOuterMeasure event).toReal -
       (((PMF.uniformOfFintype CircuitMaskSample).bind
         (observe ∘ circuitGoodHashSource)).toOuterMeasure event).toReal| ≤
-      (301752 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384 := by
+      (305054 : ℝ) * (2 ^ 384 % baseFieldModulus : ℕ) / 2 ^ 384 := by
   have source : (PMF.uniformOfFintype CircuitMaskSample).bind (observe ∘ circuitGoodHashSource) =
       (PMF.uniformOfFintype ((RawCircuitGate → BaseField × HashLiftQuotient) × CircuitHashRest)).bind
         (fun pair => observe ((fun gate => goodHashLiftSource (pair.1 gate)), pair.2)) := by
@@ -111,7 +111,7 @@ theorem circuitHash_observation_bound {Observation : Type*}
     rfl
   rw [source]
   have bound := hashLift_family_product_observation_bound observe event
-  have count : (Fintype.card RawCircuitGate : ℝ) = 301752 := by
+  have count : (Fintype.card RawCircuitGate : ℝ) = 305054 := by
     exact_mod_cast rawCircuitGate_card
   rwa [count] at bound
 

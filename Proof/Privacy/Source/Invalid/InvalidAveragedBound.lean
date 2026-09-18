@@ -34,7 +34,7 @@ private theorem retainedInvalidFor [fieldCert : FieldCertificate] [groupCert : G
     (encSamples : PMF (PermutationOracle EncPRF.PermutationIndex Block))
     (hashEq : hashSamples = PMF.uniformOfFintype EncPRF.HashOracle)
     (encEq : encSamples = PMF.uniformOfFintype (PermutationOracle EncPRF.PermutationIndex Block)) :
-    (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
+    (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
       (∑' hash, hashSamples hash * ∑' enc, encSamples enc *
         if NonFixedTranscriptCompatible (nonfixedSourceReference rest.reference enc hash) (before ++ after)
         then ((Fintype.card (EncPRF.PermutationIndex → Block) : ℝ≥0∞)⁻¹ *
@@ -118,7 +118,7 @@ private def invalidAverageFor [fieldCert : FieldCertificate] [groupCert : GroupC
   letI := keptDec
   guardedRelativeAverage_le hashSamples encSamples _ _
     (FullSourceComplete (lifts, tables).1 ∧ retainedFullTable rest outputKeys (lifts, tables) = table)
-    _ (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) actual
+    _ (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) actual
     ((fullSourceTagDensity (lifts, tables))⁻¹ *
       retainedLinkedTagMass rest outputKeys (lifts, tables) input (key.encodeAffine input) (before ++ after))
     average (fun kept => ⟨kept.1, kept.2.1⟩)

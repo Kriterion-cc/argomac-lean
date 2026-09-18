@@ -323,7 +323,7 @@ theorem adaptiveMaskOutput_observation_bound [FieldCertificate] [GroupCertificat
 
 /-- The source separates the simulator's actual free-point coin from the retained tape. -/
 def outputEncodingSourceEquiv [FieldCertificate] :
-    OutputRowSource ≃ ((Fin 90 → Point) × (Fin outputMacCount → NonZeroBase)) × OutputRowRest :=
+    OutputRowSource ≃ ((Fin 91 → Point) × (Fin outputMacCount → NonZeroBase)) × OutputRowRest :=
   (Equiv.prodAssoc _ _ _).symm.trans
     (Equiv.prodCongr (Equiv.prodCongr vectorFunctionEquiv.symm (Equiv.refl _)) (Equiv.refl _))
 
@@ -338,7 +338,7 @@ theorem idealOutput_encodingSource [FieldCertificate] [GroupCertificate]
     (PMF.uniformOfFintype OutputRowRest).bind (fun rest =>
       (choose rest).bind (fun selected =>
         (PMF.uniformOfFintype
-          ((Fin 90 → Point) × (Fin outputMacCount → NonZeroBase))).bind fun coin =>
+          ((Fin 91 → Point) × (Fin outputMacCount → NonZeroBase))).bind fun coin =>
           observe selected ((decodePoint selected.1).map fun point =>
             ⟨selected.1, outputTargets (scalarMultiplication scalar point)
               (Vector.ofFn coin.1) coin.2⟩) rest)) := by

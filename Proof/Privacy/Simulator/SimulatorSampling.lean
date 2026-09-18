@@ -284,8 +284,8 @@ def publicEquiv : CurvePublicSample × Vector RowPublicSample FieldMacToECMac.ou
   left_inv _ := rfl
   right_inv _ := rfl
 
-/-- The public sample needs 906533 bounded integer draws. It samples no oracle tables. -/
-def publicSample : Code PublicSample 906533 :=
+/-- The public sample needs 916453 bounded integer draws. It samples no oracle tables. -/
+def publicSample : Code PublicSample 916453 :=
   (((gateData 3 5).map curveEquiv).pair (row.vector FieldMacToECMac.outputMacCount)).map publicEquiv
 
 theorem public_uniform : Uniform publicSample :=
@@ -319,7 +319,7 @@ theorem inputKey_uniform : Uniform inputKey :=
  abbrev OfflineCoin := PublicSample × (InputMacKey × BaseField)
 
 /-- This sampler constructs the complete private coin outside the oracle environment. -/
-def offline : Code OfflineCoin 907550 := publicSample.pair (inputKey.pair field)
+def offline : Code OfflineCoin 917470 := publicSample.pair (inputKey.pair field)
 
 theorem offline_uniform : Uniform offline :=
   uniform_pair public_uniform (uniform_pair inputKey_uniform field_uniform)

@@ -16,20 +16,20 @@ local instance : Nonempty InputMacKey := ⟨defaultSimulatorCoin.inputKey⟩
 
 /-- The two relative exclusions use the full transcript budget once. -/
 theorem invalidRelativeLoss_budget (budget length size : Nat) (bounded : length ≤ budget) :
-    1 - (((186 * budget + 508 : Nat) : ℝ≥0∞) / size) ≤
+    1 - (((188 * budget + 508 : Nat) : ℝ≥0∞) / size) ≤
       (1 - ((4 * budget : Nat) : ℝ≥0∞) / size) *
-      (1 - (((182 * length : Nat) : ℝ≥0∞) / size + 508 / size)) := by
-  have split : (((186 * budget + 508 : Nat) : ℝ≥0∞) / size) =
+      (1 - (((184 * length : Nat) : ℝ≥0∞) / size + 508 / size)) := by
+  have split : (((188 * budget + 508 : Nat) : ℝ≥0∞) / size) =
       ((4 * budget : Nat) : ℝ≥0∞) / size +
-        (((182 * budget : Nat) : ℝ≥0∞) / size + 508 / size) := by
-    rw [show 186 * budget + 508 = 4 * budget + (182 * budget + 508) by omega]
+        (((184 * budget : Nat) : ℝ≥0∞) / size + 508 / size) := by
+    rw [show 188 * budget + 508 = 4 * budget + (184 * budget + 508) by omega]
     simp only [Nat.cast_add, ENNReal.add_div, Nat.cast_ofNat]
   rw [split]
   apply (relativeLoss_product _ _).trans
   apply mul_le_mul_right
   apply tsub_le_tsub_left
   apply add_le_add_left
-  exact ENNReal.div_le_div_right (Nat.cast_le.mpr (Nat.mul_le_mul_left 182 bounded)) _
+  exact ENNReal.div_le_div_right (Nat.cast_le.mpr (Nat.mul_le_mul_left 184 bounded)) _
 
 /-- A constant relative factor commutes with a guarded average. -/
 private theorem guarded_constant_factor {Sample : Type*} (samples : PMF Sample)
@@ -58,9 +58,9 @@ theorem nonfixedRelative_mass_ge [Fintype Block] [Fintype BaseField]
       encTranscriptFactor (encOracleTranscriptRecords history)) *
       (∑' hash : EncPRF.HashOracle, (PMF.uniformOfFintype EncPRF.HashOracle) hash *
         if NonFixedTranscriptCompatible {randomness with hashOracle := hash} history then
-          label * ((1 - (((182 * history.length : Nat) : ℝ≥0∞) / Fintype.card Block +
+          label * ((1 - (((184 * history.length : Nat) : ℝ≥0∞) / Fintype.card Block +
             508 / Fintype.card Block)) * value) else 0) ≤ result) :
-    (1 - (((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block)) *
+    (1 - (((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block)) *
       (∑' hash : EncPRF.HashOracle, (PMF.uniformOfFintype EncPRF.HashOracle) hash *
         ∑' enc : PermutationOracle EncPRF.PermutationIndex Block,
           (PMF.uniformOfFintype (PermutationOracle EncPRF.PermutationIndex Block)) enc *
@@ -119,7 +119,7 @@ theorem fullSourceGood_curve_nonfixed_combined_mass_ge
       (encOracleTranscriptRecords (before ++ after)))
     (budget : Nat) (small : budget < 2 ^ 100) (lengthBound : (before ++ after).length ≤ budget)
     [Nonempty (TranscriptOracle state.fixedTranscript)] :
-    (1 - (((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block)) *
+    (1 - (((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block)) *
       (∑' hash : EncPRF.HashOracle, (PMF.uniformOfFintype EncPRF.HashOracle) hash *
         ∑' enc : PermutationOracle EncPRF.PermutationIndex Block,
           (PMF.uniformOfFintype (PermutationOracle EncPRF.PermutationIndex Block)) enc *

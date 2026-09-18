@@ -1,3 +1,4 @@
+import Proof.Privacy.Simulator.Arithmetic.WordInputBlock
 import Proof.Privacy.Simulator.SimulatorCutoff
 import Proof.Privacy.Simulator.SimulatorFiniteArithmetic
 import Proof.Privacy.Simulator.SimulatorSamplingCost
@@ -76,3 +77,36 @@ private def totalTrace :=
 #print axioms SparsePermutation.forward_joint
 #print axioms SparsePermutation.inverse_joint
 #print axioms adaptive_joint_law
+
+namespace InputMachineRegression
+open Kriterion.ArgoMAC.ArithmeticSimulator Kriterion.Cryptography.BoundedMachine
+
+private def labels (pc : Fin 15) : Fin 16 := ⟨pc.val, by omega⟩
+
+private def readStore : Machine := ⟨15, Vector.ofFn (fun pc : Fin 16 =>
+  if inside : pc.val < 14 then
+    relocate labels ((wordInput 3).code[pc.val]'(by change pc.val < 15; omega))
+  else if pc.val = 14 then .store 8 0 15 else .halt), by decide⟩
+
+private theorem contains : ContainsWordInput readStore 3 labels := by
+  intro pc inside
+  simp [readStore, labels, inside]
+
+private def initialMemory : Memory := {
+  bits := Function.update (fun _ => []) 0 [true, false, true, false]
+  registers := Function.update (fun _ => 0) 8 37 }
+
+/-- The caller stores five at its saved address and retains the unread fourth bit. -/
+example [Kriterion.BN254.FieldCertificate] :
+    (run readStore 29 ⟨0, initialMemory⟩).map
+      (Option.map fun result => (result.1.memory.ram 37,
+        result.1.memory.bits 0, result.1.memory.registers 7, result.2)) =
+      PMF.pure (some (5, [false], 1, 29)) := by
+  have continued := wordInputBlock_continue readStore 3 2 labels contains
+    initialMemory [true, false, true] [false] rfl rfl (by decide)
+  change (run readStore (7 * 3 + 6 + 2) ⟨labels 0, initialMemory⟩).map _ = _
+  rw [continued]
+  simp [run, step, readStore, labels, inputFinal, inputFrame, inputFold,
+    initialMemory, PMF.pure_map, PMF.map_comp, Function.comp_def]
+
+end InputMachineRegression

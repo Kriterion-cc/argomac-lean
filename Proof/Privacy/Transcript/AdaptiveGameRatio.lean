@@ -638,7 +638,7 @@ theorem circuitProgrammedSource_mass_ratio
     (residualFits : ∀ index, circuitBucketSize index +
       circuitResidualQueryCount (circuitRawGatePrescription keys slopes lifts tables)
         selected publicLabel transcript index ≤ Fintype.card Block) :
-    (1 - (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       ((∏ index, ((Fintype.card Block : ℝ≥0∞) ^ circuitBucketSize index)⁻¹) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>

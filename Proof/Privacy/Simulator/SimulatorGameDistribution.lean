@@ -101,7 +101,7 @@ def simulatorOnlineSource [FieldCertificate] [GroupCertificate]
       let schedule := (state.selectedCurve input).schedule input (state.labels input).inputMac
       PMF.pure (state.labels input, {state with oracle := programGateSchedule state.oracle schedule})
   | some point =>
-      (PMF.uniformOfFintype ((Fin 90 → Point) ×
+      (PMF.uniformOfFintype ((Fin 91 → Point) ×
         (Fin FieldMacToECMac.outputMacCount → NonZeroBase))).map fun online =>
           (state.labels input, state.programForOutput input point (Vector.ofFn online.1) online.2)
 
@@ -123,7 +123,7 @@ def programSelectedGateView (state : SimulatorState) (input : AffineInput)
 theorem simulatorOnlineSource_oracle [FieldCertificate] [GroupCertificate]
     (state : CircuitSimulatorState) (input : AffineInput) (output : Option Point) :
     (simulatorOnlineSource state input output).map (fun encoded => (encoded.1, encoded.2.oracle)) =
-      (PMF.uniformOfFintype ((Fin 90 → Point) ×
+      (PMF.uniformOfFintype ((Fin 91 → Point) ×
         (Fin FieldMacToECMac.outputMacCount → NonZeroBase))).map (fun online =>
           (state.labels input, programSelectedGateView state.oracle input (state.labels input).inputMac
             (state.selectedCurve input, output.map fun point =>
@@ -168,7 +168,7 @@ def simulatorOracleCoinTranscript [FieldCertificate] [GroupCertificate] {Aux : T
     (PMF.uniformOfFintype SimulatorCoin) (fun coin => coin.state.table) (fun coin => coin.state.oracle)
     (fun table => adversary.chooseInput parameter table auxiliary)
     (fun coin state selected =>
-      (PMF.uniformOfFintype ((Fin 90 → Point) ×
+      (PMF.uniformOfFintype ((Fin 91 → Point) ×
         (Fin FieldMacToECMac.outputMacCount → NonZeroBase))).map fun online =>
           (coin.state.labels selected.1,
             programSelectedGateView state selected.1 (coin.state.labels selected.1).inputMac

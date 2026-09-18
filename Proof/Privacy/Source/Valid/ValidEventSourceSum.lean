@@ -74,7 +74,7 @@ def validEventSourceSum_real_le
         (@validRestEventSum_zero fieldCert groupCert blockFinite reference rest (outputKeys rest)
           table input key before after bad))
   le_trans (le_of_eq (congrArg
-    ((1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) * ·) sourceEq))
+    ((1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) * ·) sourceEq))
     (@validGlobalSourceMass_named_le fieldCert groupCert blockFinite witness parameter outputKeys table input key
       (fun rest => transcriptFinalState idealOracleHandler (sourcePrefixReference reference rest) before)
       before after (fun rest => sourcePrefixReference_oracleExists reference rest before compatible) valid

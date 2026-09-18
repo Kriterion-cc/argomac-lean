@@ -17,8 +17,8 @@ instance pointFintype [FieldCertificate] : Fintype Point :=
         intro first second equal
         cases first <;> cases second <;> simp_all)
 
-/-- This equivalence identifies the free offset tape with 90 independent points. -/
-def offsetFunctionEquiv [FieldCertificate] : (Fin 90 → Point) ≃ OffsetRandomness where
+/-- This equivalence identifies the free offset tape with 91 independent points. -/
+def offsetFunctionEquiv [FieldCertificate] : (Fin 91 → Point) ≃ OffsetRandomness where
   toFun values := ⟨List.ofFn values, List.length_ofFn⟩
   invFun values index := values.freeOffsets.get ⟨index.val, by rw [values.freeOffsetCount]; exact index.isLt⟩
   left_inv values := by funext index; exact List.get_ofFn values _
@@ -29,7 +29,7 @@ def offsetFunctionEquiv [FieldCertificate] : (Fin 90 → Point) ≃ OffsetRandom
       simpa [count, Fin.cast] using List.ofFn_get offsets
 
 instance offsetRandomnessFintype [FieldCertificate] : Fintype OffsetRandomness :=
-  Fintype.ofEquiv (Fin 90 → Point) offsetFunctionEquiv
+  Fintype.ofEquiv (Fin 91 → Point) offsetFunctionEquiv
 
 instance offsetRandomnessNonempty [FieldCertificate] : Nonempty OffsetRandomness :=
   ⟨offsetFunctionEquiv (fun _ => 0)⟩
@@ -158,14 +158,14 @@ theorem uniform_clampOffsets_identity_mass_le [FieldCertificate] [GroupCertifica
         nsmul_eq_mul, Nat.cast_add, Nat.cast_one, Nat.cast_ofNat, div_eq_mul_inv]
       ring
 
-/-- The real affine-offset restriction rejects at most 91 points of uniform mass. -/
+/-- The real affine-offset restriction rejects at most 92 points of uniform mass. -/
 theorem uniform_offsets_identity_mass_le [FieldCertificate] [GroupCertificate]
     (construction : Construction) :
     (PMF.uniformOfFintype OffsetRandomness).toOuterMeasure
         {randomness | (0 : Point) ∈ construction.offsets randomness} ≤
-      91 / (Fintype.card Point : ENNReal) := by
+      92 / (Fintype.card Point : ENNReal) := by
   rw [← uniform_map_equiv offsetFunctionEquiv, PMF.toOuterMeasure_map_apply]
-  exact uniform_clampOffsets_identity_mass_le 89
+  exact uniform_clampOffsets_identity_mass_le 90
 
 /-- Point translation preserves the uniform mask distribution. -/
 theorem map_uniform_point_add [FieldCertificate] (shift : Point) :
@@ -208,8 +208,8 @@ theorem uniform_offsets_identity_mass_le_240bits [FieldCertificate] [GroupCertif
         {randomness | (0 : Point) ∈ construction.offsets randomness} ≤
       (2 : ENNReal) ^ (-240 : ℤ) := by
   calc
-    _ ≤ 91 / (Fintype.card Point : ENNReal) := uniform_offsets_identity_mass_le construction
-    _ ≤ 91 / (scalarFieldModulus : ENNReal) :=
+    _ ≤ 92 / (Fintype.card Point : ENNReal) := uniform_offsets_identity_mass_le construction
+    _ ≤ 92 / (scalarFieldModulus : ENNReal) :=
       ENNReal.div_le_div_left (by exact_mod_cast point_card_lower_bound) _
     _ ≤ (2 : ENNReal) ^ (-240 : ℤ) := by
       rw [ENNReal.zpow_neg, zpow_ofNat, ENNReal.le_inv_iff_mul_le, ← ENNReal.mul_div_right_comm,

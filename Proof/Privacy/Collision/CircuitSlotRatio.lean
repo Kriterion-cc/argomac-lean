@@ -10,7 +10,7 @@ noncomputable section
 
 attribute [local instance] rawBucketUseFintype fixedQueryDomainFintype rawInactiveBucketFintype residualFixedQueryDomainFintype
 
-/-- The actual circuit uses one curve gate or 91 point gates in each used slot. -/
+/-- The actual circuit uses one curve gate or 92 point gates in each used slot. -/
 def circuitBucketSize (index : Pipeline.FixedKeyIndex) : Nat :=
   match index.kind with
   | .curve _ => 1
@@ -119,23 +119,23 @@ theorem circuitCurveBucket_card (adaptor : Pipeline.CurveAdaptor)
   rw [circuitRawBucketUse_card]
   rfl
 
-/-- Each used point permutation contains exactly 91 gate assignments. -/
+/-- Each used point permutation contains exactly 92 gate assignments. -/
 theorem circuitPointBucket_card (coordinate : Pipeline.PointCoordinate) (adaptor : Pipeline.PointAdaptor)
     (position : Fin coordinateBitCount) (slot : Pipeline.FixedKeySlot)
     (used : (coordinate, adaptor) ≠ (.x, .x7) ∧ (coordinate, adaptor) ≠ (.y, .y6)) :
     Fintype.card (RawBucketUse (circuitRawGatePrescription keys slopes lifts tables)
-      ⟨.point coordinate adaptor, position, slot⟩) = 91 := by
+      ⟨.point coordinate adaptor, position, slot⟩) = 92 := by
   rw [circuitRawBucketUse_card]
   cases coordinate <;> cases adaptor <;>
     simp_all [circuitBucketSize, FieldMacToECMac.outputMacCount]
 
 private theorem outputTweak_injective :
-    Function.Injective (fun row : Fin FieldMacToECMac.outputMacCount => BitVec.ofNat 128 (row.val + 1)) := by
+    Function.Injective (fun row : Fin FieldMacToECMac.outputMacCount => BitVec.ofNat 128 row.val) := by
   intro first second equal
   have numeric := congrArg BitVec.toNat equal
   simp only [BitVec.toNat_ofNat] at numeric
-  have firstBound : first.val + 1 < 2 ^ 128 := by have := first.isLt; unfold FieldMacToECMac.outputMacCount at this; omega
-  have secondBound : second.val + 1 < 2 ^ 128 := by have := second.isLt; unfold FieldMacToECMac.outputMacCount at this; omega
+  have firstBound : first.val < 2 ^ 128 := by have := first.isLt; unfold FieldMacToECMac.outputMacCount at this; omega
+  have secondBound : second.val < 2 ^ 128 := by have := second.isLt; unfold FieldMacToECMac.outputMacCount at this; omega
   rw [Nat.mod_eq_of_lt firstBound, Nat.mod_eq_of_lt secondBound] at numeric
   apply Fin.ext
   omega
@@ -161,15 +161,15 @@ theorem circuitRawBucketTweak_injective (index : Pipeline.FixedKeyIndex) :
 
 end CircuitBuckets
 
-/-- No actual permutation bucket contains more than 91 gate uses. -/
-theorem circuitBucketSize_le (index : Pipeline.FixedKeyIndex) : circuitBucketSize index ≤ 91 := by
+/-- No actual permutation bucket contains more than 92 gate uses. -/
+theorem circuitBucketSize_le (index : Pipeline.FixedKeyIndex) : circuitBucketSize index ≤ 92 := by
   rcases index with ⟨kind, bit, slot⟩
   cases kind with
   | curve adaptor => norm_num [circuitBucketSize]
   | point coordinate adaptor =>
       cases coordinate <;> cases adaptor <;> norm_num [circuitBucketSize, FieldMacToECMac.outputMacCount]
 
-/-- The whole inactive-label loss fits 182 times the external query count. -/
+/-- The whole inactive-label loss fits 184 times the external query count. -/
 theorem circuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
     (keys : RawCircuitGate → BitAdaptor.Key) (slopes : RawCircuitGate → BaseField)
     (lifts : RawCircuitGate → FullHashLift) (tables : RawCircuitGate → BitAdaptor.Table)
@@ -177,7 +177,7 @@ theorem circuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
     (∑ index : RawInactiveBucket selected,
       ((2 * Fintype.card (RawBucketUse (circuitRawGatePrescription keys slopes lifts tables) index.1) *
         Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index.1) : Nat) : ℝ≥0∞) /
-          Fintype.card Block) ≤ (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞) := by
+          Fintype.card Block) ≤ (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞) := by
   classical
   simp_rw [div_eq_mul_inv]
   rw [← Finset.sum_mul]
@@ -186,21 +186,21 @@ theorem circuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
   apply Nat.cast_le.mpr
   calc
     _ ≤ ∑ index : RawInactiveBucket selected,
-        182 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index.1) := by
+        184 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index.1) := by
       apply Finset.sum_le_sum
       intro index _
       rw [circuitRawBucketUse_card]
       exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 (circuitBucketSize_le index.1))
     _ ≤ ∑ index : Pipeline.FixedKeyIndex,
-        182 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index) :=
+        184 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index) :=
       (Nat.le_add_right _ _).trans_eq (Fintype.sum_subtype_add_sum_subtype
         (fun index => rawSlotBranch index.slot ≠ selected (rawLabelBucket index))
-        (fun index => 182 * Fintype.card
+        (fun index => 184 * Fintype.card
           (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index)))
-    _ = 182 * ∑ index : Pipeline.FixedKeyIndex,
+    _ = 184 * ∑ index : Pipeline.FixedKeyIndex,
         Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index) :=
       (Finset.mul_sum _ _ _).symm
-    _ ≤ 182 * transcript.length := Nat.mul_le_mul_left _ (fixedExternalQueryCount_le transcript)
+    _ ≤ 184 * transcript.length := Nat.mul_le_mul_left _ (fixedExternalQueryCount_le transcript)
 
 /-- A declared external query budget bounds the same concrete inactive loss. -/
 theorem circuitInactiveLoss_budget_le [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
@@ -211,9 +211,9 @@ theorem circuitInactiveLoss_budget_le [Fintype Block] [Fintype Pipeline.FixedKey
     (∑ index : RawInactiveBucket selected,
       ((2 * Fintype.card (RawBucketUse (circuitRawGatePrescription keys slopes lifts tables) index.1) *
         Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index.1) : Nat) : ℝ≥0∞) /
-          Fintype.card Block) ≤ (182 * queries : Nat) / (Fintype.card Block : ℝ≥0∞) :=
+          Fintype.card Block) ≤ (184 * queries : Nat) / (Fintype.card Block : ℝ≥0∞) :=
   (circuitInactiveLoss_le keys slopes lifts tables selected transcript).trans
-    (ENNReal.div_le_div_right (Nat.cast_le.mpr (Nat.mul_le_mul_left 182 withinBudget)) _)
+    (ENNReal.div_le_div_right (Nat.cast_le.mpr (Nat.mul_le_mul_left 184 withinBudget)) _)
 
 /-- This factor counts the actual gate assignments and residual external queries. -/
 def circuitPermutationFactor [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
@@ -268,9 +268,9 @@ variable {Wire : Type} [Fintype Wire] [DecidableEq Wire]
 
 include compatible offsetsDistinct referenceActive
 
-/-- The concrete real mass loses at most 182 times the full external query count. -/
+/-- The concrete real mass loses at most 184 times the full external query count. -/
 theorem circuitSharedInactive_realTranscript_mass_ge :
-    (1 - (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       circuitPermutationFactor (circuitResidualQueryCount
         (circuitRawGatePrescription keys slopes lifts tables) selected publicLabel transcript) ≤
     (PMF.uniformOfFintype
@@ -294,7 +294,7 @@ theorem circuitSharedInactive_independentFactor_mass_ge
     (fits : ∀ index, circuitBucketSize index + circuitResidualQueryCount
       (circuitRawGatePrescription keys slopes lifts tables) selected publicLabel transcript index ≤
         Fintype.card Block) :
-    (1 - (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       circuitIndependentFactor (circuitResidualQueryCount
         (circuitRawGatePrescription keys slopes lifts tables) selected publicLabel transcript) ≤
     (PMF.uniformOfFintype

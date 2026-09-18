@@ -249,7 +249,7 @@ theorem partialRawShared_realTranscript_mass_ge {Gate Wire : Type}
   exact partialRawShared_residual_mass_ge gates exposed wire shift randomness.fixedKeyOracle
     (fixedOracleTranscriptRecords transcript) publicLabel fixed.1 tweaksDistinct offsetsDistinct referenceActive
 
-/-- The whole inactive-label loss fits 182 times the external query count. -/
+/-- The whole inactive-label loss fits 184 times the external query count. -/
 theorem partialCircuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKeyIndex]
     (keys : RawCircuitGate → BitAdaptor.Key) (slopes : RawCircuitGate → BaseField)
     (lifts : RawCircuitGate → FullHashLift) (tables : RawCircuitGate → BitAdaptor.Table)
@@ -257,7 +257,7 @@ theorem partialCircuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKey
     (∑ index : PartialInactiveBucket exposed,
       ((2 * Fintype.card (RawBucketUse (circuitRawGatePrescription keys slopes lifts tables) index.1) *
         Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index.1) : Nat) : ℝ≥0∞) /
-          Fintype.card Block) ≤ (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞) := by
+          Fintype.card Block) ≤ (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞) := by
   classical
   simp_rw [div_eq_mul_inv]
   rw [← Finset.sum_mul]
@@ -266,21 +266,21 @@ theorem partialCircuitInactiveLoss_le [Fintype Block] [Fintype Pipeline.FixedKey
   apply Nat.cast_le.mpr
   calc
     _ ≤ ∑ index : PartialInactiveBucket exposed,
-        182 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index.1) := by
+        184 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index.1) := by
       apply Finset.sum_le_sum
       intro index _
       rw [circuitRawBucketUse_card]
       exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 (circuitBucketSize_le index.1))
     _ ≤ ∑ index : Pipeline.FixedKeyIndex,
-        182 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index) :=
+        184 * Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index) :=
       (Nat.le_add_right _ _).trans_eq (Fintype.sum_subtype_add_sum_subtype
         (fun index => exposed (rawLabelBucket index) (rawSlotBranch index.slot) ≠ true)
-        (fun index => 182 * Fintype.card
+        (fun index => 184 * Fintype.card
           (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index)))
-    _ = 182 * ∑ index : Pipeline.FixedKeyIndex,
+    _ = 184 * ∑ index : Pipeline.FixedKeyIndex,
         Fintype.card (FixedQueryDomain (fixedOracleTranscriptRecords transcript) index) :=
       (Finset.mul_sum _ _ _).symm
-    _ ≤ 182 * transcript.length := Nat.mul_le_mul_left _ (fixedExternalQueryCount_le transcript)
+    _ ≤ 184 * transcript.length := Nat.mul_le_mul_left _ (fixedExternalQueryCount_le transcript)
 
 /-- The corrected circuit factor also holds when both point branches stay hidden. -/
 theorem partialCircuit_adaptiveFactor_mass_ge
@@ -308,7 +308,7 @@ theorem partialCircuit_adaptiveFactor_mass_ge
       Fintype.card (ResidualFixedQueryDomain (fixedOracleTranscriptRecords transcript)
         (partialActiveDomains (circuitRawGatePrescription keys slopes lifts tables) exposed publicLabel)
           index) ≤ Fintype.card Block) :
-    (1 - (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       adaptiveIdealPermutationFactor (Fintype.card Block) circuitBucketSize prior
         (fun index => Fintype.card (ResidualFixedQueryDomain (fixedOracleTranscriptRecords transcript)
           (partialActiveDomains (circuitRawGatePrescription keys slopes lifts tables) exposed publicLabel)
@@ -377,7 +377,7 @@ theorem partialCircuitProgrammedSource_mass_ratio
       Fintype.card (ResidualFixedQueryDomain (fixedOracleTranscriptRecords transcript)
         (partialActiveDomains (circuitRawGatePrescription keys slopes lifts tables) exposed publicLabel)
           index) ≤ Fintype.card Block) :
-    (1 - (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       ((∏ index, ((Fintype.card Block : ℝ≥0∞) ^ circuitBucketSize index)⁻¹) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>

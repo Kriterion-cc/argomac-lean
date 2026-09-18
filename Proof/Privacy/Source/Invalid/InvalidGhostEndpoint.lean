@@ -54,7 +54,7 @@ theorem invalidGhostEndpoint_mass_ge [FieldCertificate] [GroupCertificate] [bloc
     (secondCompatible : OracleTranscriptCompatible idealOracleHandler referenceAfter after)
     (nonfixed : NonFixedTranscriptCompatible nonfixedWitness (before ++ after))
     (budget : Nat) (small : budget < 2 ^ 100) (bounded : (before ++ after).length ≤ budget) :
-    (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
+    (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block) *
       sourceGoodMass (fullGateGhostSamples adversary parameter auxiliary scalar.value witness fallback)
         (fun coin => PMF.pure coin.1.2) {coin | fullGateGhostBad coin}
         (table, selected, before, labels, decision, after) ≤

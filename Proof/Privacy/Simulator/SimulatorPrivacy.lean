@@ -69,7 +69,7 @@ theorem simulateEncode_rebuild [FieldCertificate] [GroupCertificate]
   | none => simp only [concreteCircuitSimulator, circuitSimulator, PMF.pure_map]
   | some point =>
       simp only [concreteCircuitSimulator, circuitSimulator, PMF.map_comp]
-      apply congrArg (fun f => (PMF.uniformOfFintype ((Fin 90 → Point) ×
+      apply congrArg (fun f => (PMF.uniformOfFintype ((Fin 91 → Point) ×
         (Fin FieldMacToECMac.outputMacCount → NonZeroBase))).map f)
       funext sample
       simp only [Function.comp_def, CircuitSimulatorState.programForOutput]
