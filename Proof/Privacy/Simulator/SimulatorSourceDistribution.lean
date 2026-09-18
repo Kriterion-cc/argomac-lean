@@ -120,7 +120,7 @@ def targetGateObserve [FieldCertificate] [GroupCertificate] {Aux Observation : T
     (observe : Pipeline.Table → (AffineInput × Aux) → SelectedGateView →
       GarblingOracleData → PMF Observation)
     (selected : AffineInput × Aux) (source : SourceOracleRest × PublicSample) : PMF Observation :=
-  (PMF.uniformOfFintype ((Fin 90 → Point) × (Fin outputMacCount → NonZeroBase))).bind fun online =>
+  (PMF.uniformOfFintype ((Fin 91 → Point) × (Fin outputMacCount → NonZeroBase))).bind fun online =>
     observe (publicMaskTable source.2) selected
       (source.2.curveRequest.retarget selected.1 source.1.1.1,
         (decodePoint selected.1).map fun point => retargetPointGateRequests source.2.pointRequests

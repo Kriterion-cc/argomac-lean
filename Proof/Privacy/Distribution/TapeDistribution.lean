@@ -93,11 +93,11 @@ theorem clampedPointOffsets_eq_of_free [FieldCertificate] [GroupCertificate]
   exact equal
 
 def affineFreeFromPoints [FieldCertificate]
-    (values : Fin 90 → {point : Point // point ≠ 0}) : Vector AffineOffset 90 :=
+    (values : Fin 91 → {point : Point // point ≠ 0}) : Vector AffineOffset 91 :=
   Vector.ofFn fun index => affineOffsetEquiv.symm (values index)
 
 theorem affineFreeFromPoints_eq [FieldCertificate]
-    (values : Fin 90 → {point : Point // point ≠ 0}) :
+    (values : Fin 91 → {point : Point // point ≠ 0}) :
     freeOffsetPoints (affineFreeFromPoints values) = List.ofFn (fun index => (values index).1) := by
   rw [freeOffsetPoints, affineFreeFromPoints, Vector.toList_ofFn, List.map_ofFn]
   apply congrArg List.ofFn
@@ -110,7 +110,7 @@ theorem offsetFunctionEquiv_symm_list [FieldCertificate] (randomness : OffsetRan
 
 theorem exists_clampedPointOffsets_of_free [FieldCertificate] [GroupCertificate]
     (construction : Construction) (randomness : NonzeroPointOffsets construction)
-    (free : Vector AffineOffset 90)
+    (free : Vector AffineOffset 91)
     (freeEq : freeOffsetPoints free = randomness.1.freeOffsets) :
     ∃ offsets, clampedPointOffsets construction offsets = randomness := by
   have firstNonzero : clampedFirst free ≠ 0 := by
@@ -127,9 +127,9 @@ theorem exists_clampedPointOffsets_of_free [FieldCertificate] [GroupCertificate]
 
 theorem exists_clampedPointOffsets_of_list [FieldCertificate] [GroupCertificate]
     (construction : Construction) (randomness : NonzeroPointOffsets construction)
-    (values : Fin 90 → Point) (listEq : List.ofFn values = randomness.1.freeOffsets) :
+    (values : Fin 91 → Point) (listEq : List.ofFn values = randomness.1.freeOffsets) :
     ∃ offsets, clampedPointOffsets construction offsets = randomness := by
-  have nonzero (index : Fin 90) : values index ≠ 0 := by
+  have nonzero (index : Fin 91) : values index ≠ 0 := by
     intro zero
     apply randomness.2
     simp only [Construction.offsets, clampOffsets, List.mem_cons]

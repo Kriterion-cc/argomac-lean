@@ -190,7 +190,7 @@ private theorem homogeneousRows_vector [FieldCertificate] {count : Nat}
     rfl
 
 /-- This computation returns the output array and counts each conversion pass. -/
-def outputTargetsWithCost [FieldCertificate] (point : Point) (free : Vector Point 90)
+def outputTargetsWithCost [FieldCertificate] (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
     Array FieldMacToECMac.HomogeneousValue × Cost :=
   let points := outputTargetPointsWithCost point free.toList
@@ -200,7 +200,7 @@ def outputTargetsWithCost [FieldCertificate] (point : Point) (free : Vector Poin
       2 * free.size + 2 * scales.size + 2 * rows.1.length })
 
 theorem outputTargetsWithCost_value [FieldCertificate] [GroupCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
     (outputTargetsWithCost point free scales).1 =
       (outputTargets point free scales.get).toArray := by
@@ -213,15 +213,15 @@ theorem outputTargetsWithCost_value [FieldCertificate] [GroupCertificate]
   exact homogeneousRows_vector points scales
 
 theorem outputTargetsWithCost_bound [FieldCertificate] [GroupCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (outputTargetsWithCost point free scales).2.groupAdditions ≤ 46319 ∧
+    (outputTargetsWithCost point free scales).2.groupAdditions ≤ 46828 ∧
       (outputTargetsWithCost point free scales).2.groupNegations = 1 ∧
       (outputTargetsWithCost point free scales).2.fieldAdditions = 0 ∧
-      (outputTargetsWithCost point free scales).2.fieldMultiplications ≤ 182 ∧
+      (outputTargetsWithCost point free scales).2.fieldMultiplications ≤ 184 ∧
       (outputTargetsWithCost point free scales).2.fieldDivisions = 0 ∧
-      (outputTargetsWithCost point free scales).2.elements = 908 := by
-  have length : (outputTargetPointsWithCost point free.toList).1.length = 91 := by
+      (outputTargetsWithCost point free scales).2.elements = 918 := by
+  have length : (outputTargetPointsWithCost point free.toList).1.length = 92 := by
     rw [outputTargetPointsWithCost_value]
     simp
   obtain ⟨ga, gn, e, fa, fm, fd⟩ := outputTargetPointsWithCost_bound point free.toList
@@ -229,7 +229,7 @@ theorem outputTargetsWithCost_bound [FieldCertificate] [GroupCertificate]
     (outputTargetPointsWithCost point free.toList).1 scales.toList (by
       simpa [FieldMacToECMac.outputMacCount] using length)
   have rowsLength : (homogeneousRowsWithCost
-      (outputTargetPointsWithCost point free.toList).1 scales.toList).1.length = 91 := by
+      (outputTargetPointsWithCost point free.toList).1 scales.toList).1.length = 92 := by
     rw [homogeneousRowsWithCost_value, List.length_zipWith, length]
     simp [FieldMacToECMac.outputMacCount]
   simp only [Vector.length_toList] at ga e
@@ -272,11 +272,11 @@ private theorem homogeneousRowsWithCost_scalarOperations [FieldCertificate]
           simp only [homogeneousRowsWithCost, Cost.add, ih]
           cases point <;> rfl
 
-/-- The complete output-target computation counts all 91 scalar multiplications. -/
+/-- The complete output-target computation counts all 92 scalar multiplications. -/
 theorem outputTargetsWithCost_scalarOperations [FieldCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (outputTargetsWithCost point free scales).2.scalarOperations = 92456 := by
+    (outputTargetsWithCost point free scales).2.scalarOperations = 93472 := by
   simp only [outputTargetsWithCost, Cost.add, outputTargetPointsWithCost_scalarOperations,
     homogeneousRowsWithCost_scalarOperations, Vector.length_toList]
 

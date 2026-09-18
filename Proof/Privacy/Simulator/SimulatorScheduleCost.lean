@@ -309,7 +309,7 @@ theorem retargetDataWithCost_bound (old : Vector BaseField coordinateBitCount)
 
 /-- This wrapper preserves the output-array cost and its exact vector size. -/
 def outputTargetsVectorWithCost [FieldCertificate] [GroupCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
     Vector FieldMacToECMac.HomogeneousValue FieldMacToECMac.outputMacCount × Nat :=
   let result := outputTargetsWithCost point free scales
@@ -319,16 +319,16 @@ def outputTargetsVectorWithCost [FieldCertificate] [GroupCertificate]
       result.2.scalarOperations)
 
 theorem outputTargetsVectorWithCost_value [FieldCertificate] [GroupCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
     (outputTargetsVectorWithCost point free scales).1 = outputTargets point free scales.get := by
   apply Vector.toArray_inj.mp
   exact outputTargetsWithCost_value point free scales
 
 theorem outputTargetsVectorWithCost_bound [FieldCertificate] [GroupCertificate]
-    (point : Point) (free : Vector Point 90)
+    (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (outputTargetsVectorWithCost point free scales).2 ≤ 139866 := by
+    (outputTargetsVectorWithCost point free scales).2 ≤ 141403 := by
   obtain ⟨ga, gn, fa, fm, fd, elements⟩ := outputTargetsWithCost_bound point free scales
   have scalar := outputTargetsWithCost_scalarOperations point free scales
   simp only [outputTargetsVectorWithCost]
@@ -817,7 +817,7 @@ structure Prepared where
 /-- This computation materializes the curve, output targets, and point rows once. -/
 def prepareWithCost [FieldCertificate] [GroupCertificate]
     (state : CircuitSimulatorState) (tables : SimulatorTables state)
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) : Prepared × Nat :=
   let curve := prepareCurveWithCost state.curve input state.bridgeKey tables.curve
   let targets := outputTargetsVectorWithCost point free scales
@@ -828,7 +828,7 @@ def prepareWithCost [FieldCertificate] [GroupCertificate]
 
 theorem prepareWithCost_curve [FieldCertificate] [GroupCertificate]
     (state : CircuitSimulatorState) (tables : SimulatorTables state)
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
     (prepareWithCost state tables input point free scales).1.curve.request =
       state.selectedCurve input :=
@@ -836,7 +836,7 @@ theorem prepareWithCost_curve [FieldCertificate] [GroupCertificate]
 
 theorem prepareWithCost_points [FieldCertificate] [GroupCertificate]
     (state : CircuitSimulatorState) (tables : SimulatorTables state)
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
     (prepareWithCost state tables input point free scales).1.points =
       state.selectedPoints input point free scales.get := by
@@ -850,9 +850,9 @@ theorem prepareWithCost_points [FieldCertificate] [GroupCertificate]
 
 theorem prepareWithCost_bound [FieldCertificate] [GroupCertificate]
     (state : CircuitSimulatorState) (tables : SimulatorTables state)
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) :
-    (prepareWithCost state tables input point free scales).2 ≤ 3400000 := by
+    (prepareWithCost state tables input point free scales).2 ≤ 3421659 := by
   have curve := prepareCurveWithCost_bound state.curve input state.bridgeKey tables.curve
   have targets := outputTargetsVectorWithCost_bound point free scales
   have rows := prepareRowsWithCost_bound tables.rows input
@@ -885,7 +885,7 @@ theorem Prepared.pointScheduleWithCost_value (prepared : Prepared)
 
 theorem Prepared.pointScheduleWithCost_count (prepared : Prepared)
     (input : AffineInput) (inputMac : InputMac) :
-    (prepared.pointScheduleWithCost input inputMac).2 = 8116290 := by
+    (prepared.pointScheduleWithCost input inputMac).2 = 8205480 := by
   simp only [Prepared.pointScheduleWithCost, flattenWithCost_count, List.map_ofFn,
     Function.comp_def, rowScheduleWithCost_count, rowScheduleWithCost_value,
     BiquadraticRowRequest.schedule_length, List.length_ofFn]
@@ -908,7 +908,7 @@ theorem Prepared.scheduleWithCost_value (prepared : Prepared) (input : AffineInp
 
 theorem Prepared.scheduleWithCost_count (prepared : Prepared) (input : AffineInput)
     (originalMac linkedMac : InputMac) :
-    (prepared.scheduleWithCost input originalMac linkedMac).2 = 8749018 := by
+    (prepared.scheduleWithCost input originalMac linkedMac).2 = 8844812 := by
   simp only [Prepared.scheduleWithCost, flattenWithCost_count, List.map_cons, List.map_nil,
     List.sum_cons, List.sum_nil, List.length_cons, List.length_nil,
     curveScheduleWithCost_count, Prepared.pointScheduleWithCost_count,
@@ -1062,10 +1062,10 @@ def OfflineArrays.tables (arrays : OfflineArrays) (oracle : SimulatorState) :
 def rowArrays : Code RowArrays 9920 :=
   (gateArrays 5 4).pair ((gateArrays 4 4).pair (gateArrays 5 5))
 
-def publicArrays : Code PublicArrays 906533 :=
+def publicArrays : Code PublicArrays 916453 :=
   (gateArrays 3 5).pair (rowArrays.vector FieldMacToECMac.outputMacCount)
 
-def offlineArrays : Code OfflineArrays 907550 := publicArrays.pair (inputKey.pair field)
+def offlineArrays : Code OfflineArrays 917470 := publicArrays.pair (inputKey.pair field)
 
 attribute [local instance] publicVectorFintype bitAdaptorTableFintype publicBitAdaptorKeyFintype
   publicInputMacKeyFintype
@@ -1139,7 +1139,7 @@ theorem prepareOfflineWithCost_value (arrays : OfflineArrays) (oracle : Simulato
   rfl
 
 theorem prepareOfflineWithCost_count (arrays : OfflineArrays) (oracle : SimulatorState) :
-    (prepareOfflineWithCost arrays oracle).2 = 59760 := by
+    (prepareOfflineWithCost arrays oracle).2 = 60414 := by
   simp only [prepareOfflineWithCost, curveArrayPreparedWithCost, rowArrayPreparedWithCost,
     gateArrayViewWork, Vector.toList_map, List.map_map, Function.comp_def]
   rw [List.map_const', List.sum_replicate_nat]

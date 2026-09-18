@@ -59,7 +59,7 @@ theorem linkedHiddenSourceMass_programmed_ge_of_reference
       (_residualFits : ∀ index, circuitBucketSize index +
         circuitResidualQueryCount gates (circuitBucketInputBit input)
           (circuitBucketInputLabel curveMac pointMac) (before ++ after) index ≤ Fintype.card Block),
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       (((PMF.uniformOfFintype FullCircuitSource) (lifts, sourceCiphertexts source)) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>
@@ -104,7 +104,7 @@ theorem linkedHiddenSourceMass_programmed_ge_of_nonfixed
       (_residualFits : ∀ index, circuitBucketSize index +
         circuitResidualQueryCount gates (circuitBucketInputBit input)
           (circuitBucketInputLabel curveMac pointMac) (before ++ after) index ≤ Fintype.card Block),
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       (((PMF.uniformOfFintype FullCircuitSource) (lifts, sourceCiphertexts source)) *
         fixedTranscriptFactor state.fixedTranscript *
         ((PMF.uniformOfFintype (TranscriptOracle state.fixedTranscript)).map (fun oracle =>
@@ -116,7 +116,7 @@ theorem linkedHiddenSourceMass_programmed_ge_of_nonfixed
   intro nonfixed offsetsDistinct historyMembers fresh priorFits residualFits
   apply programmed_mass_lower_of_extension
     state _ (fixedOracleTranscriptRecords after) fresh
-    (fun mass => (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (fun mass => (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       (((PMF.uniformOfFintype FullCircuitSource)
         ((fun gate => goodHashLiftSource ((circuitMaskHashSplitEquiv source).1 gate)), sourceCiphertexts source)) *
         fixedTranscriptFactor state.fixedTranscript * mass))

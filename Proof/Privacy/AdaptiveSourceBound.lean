@@ -22,7 +22,7 @@ theorem fullGateGhostRatio_event_bound [FieldCertificate] [GroupCertificate] [Te
         adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter)
     (real : PMF (FullGateTranscript adversary.State))
     (ratio : ∀ transcript,
-      (1 - (((186 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) + 508 : Nat) : ENNReal) /
+      (1 - (((188 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) + 508 : Nat) : ENNReal) /
         (2 : ENNReal) ^ 128)) *
         sourceGoodMass (fullGateGhostSamples adversary parameter auxiliary scalar.value witness fallback)
           (fun coin => PMF.pure coin.1.2) {coin | fullGateGhostBad coin} transcript ≤ real transcript)
@@ -33,7 +33,7 @@ theorem fullGateGhostRatio_event_bound [FieldCertificate] [GroupCertificate] [Te
           event).toReal| ≤
       adaptiveErrorEnvelope (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) := by
   let queries := adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter
-  let loss : ENNReal := ((186 * queries + 508 : Nat) : ENNReal) / (2 : ENNReal) ^ 128
+  let loss : ENNReal := ((188 * queries + 508 : Nat) : ENNReal) / (2 : ENNReal) ^ 128
   let samples := fullGateGhostSamples adversary parameter auxiliary scalar.value witness fallback
   let kernel := fun coin : (FullGatePrefixCoin adversary.State × FullGateTranscript adversary.State) × BaseField =>
     PMF.pure coin.1.2
@@ -57,7 +57,7 @@ theorem fullGateGhostRatio_event_bound [FieldCertificate] [GroupCertificate] [Te
   apply (triangle.trans (add_le_add sourceBound endpoint)).trans
   have accounting := invalidCombinedLoss_le_envelope (adversary.firstQueryBudget parameter) queries
     (Nat.le_add_right _ _)
-  have lossReal : loss.toReal = ((186 * queries + 508 : Nat) : ℝ) / (2 : ℝ) ^ 128 := by
+  have lossReal : loss.toReal = ((188 * queries + 508 : Nat) : ℝ) / (2 : ℝ) ^ 128 := by
     simp only [loss, ENNReal.toReal_div, ENNReal.toReal_pow, ENNReal.toReal_natCast,
       ENNReal.toReal_ofNat]
   rw [lossReal]
@@ -111,7 +111,7 @@ theorem concreteAdaptivePrivacy_of_smallSourceRatios
       (parameter : Nat) (scalar : NonZeroScalar) (auxiliary : Aux),
       adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter < 2 ^ 100 →
       ∀ transcript : FullGateTranscript adversary.State,
-        (1 - (((186 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) + 508 : Nat) : ENNReal) /
+        (1 - (((188 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) + 508 : Nat) : ENNReal) /
           (2 : ENNReal) ^ 128)) *
           sourceGoodMass
             (fullGateGhostSamples adversary parameter auxiliary scalar.value witness

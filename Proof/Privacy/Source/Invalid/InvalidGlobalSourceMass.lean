@@ -56,7 +56,7 @@ def invalidRestEventMass_global_le [FieldCertificate] [GroupCertificate] [Fintyp
   exact refresh_relative_sum (PMF.uniformOfFintype GarblingSourceRest)
     (PMF.uniformOfFintype ((PermutationOracle EncPRF.PermutationIndex Block) × EncPRF.HashOracle))
     (PMF.uniformOfFintype FullCircuitSource)
-    (1 - ((186 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block)
+    (1 - ((188 * budget + 508 : Nat) : ℝ≥0∞) / Fintype.card Block)
     (invalidRestEventMass scalar table input key reference before after)
     (fun rest nonfixed => invalidRestEventMass scalar table input key reference before after
       {rest with encPRFOracle := nonfixed.1, hashOracle := nonfixed.2}) _

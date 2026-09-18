@@ -65,4 +65,4 @@ run_cmd do
         origin.isNone then
       let illegal := (← Lean.collectAxioms name).filter fun axiomName =>
         !#[`propext, `Classical.choice, `Quot.sound].contains axiomName
-      unless illegal.isEmpty do Lean.throwError "disallowed axioms in {name}: {illegal}"
+      unless illegal.isEmpty do Lean.throwError m!"The declaration {name} uses disallowed axioms: {illegal}"

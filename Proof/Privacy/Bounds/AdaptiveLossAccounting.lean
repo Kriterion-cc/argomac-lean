@@ -15,22 +15,22 @@ theorem relativeLoss_product (first second : ℝ≥0∞) :
 
 /-- The invalid fixed and EncPRF factors use one pad loss. -/
 theorem invalidRelativeLoss_product (queries : Nat) :
-    1 - (((186 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128) ≤
-      (1 - (((182 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128)) *
+    1 - (((188 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128) ≤
+      (1 - (((184 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128)) *
       (1 - ((4 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128) := by
-  have split : (((186 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128) =
-      (((182 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128) +
+  have split : (((188 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128) =
+      (((184 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 + 508 / (2 : ℝ≥0∞) ^ 128) +
         ((4 * queries : Nat) : ℝ≥0∞) / (2 : ℝ≥0∞) ^ 128 := by
-    rw [show 186 * queries = 182 * queries + 4 * queries by omega, Nat.cast_add, ENNReal.add_div]
+    rw [show 188 * queries = 184 * queries + 4 * queries by omega, Nat.cast_add, ENNReal.add_div]
     exact add_right_comm _ _ _
   rw [split]
   exact relativeLoss_product _ _
 
 /-- The source flags, relative factors, and hidden-key exclusions fit the current envelope. -/
 theorem invalidCombinedLoss_le_envelope (before queries : Nat) (beforeLe : before ≤ queries) :
-    ((243390420 : ℝ) / 2 ^ 128 + 182 * before / 2 ^ 128) +
-      ((186 * queries + 508) / 2 ^ 128 + (queries + 1) / (baseFieldModulus : ℝ)) +
-      2 * (301752 * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384) + (2 : ℝ) ^ (-240 : ℤ) ≤
+    ((248799096 : ℝ) / 2 ^ 128 + 184 * before / 2 ^ 128) +
+      ((188 * queries + 508) / 2 ^ 128 + (queries + 1) / (baseFieldModulus : ℝ)) +
+      2 * (305054 * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384) + (2 : ℝ) ^ (-240 : ℤ) ≤
         adaptiveErrorEnvelope queries := by
   have bound := adaptiveLossSum_le_envelope before queries beforeLe
   convert bound using 1

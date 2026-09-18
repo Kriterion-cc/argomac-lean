@@ -10,7 +10,7 @@ namespace Kriterion.ArgoMAC.FieldMacToECMac
 
 open BN254
 
-abbrev outputMacCount : Nat := 91
+abbrev outputMacCount : Nat := 92
 
 /-- The evaluator computes one homogeneous row before batch inversion. -/
 structure HomogeneousValue where
@@ -59,17 +59,17 @@ def AffineOffset.point [FieldCertificate] (offset : AffineOffset) : Point :=
     | none => exact (defined decoded).elim
     | some point => rfl)
 
-def freeOffsetPoints [FieldCertificate] (free : Vector AffineOffset 90) : List Point :=
+def freeOffsetPoints [FieldCertificate] (free : Vector AffineOffset 91) : List Point :=
   free.toList.map fun offset => AffineOffset.point offset
 
 def clampedFirst [FieldCertificate] [GroupCertificate]
-    (free : Vector AffineOffset 90) : Point :=
+    (free : Vector AffineOffset 91) : Point :=
   -(radix • pointHorner radix (freeOffsetPoints free))
 
 /-- This contains the affine offsets from one successful garbling run. -/
 structure SuccessfulOffsets where
   first : AffineOffset
-  free : Vector AffineOffset 90
+  free : Vector AffineOffset 91
 
 def SuccessfulOffsets.IsClamped [FieldCertificate] [GroupCertificate]
     (offsets : SuccessfulOffsets) : Prop :=
@@ -143,7 +143,7 @@ def evaluateHomogeneous (table : Table) (oracles : Oracles)
     z := Biquadratic.evaluate (oracles.get index).z (table.z.get index) input inputMac
   }
 
-/-- The result keeps 91 homogeneous MAC values for checked decode. -/
+/-- The result keeps 92 homogeneous MAC values for checked decode. -/
 structure Result where
   point : AffineInput
   pointMacs : Vector HomogeneousValue outputMacCount

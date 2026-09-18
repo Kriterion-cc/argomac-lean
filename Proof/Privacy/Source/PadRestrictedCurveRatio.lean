@@ -40,7 +40,7 @@ theorem actualCurveProgrammedSource_guard_mass_ratio
       Fintype.card (ResidualFixedQueryDomain (fixedOracleTranscriptRecords (before ++ after))
         (partialActiveDomains (circuitRawGatePrescription keys slopes lifts tables) (curveOnlyExposed (circuitBucketInputBit input)) (fun bucket _ => circuitBucketInputLabel curveMac pointMac bucket))
           index) ≤ Fintype.card Block) :
-    (1 - ((182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞) +
+    (1 - ((184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞) +
       508 / (Fintype.card Block : ℝ≥0∞))) *
       ((∏ index, ((Fintype.card Block : ℝ≥0∞) ^ circuitBucketSize index)⁻¹) *
         fixedTranscriptFactor state.fixedTranscript *

@@ -22,7 +22,7 @@ theorem adaptiveErrorEnvelope_has100Bits :
   intro queries
   have countBound : adaptiveConstantCount + adaptiveQueryCount * queries ≤
       permutationWork queries * 2 ^ 28 := by
-    change 246408450 + 824 * queries ≤ max queries 1 * 268435456
+    change 251850146 + 833 * queries ≤ max queries 1 * 268435456
     omega
   change (((adaptiveConstantCount + adaptiveQueryCount * queries : Nat) : ℝ) /
       (2 : ℝ) ^ 128) * (2 : ℝ) ^ 100 ≤ ((permutationWork queries : Nat) : ℝ)
@@ -36,26 +36,45 @@ theorem adaptiveErrorEnvelope_has100Bits :
 
 set_option exponentiation.threshold 400
 
-/-- The field modulus gives the six-block pad density bound. -/
-theorem padDensity_le_six [Fintype Block] :
+/-- The exact field modulus gives a pad density below 5.3 inverse blocks. -/
+theorem padDensity_le_fiftyThreeTenths [Fintype Block] :
     (Fintype.card Block : ENNReal) / baseFieldModulus ≤
-      6 / (2 : ENNReal) ^ 128 := by
+      (53 / 10) / (2 : ENNReal) ^ 128 := by
   have card : Fintype.card Block = 2 ^ 128 := by
     exact (Fintype.card_congr BitVec.equivFin.toEquiv).trans (Fintype.card_fin _)
   rw [card]
   apply (ENNReal.toReal_le_toReal (by norm_num [baseFieldModulus, hashLiftQuotientCount]; finiteness) (by finiteness)).mp
   norm_num [ENNReal.toReal_div, baseFieldModulus]
 
-/-- Complete hash fibers give the two-block hash density bound. -/
-theorem hashDensity_le_two [Fintype Block] :
+/-- The original six-block bound follows from the tighter field bound. -/
+theorem padDensity_le_six [Fintype Block] :
+    (Fintype.card Block : ENNReal) / baseFieldModulus ≤
+      6 / (2 : ENNReal) ^ 128 := by
+  apply padDensity_le_fiftyThreeTenths.trans
+  apply ENNReal.div_le_div_right
+  apply (ENNReal.div_le_iff (by norm_num) (by finiteness)).mpr
+  norm_num
+
+/-- The complete hash fibers give a density below 1.001 inverse blocks. -/
+theorem hashDensity_le_thousandOneThousandths [Fintype Block] :
     (Fintype.card Block : ENNReal) ^ 2 /
       (baseFieldModulus * hashLiftQuotientCount : Nat) ≤
-        2 / (2 : ENNReal) ^ 128 := by
+        (1001 / 1000) / (2 : ENNReal) ^ 128 := by
   have card : Fintype.card Block = 2 ^ 128 := by
     exact (Fintype.card_congr BitVec.equivFin.toEquiv).trans (Fintype.card_fin _)
   rw [card]
   apply (ENNReal.toReal_le_toReal (by norm_num [baseFieldModulus, hashLiftQuotientCount]; finiteness) (by finiteness)).mp
   norm_num [ENNReal.toReal_div, baseFieldModulus, hashLiftQuotientCount]
+
+/-- The original two-block bound follows from the tighter hash bound. -/
+theorem hashDensity_le_two [Fintype Block] :
+    (Fintype.card Block : ENNReal) ^ 2 /
+      (baseFieldModulus * hashLiftQuotientCount : Nat) ≤
+        2 / (2 : ENNReal) ^ 128 := by
+  apply hashDensity_le_thousandOneThousandths.trans
+  apply ENNReal.div_le_div_right
+  apply (ENNReal.div_le_iff (by norm_num) (by finiteness)).mpr
+  norm_num
 
 /-- One field-mask loss fits one inverse block count. -/
 theorem fieldMaskLoss_le_block :
@@ -64,8 +83,8 @@ theorem fieldMaskLoss_le_block :
 
 /-- Whole-circuit hash rounding fits one inverse block count per gate. -/
 theorem circuitHashRounding_le_blocks :
-    (301752 : ℝ) * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384 ≤
-      301752 / (2 : ℝ) ^ 128 := by
+    (305054 : ℝ) * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384 ≤
+      305054 / (2 : ℝ) ^ 128 := by
   norm_num [baseFieldModulus]
 
 /-- Every Boolean decision advantage is at most one. -/
@@ -97,7 +116,7 @@ theorem adaptiveEnvelope_has100Bits {error : ℝ} (queries : Nat)
 
 /-- Every small work budget fits all five point-gate slots and the external queries. -/
 theorem smallBudget_slots_fit [Fintype Block] (queries : Nat) (small : queries < 2 ^ 100) :
-    5 * 91 + queries ≤ Fintype.card Block := by
+    5 * 92 + queries ≤ Fintype.card Block := by
   have card : Fintype.card Block = 2 ^ 128 :=
     (Fintype.card_congr BitVec.equivFin.toEquiv).trans (Fintype.card_fin _)
   rw [card]
@@ -106,9 +125,9 @@ theorem smallBudget_slots_fit [Fintype Block] (queries : Nat) (small : queries <
 
 /-- The checked collision, query, linking, and source losses fit the adaptive envelope. -/
 theorem adaptiveLossSum_le_envelope (before queries : Nat) (beforeLe : before ≤ queries) :
-    (243390420 : ℝ) / 2 ^ 128 + 182 * before / 2 ^ 128 + 182 * queries / 2 ^ 128 +
+    (248799096 : ℝ) / 2 ^ 128 + 184 * before / 2 ^ 128 + 184 * queries / 2 ^ 128 +
       queries / (baseFieldModulus : ℝ) + (508 + 4 * queries) / 2 ^ 128 + 1 / baseFieldModulus +
-      2 * (301752 * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384) + (2 : ℝ) ^ (-240 : ℤ) ≤
+      2 * (305054 * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384) + (2 : ℝ) ^ (-240 : ℤ) ≤
         adaptiveErrorEnvelope queries := by
   have hidden : (queries : ℝ) / baseFieldModulus ≤ queries / (2 : ℝ) ^ 128 := by
     simpa only [div_eq_mul_inv, one_mul] using
@@ -116,11 +135,11 @@ theorem adaptiveLossSum_le_envelope (before queries : Nat) (beforeLe : before �
   have offset : (2 : ℝ) ^ (-240 : ℤ) ≤ 1 / (2 : ℝ) ^ 128 := by norm_num
   have prefixBound : (before : ℝ) ≤ queries := by exact_mod_cast beforeLe
   calc
-    _ ≤ (243390420 : ℝ) / 2 ^ 128 + 182 * before / 2 ^ 128 + 182 * queries / 2 ^ 128 +
-        queries / (2 : ℝ) ^ 128 + (508 + 4 * queries) / 2 ^ 128 + 1 / 2 ^ 128 + 2 * (301752 / 2 ^ 128) +
+    _ ≤ (248799096 : ℝ) / 2 ^ 128 + 184 * before / 2 ^ 128 + 184 * queries / 2 ^ 128 +
+        queries / (2 : ℝ) ^ 128 + (508 + 4 * queries) / 2 ^ 128 + 1 / 2 ^ 128 + 2 * (305054 / 2 ^ 128) +
         1 / 2 ^ 128 := by linarith [circuitHashRounding_le_blocks, fieldMaskLoss_le_block]
     _ ≤ adaptiveErrorEnvelope queries := by
-      change _ ≤ ((246408450 + 824 * queries : Nat) : ℝ) / (2 : ℝ) ^ 128
+      change _ ≤ ((251850146 + 833 * queries : Nat) : ℝ) / (2 : ℝ) ^ 128
       push_cast
       norm_num
       linarith [Nat.cast_nonneg (α := ℝ) queries]

@@ -7,21 +7,21 @@ open BN254
 
 namespace Wire
 
-private def field : Encoding BaseField :=
+def field : Encoding BaseField :=
   (Encoding.natural 32).map
     (fun value => ⟨value.val, lt_trans value.val_lt (by decide)⟩)
     (fun value => value.val)
     (fun value => ZMod.natCast_zmod_val value)
 
-private def adaptor : Encoding BitAdaptor.Table :=
+def adaptor : Encoding BitAdaptor.Table :=
   (Encoding.natural 32).map
     (fun value => ⟨value.trueRow.toNat, value.trueRow.isLt⟩)
     (fun value => ⟨BitVec.ofNat 256 value.val⟩)
     (fun value => by cases value; simp)
 
-private def digit := adaptor.vector coordinateBitCount
+def digit := adaptor.vector coordinateBitCount
 
-private def curve : Encoding CurveMembership.Table :=
+def curve : Encoding CurveMembership.Table :=
   (field.pair (field.pair (field.pair
     (digit.pair (digit.pair (digit.pair (digit.pair digit))))))).map
     (fun value => (value.c0, value.c1, value.c2,
@@ -29,7 +29,7 @@ private def curve : Encoding CurveMembership.Table :=
     (fun ⟨c0, c1, c2, x3, x5, x7, y4, y6⟩ => ⟨c0, c1, c2, x3, x5, x7, y4, y6⟩)
     (fun _ => rfl)
 
-private def biquadratic : Encoding Biquadratic.Table :=
+def biquadratic : Encoding Biquadratic.Table :=
   let coefficient := field.option
   let rows := digit.option
   (coefficient.pair (coefficient.pair (coefficient.pair (coefficient.pair
@@ -41,7 +41,7 @@ private def biquadratic : Encoding Biquadratic.Table :=
       ⟨c0, c1, c2, c3, c4, c5, x7, x9, y6, y8, y10⟩)
     (fun _ => rfl)
 
-private def pointMAC : Encoding FieldMacToECMac.Table :=
+def pointMAC : Encoding FieldMacToECMac.Table :=
   let rows := biquadratic.vector FieldMacToECMac.outputMacCount
   (rows.pair (rows.pair rows)).map
     (fun value => (value.x, value.y, value.z))
@@ -65,7 +65,7 @@ def encoding : Encoding Pipeline.Table :=
     (digit.encode value).length = 8128 :=
   Encoding.vector_length adaptor 32 coordinateBitCount value (fun _ => adaptor_length _)
 
-@[simp] private theorem curve_length (value : CurveMembership.Table) :
+@[simp] theorem curve_length (value : CurveMembership.Table) :
     (curve.encode value).length = 40736 := by
   simp [curve, Encoding.map, Encoding.pair]
 
@@ -77,7 +77,7 @@ def encoding : Encoding Pipeline.Table :=
     (digit.option.encode value).length = if value.isSome then 8129 else 1 := by
   cases value <;> simp [Encoding.option]
 
-private theorem biquadratic_length (value : Biquadratic.Table) :
+theorem biquadratic_length (value : Biquadratic.Table) :
     (biquadratic.encode value).length =
       (if value.c0.isSome then 33 else 1) + ((if value.c1.isSome then 33 else 1) +
       ((if value.c2.isSome then 33 else 1) + ((if value.c3.isSome then 33 else 1) +
@@ -107,7 +107,7 @@ private theorem biquadratic_length (value : Biquadratic.Table) :
 
 private theorem pointMAC_length (rows : FieldMacToECMac.Rows)
     (randomness : FieldMacToECMac.Randomness) (oracles : FieldMacToECMac.Oracles) (key : InputMacKey) :
-    (pointMAC.encode (FieldMacToECMac.garble rows randomness oracles key)).length = 9659195 := by
+    (pointMAC.encode (FieldMacToECMac.garble rows randomness oracles key)).length = 9765340 := by
   simp only [pointMAC, Encoding.map, Encoding.pair, List.length_append]
   rw [Encoding.vector_length biquadratic 32683 _ _ (by
         intro index; simp [FieldMacToECMac.garble, FieldMacToECMac.garbleRow]),
@@ -120,7 +120,7 @@ private theorem pointMAC_length (rows : FieldMacToECMac.Rows)
 /-- Every scalar and random tape produces the same complete ciphertext length. -/
 theorem garble_length (construction : Construction) (scalar : NonZeroScalar)
     (randomness : Garbling.Randomness) :
-    (encoding.encode (Garbling.garble construction scalar randomness).1).length = 9699931 := by
+    (encoding.encode (Garbling.garble construction scalar randomness).1).length = 9806076 := by
   simp [encoding, Encoding.map, Encoding.pair, Garbling.garble, Pipeline.garble, pointMAC_length]
 
 end Wire

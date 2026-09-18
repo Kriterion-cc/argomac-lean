@@ -8,7 +8,8 @@ index and tuple construction, record reads, and two XOR operations.
 The index operations use the schedule's bounded coordinate indices. -/
 def commandWithCost (location : Pipeline.FixedKeyLocation) (window : Nat)
     (label : Block) (slot : Pipeline.FixedKeySlot) (block : Block) : FixedCommand × Nat :=
-  ((fixedKeyIndex location window slot, gateInput location label, block ^^^ label), 20)
+  let input := gateInput location label
+  ((fixedKeyIndex location window slot, input, block ^^^ input), 20)
 
 /-- The compiler constructs the selected commands in execution order.
 The pad branch charges the field encoding, ciphertext XOR, two block extractions,
@@ -93,8 +94,8 @@ theorem scheduleCommandsWithCost_bound (schedule : List GateDirective) :
 
 /-- The complete valid schedule has this command-construction budget. -/
 theorem scheduleCommandsWithCost_valid_bound (schedule : List GateDirective)
-    (bounded : schedule.length ≤ 301752) :
-    (scheduleCommandsWithCost schedule).2 ≤ 30175200 := by
+    (bounded : schedule.length ≤ 305054) :
+    (scheduleCommandsWithCost schedule).2 ≤ 30505400 := by
   exact (scheduleCommandsWithCost_bound schedule).trans (Nat.mul_le_mul_left 100 bounded)
 
 end Kriterion.ArgoMAC.Security.SimulatorCommandCost

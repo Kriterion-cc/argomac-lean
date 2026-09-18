@@ -53,7 +53,7 @@ theorem validProgrammedSourceMass_named_le
     (valid : OnCurve input) (nonfixed : NonFixedTranscriptCompatible rest.reference (before ++ after))
     (members : ∀ record, record ∈ state.fixedTranscript ↔ record ∈ fixedOracleTranscriptRecords before)
     (queries : Nat) (small : queries < 2 ^ 100) (lengthBound : (before ++ after).length ≤ queries) :
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       validProgrammedSourceMass rest outputKeys table input curveKey state before after ≤
       retainedRealPublicMass rest outputKeys table input (curveKey.encodeAffine input) (before ++ after) := by
   have namedEq := congrArg
@@ -64,7 +64,7 @@ theorem validProgrammedSourceMass_named_le
     (funext (fun tag => @validProgrammedTagMass_formula fieldCert groupCert blockFinite
       rest outputKeys input curveKey state after tag oracleExists))
   exact le_trans (le_of_eq (congrArg
-    ((1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) * ·) namedEq))
+    ((1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞)) * ·) namedEq))
     (@validProgrammedSourceMass_real_le fieldCert groupCert blockFinite rest outputKeys
       table input curveKey state before after oracleExists valid nonfixed members queries small lengthBound)
 
@@ -85,7 +85,7 @@ def validGlobalSourceMass_named_le [fieldCert : FieldCertificate] [groupCert : G
   letI : Nonempty GarblingSourceRest := ⟨(garblingOracleKeyEquiv witness).2⟩
   let bound := weightedSubtypeMass_lower
     (fun rest : GarblingSourceRest => (PMF.uniformOfFintype GarblingSourceRest) rest)
-    (1 - (182 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞))
+    (1 - (184 * (before ++ after).length : Nat) / (Fintype.card Block : ℝ≥0∞))
     (fun rest => NonFixedTranscriptCompatible rest.reference (before ++ after))
     (fun rest => @validProgrammedSourceMass fieldCert groupCert blockFinite rest.1
       (outputKeys rest.1) table input curveKey (state rest.1) before after (oracleExists rest.1))

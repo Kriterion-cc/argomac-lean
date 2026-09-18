@@ -299,7 +299,7 @@ theorem map_uniform_mathematicalOutputRowView [FieldCertificate] [GroupCertifica
 
 /-- This source separates the free points, row scales, and retained tape values. -/
 abbrev OutputRowSource [FieldCertificate] :=
-  Vector Point 90 × (Fin outputMacCount → NonZeroBase) × OutputRowRest
+  Vector Point 91 × (Fin outputMacCount → NonZeroBase) × OutputRowRest
 
 instance outputRowRestNonempty : Nonempty OutputRowRest :=
   Nonempty.map outputRowRest inferInstance
@@ -318,7 +318,7 @@ theorem map_uniform_outputRowSourceEquiv [FieldCertificate] :
 theorem outputRowSourceEquiv_free [FieldCertificate]
     (sample : OffsetRandomness × GarblingOffsetRest) :
     (outputRowSourceEquiv sample).1 =
-      (⟨sample.1.freeOffsets.toArray, by simpa using sample.1.freeOffsetCount⟩ : Vector Point 90) := by
+      (⟨sample.1.freeOffsets.toArray, by simpa using sample.1.freeOffsetCount⟩ : Vector Point 91) := by
   apply Vector.toList_inj.mp
   change (Vector.ofFn (offsetFunctionEquiv.symm sample.1)).toList = _
   rw [Vector.toList_ofFn]

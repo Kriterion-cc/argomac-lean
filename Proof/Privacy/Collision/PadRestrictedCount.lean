@@ -159,7 +159,7 @@ theorem independentCircuit_guard_mass_ge
             rawBucketTweak (circuitRawGatePrescription keys slopes lifts tables) index use) =
           rawBucketOffset (circuitRawGatePrescription keys slopes lifts tables) index use ^^^
             publicLabel (rawLabelBucket index) (rawSlotBranch index.slot)) :
-    (1 - ((182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞) +
+    (1 - ((184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞) +
       508 / (Fintype.card Block : ℝ≥0∞))) *
       (∏ index, ((Fintype.card Block - (circuitBucketSize index +
         Fintype.card (ResidualFixedQueryDomain (fixedOracleTranscriptRecords transcript)

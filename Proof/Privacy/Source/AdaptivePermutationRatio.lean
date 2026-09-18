@@ -439,7 +439,7 @@ theorem circuitSharedInactive_adaptiveFactor_mass_ge
     (residualFits : ∀ index, circuitBucketSize index + circuitResidualQueryCount
       (circuitRawGatePrescription keys slopes lifts tables) selected publicLabel transcript index ≤
         Fintype.card Block) :
-    (1 - (182 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
+    (1 - (184 * transcript.length : Nat) / (Fintype.card Block : ℝ≥0∞)) *
       adaptiveIdealPermutationFactor (Fintype.card Block) circuitBucketSize prior
         (circuitResidualQueryCount (circuitRawGatePrescription keys slopes lifts tables)
           selected publicLabel transcript)

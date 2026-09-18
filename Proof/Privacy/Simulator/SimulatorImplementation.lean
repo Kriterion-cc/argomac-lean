@@ -36,24 +36,24 @@ theorem hashWithCost_bound (curve : PreparedCurve) (input : AffineInput) :
 
 private theorem command_bound (prepared : Prepared) (input : AffineInput)
     (original linked : InputMac) :
-    (scheduleCommandsWithCost (prepared.scheduleWithCost input original linked).1).1.length ≤ 905256 := by
+    (scheduleCommandsWithCost (prepared.scheduleWithCost input original linked).1).1.length ≤ 915162 := by
   rw [scheduleCommandsWithCost_value]
   apply (scheduleCommands_length _).trans
   rw [Prepared.scheduleWithCost_value, pipelineGateSchedule_length_value]
 
-private def checkedCommands (compiled : {value : List FixedCommand × Nat // value.1.length ≤ 905256}) :
-    Program spec Unit 905256 := .weaken (commands compiled.1.1) compiled.2
+private def checkedCommands (compiled : {value : List FixedCommand × Nat // value.1.length ≤ 915162}) :
+    Program spec Unit 915162 := .weaken (commands compiled.1.1) compiled.2
 
 private theorem checkedCommands_run
-    (compiled : {value : List FixedCommand × Nat // value.1.length ≤ 905256}) (oracle : SimulatorState) :
+    (compiled : {value : List FixedCommand × Nat // value.1.length ≤ 915162}) (oracle : SimulatorState) :
     (checkedCommands compiled).run handler oracle = ((), executeFixedCommands oracle compiled.1.1) := by
   simp only [checkedCommands, Program.run_weaken, commands_run]
 
 /-- This helper keeps the linked value abstract while it checks the command index. -/
 private def validTail (input : AffineInput) (labels : Garbling.Labels × Nat) (prepared : Prepared × Nat)
-    (hashCost : Nat) (linked : InputMac × Nat) : Program spec (Garbling.Labels × Nat) 905256 :=
+    (hashCost : Nat) (linked : InputMac × Nat) : Program spec (Garbling.Labels × Nat) 915162 :=
   let schedule := prepared.1.scheduleWithCost input labels.1.inputMac linked.1
-  let compiled : {value : List FixedCommand × Nat // value.1.length ≤ 905256} :=
+  let compiled : {value : List FixedCommand × Nat // value.1.length ≤ 915162} :=
     ⟨scheduleCommandsWithCost schedule.1, command_bound prepared.1 input labels.1.inputMac linked.1⟩
   .map (fun _ => (labels.1, labels.2 + prepared.2 + hashCost + linked.2 + schedule.2 + compiled.1.2))
     (checkedCommands compiled)
@@ -68,7 +68,7 @@ private theorem validTail_run (input : AffineInput) (labels : Garbling.Labels ×
     scheduleCommands_correct, Prepared.scheduleWithCost_value]; exact ⟨trivial, trivial⟩
 
 private def validCached (input : AffineInput) (labels : Garbling.Labels × Nat) (prepared : Prepared × Nat) :
-    Program spec (Garbling.Labels × Nat) 905765 :=
+    Program spec (Garbling.Labels × Nat) 915671 :=
   let hash := hashWithCost prepared.1.curve input
   .bind (LinkCost.linkWithCost hash.1 input labels.1.inputMac) (validTail input labels prepared hash.2)
 
@@ -98,14 +98,14 @@ private theorem validCached_run (input : AffineInput) (labels : Garbling.Labels 
 /-- The cached encoder constructs its labels and selected schedules once. -/
 def valid [FieldCertificate] [GroupCertificate]
     (coin : OfflineCoin) (tables : SimulatorTables (privateView coin))
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
-    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) : Program spec (Garbling.Labels × Nat) 905765 :=
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
+    (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) : Program spec (Garbling.Labels × Nat) 915671 :=
   validCached input (labelsWithCost coin.2.1 input) (prepareWithCost (privateView coin) tables input point free scales)
 
 /-- The cached encoder has exactly the original eager label and oracle result. -/
 theorem valid_run [FieldCertificate] [GroupCertificate]
     (coin : OfflineCoin) (tables : SimulatorTables (privateView coin))
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) (oracle : SimulatorState) :
     ((valid coin tables input point free scales).run handler oracle).1.1 =
         (privateView coin).labels input ∧
@@ -126,7 +126,7 @@ theorem valid_run [FieldCertificate] [GroupCertificate]
 theorem valid_local_bound [FieldCertificate] [GroupCertificate] {State : Type}
     (oracleHandler : OracleHandler spec State)
     (coin : OfflineCoin) (tables : SimulatorTables (privateView coin))
-    (input : AffineInput) (point : Point) (free : Vector Point 90)
+    (input : AffineInput) (point : Point) (free : Vector Point 91)
     (scales : Vector NonZeroBase FieldMacToECMac.outputMacCount) (state : State) :
     ((valid coin tables input point free scales).run oracleHandler state).1.2 ≤ 50000000 := by
   have prepared := prepareWithCost_bound (privateView coin) tables input point free scales
@@ -194,7 +194,7 @@ theorem invalid_local_bound {State : Type} (oracleHandler : OracleHandler spec S
 def selected [FieldCertificate] [GroupCertificate]
     (coin : OfflineCoin) (tables : SimulatorTables (privateView coin))
     (input : AffineInput) (output : Option Point)
-    (sample : (Fin 90 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)) :
+    (sample : (Fin 91 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)) :
     Program spec (Garbling.Labels × Nat) (onlineBudget output) :=
   match output with
   | none => invalid coin tables input
@@ -206,7 +206,7 @@ theorem selected_local_bound [FieldCertificate] [GroupCertificate] {State : Type
     (oracleHandler : OracleHandler spec State)
     (coin : OfflineCoin) (tables : SimulatorTables (privateView coin))
     (input : AffineInput) (output : Option Point)
-    (sample : (Fin 90 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)) (state : State) :
+    (sample : (Fin 91 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase)) (state : State) :
     ((selected coin tables input output sample).run oracleHandler state).1.2 ≤ 51000000 := by
   cases output with
   | none => exact (invalid_local_bound oracleHandler coin tables input state).trans (by decide)
@@ -220,7 +220,7 @@ theorem selected_local_bound [FieldCertificate] [GroupCertificate] {State : Type
 theorem selected_run [FieldCertificate] [GroupCertificate]
     (coin : OfflineCoin) (tables : SimulatorTables (privateView coin))
     (input : AffineInput) (output : Option Point)
-    (sample : (Fin 90 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase))
+    (sample : (Fin 91 → Point) × (Fin FieldMacToECMac.outputMacCount → NonZeroBase))
     (oracle : SimulatorState) :
     ((selected coin tables input output sample).map Prod.fst).run handler oracle =
       match output with

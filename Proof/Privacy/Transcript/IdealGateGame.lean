@@ -75,7 +75,7 @@ theorem targetGateSourceRun_eq_simulatorOracleCoinTranscript [FieldCertificate] 
     (fun coin => coin.state.table) (fun coin => coin.state.oracle)
     (fun table => adversary.chooseInput parameter table auxiliary)
     (fun coin state selected =>
-      (PMF.uniformOfFintype ((Fin 90 → Point) ×
+      (PMF.uniformOfFintype ((Fin 91 → Point) ×
         (Fin FieldMacToECMac.outputMacCount → NonZeroBase))).map fun online =>
           (coin.state.labels selected.1,
             programSelectedGateView state selected.1 (coin.state.labels selected.1).inputMac
@@ -125,7 +125,7 @@ theorem fullGateSource_idealTranscript_bound [FieldCertificate] [GroupCertificat
       ((idealAdaptiveTranscriptWithState (Garbling.garbledCircuit construction) Garbling.topology
         concreteCircuitSimulator circuitSimulatorOracleHandler adversary parameter scalar auxiliary).toOuterMeasure
           event).toReal| ≤
-      (301752 : ℝ) * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384 + (2 : ℝ) ^ (-240 : ℤ) := by
+      (305054 : ℝ) * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384 + (2 : ℝ) ^ (-240 : ℤ) := by
   rw [← idealGateSourceRun_eq_idealTranscript adversary parameter scalar auxiliary]
   exact adaptiveGateSource_observation_bound scalar.value witness parameter
     (fun table rest => gateSourceChoose adversary parameter auxiliary table rest.2)

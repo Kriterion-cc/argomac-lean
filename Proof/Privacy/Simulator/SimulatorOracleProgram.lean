@@ -209,11 +209,12 @@ noncomputable def Program.toOracle {oracle : OracleSpec.{0, 0}} {A : Type} {budg
     simpa only [toOracle, ThreePhase.run_castBudget, ThreePhase.run_raise, Program.run] using
       inductionHypothesis state
 
-/-- The valid path uses the actual link and at most 905256 programming attempts. -/
-def validProgram [FieldCertificate] [GroupCertificate] (state : CircuitSimulatorState)
-    (input : AffineInput) (output : Point) (free : Vector Point 90)
+/-- The valid path uses the actual link and at most 915162 programming attempts. -/
+def validProgram {FixedIndex : Type} [FieldCertificate] [GroupCertificate]
+    (state : CircuitSimulatorState FixedIndex)
+    (input : AffineInput) (output : Point) (free : Vector Point 91)
     (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
-    Program spec Garbling.Labels 905765 :=
+    Program spec Garbling.Labels 915671 :=
   .bind (link (state.selectedCurve input) input (state.labels input).inputMac) fun mac =>
     .map (fun _ => state.labels input)
       (.weaken (commands (scheduleCommands
@@ -226,7 +227,7 @@ def validProgram [FieldCertificate] [GroupCertificate] (state : CircuitSimulator
         exact bound))
 
 theorem validProgram_run [FieldCertificate] [GroupCertificate] (state : CircuitSimulatorState)
-    (input : AffineInput) (output : Point) (free : Vector Point 90)
+    (input : AffineInput) (output : Point) (free : Vector Point 91)
     (scales : Fin FieldMacToECMac.outputMacCount → NonZeroBase) :
     (validProgram state input output free scales).run handler state.oracle =
       (state.labels input, (state.programForOutput input output free scales).oracle) := by
@@ -236,7 +237,7 @@ theorem validProgram_run [FieldCertificate] [GroupCertificate] (state : CircuitS
     linkedPipelineGateSchedule]
 
 /-- The invalid path programs the curve gates without reading the hidden link. -/
-def invalidProgram (state : CircuitSimulatorState) (input : AffineInput) :
+def invalidProgram {FixedIndex : Type} (state : CircuitSimulatorState FixedIndex) (input : AffineInput) :
     Program spec Garbling.Labels 3810 :=
   .map (fun _ => state.labels input)
     (.weaken (commands (scheduleCommands

@@ -113,7 +113,7 @@ def garbledCircuit [FieldCertificate] [GroupCertificate] (construction : Constru
 
 def topology (_scalar : NonZeroScalar) : Topology := {
   coordinateBits := 508
-  outputDigits := 91
+  outputDigits := 92
 }
 
 end Kriterion.ArgoMAC.Garbling

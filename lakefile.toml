@@ -1,0 +1,23 @@
+name = "argomac-baseline-check"
+version = "0.1.0"
+defaultTargets = ["Construction", "Proof", "Submission"]
+
+[[require]]
+name = "bn254-scalar-multiplication"
+git = "https://github.com/Kriterion-cc/kriterion-challenge.git"
+rev = "3322a36abd962aa5960e65d7f2d8b9f72478d1e3"
+subDir = "bn254-scalar-multiplication"
+
+[[lean_lib]]
+name = "Construction"
+
+[[lean_lib]]
+name = "Proof"
+
+[[lean_lib]]
+name = "Submission"
+
+[[lean_lib]]
+name = "BaselineTests"
+srcDir = "tests"
+roots = ["AdaptivePrivacy", "Components", "Correctness", "E2E", "Operational"]
