@@ -60,4 +60,29 @@ theorem encLinkBlock_loop [BN254.FieldCertificate] (host : Machine) (attempts fu
         rw [difference, target, continued,
           encLinkCharge_continue host labels _ row.1.2.1 remaining, complete]
 
+/-- The caller charge composes with the complete fixed schedule. -/
+theorem encLinkBlock_loopCharged [BN254.FieldCertificate] (host : Machine) (attempts reserve cost : Nat)
+    (labels : Fin 7468 → Fin (host.size + 1)) (present : ContainsEncLink host attempts labels)
+    (state : SparseOracleFamily) (memory : Memory) (suffix : List Bool) (firstKey : Block) (output limit : Nat)
+    (ready : EncLinkLoopMemory state memory encLinkIndices suffix firstKey output limit)
+    (attemptFits : attempts < 2 ^ 256) (enough : cost + encLinkLoopBudget attempts limit 508 ≤ reserve) :
+    (run host (reserve - cost) ⟨labels 7208, memory⟩).map
+      (Option.map fun final => (final.1, final.2 + cost)) =
+      ((encLinkLoopSamples attempts firstKey suffix encLinkIndices memory state).map (encLinkCharge cost)).bind
+        (encLinkContinue host labels reserve) := by
+  have law := encLinkBlock_loop host attempts (reserve - cost - encLinkLoopBudget attempts limit 508)
+    labels present state memory encLinkIndices suffix firstKey output limit ready attemptFits
+  have entry : encLinkLoopEntry encLinkIndices = 7208 := by
+    unfold encLinkLoopEntry
+    have nonempty : encLinkIndices ≠ [] := by
+      intro empty
+      have zero : encLinkIndices.length = 0 := congrArg List.length empty
+      rw [encLinkIndices_length] at zero
+      exact Nat.noConfusion zero
+    exact if_neg nonempty
+  have difference : encLinkLoopBudget attempts limit 508 +
+      (reserve - cost - encLinkLoopBudget attempts limit 508) = reserve - cost := by omega
+  rw [encLinkIndices_length, entry, difference] at law
+  rw [law, encLinkCharge_continue, show cost + (reserve - cost) = reserve by omega]
+
 end Kriterion.ArgoMAC.ArithmeticSimulator
