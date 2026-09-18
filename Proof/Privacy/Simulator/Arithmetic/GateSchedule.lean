@@ -1,4 +1,4 @@
-import Construction.Simulator.GateSchedule
+import Proof.Privacy.Simulator.Arithmetic.GateScheduleCode
 import Proof.Privacy.Simulator.Arithmetic.GateLoopBlock
 
 namespace Kriterion.ArgoMAC.ArithmeticSimulator

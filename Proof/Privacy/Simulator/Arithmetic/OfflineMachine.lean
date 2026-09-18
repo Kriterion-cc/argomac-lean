@@ -6,7 +6,7 @@ open Cryptography.BoundedMachine
 attribute [local irreducible] publicWireProgram offlinePlan
 
 /-- The offline table contains two address loads, the sampler, and the serializer. -/
-def offlineMachineSize : Nat := 2 + 39 * 917470 + publicWireProgram.length
+noncomputable def offlineMachineSize : Nat := 2 + 39 * 917470 + publicWireProgram.length
 
 theorem offlineMachineSize_fits : offlineMachineSize < 2 ^ 256 := by
   have bound := publicWireMachine_budget
@@ -15,20 +15,20 @@ theorem offlineMachineSize_fits : offlineMachineSize < 2 ^ 256 := by
   omega
 
 /-- The batch return continues at the first serializer instruction. -/
-def offlineBatchLabel (pc : Fin (39 * 917470 + 1)) : Fin (offlineMachineSize + 1) :=
+noncomputable def offlineBatchLabel (pc : Fin (39 * 917470 + 1)) : Fin (offlineMachineSize + 1) :=
   ⟨2 + pc.val, by have bound := pc.isLt; unfold offlineMachineSize; omega⟩
 
 /-- The serializer return points to the final halt. -/
-def offlineWireLabel (index : Nat) : Fin (offlineMachineSize + 1) :=
+noncomputable def offlineWireLabel (index : Nat) : Fin (offlineMachineSize + 1) :=
   ⟨2 + 39 * 917470 + min index publicWireProgram.length, by unfold offlineMachineSize; omega⟩
 
 /-- The checked package keeps the fixed sampler table symbolic. -/
-private opaque offlineBatchCodePackage (attempts : Nat) :
+private noncomputable def offlineBatchCodePackage (attempts : Nat) :
     {code : Vector (Instruction (39 * 917470 + 1)) (39 * 917470 + 1) //
       code = (samplerBatch offlinePlan attempts (by decide)).code} :=
-  ⟨(samplerBatch offlinePlan attempts (by decide)).code, rfl⟩
+  Classical.choice ⟨⟨(samplerBatch offlinePlan attempts (by decide)).code, rfl⟩⟩
 
-def offlineBatchCode (attempts : Nat) : Vector (Instruction (39 * 917470 + 1)) (39 * 917470 + 1) :=
+noncomputable def offlineBatchCode (attempts : Nat) : Vector (Instruction (39 * 917470 + 1)) (39 * 917470 + 1) :=
   (offlineBatchCodePackage attempts).val
 
 theorem offlineBatchCode_eq (attempts : Nat) :
@@ -36,7 +36,7 @@ theorem offlineBatchCode_eq (attempts : Nat) :
   (offlineBatchCodePackage attempts).property
 
 /-- The complete offline machine uses only fixed arithmetic instructions. -/
-def offlineMachine (attempts : Nat) : Machine := ⟨offlineMachineSize,
+noncomputable def offlineMachine (attempts : Nat) : Machine := ⟨offlineMachineSize,
   Vector.ofFn (fun pc =>
     if pc.val = 0 then .constant 10 (BitVec.ofNat 256 privateBase) ⟨1, by unfold offlineMachineSize; omega⟩
     else if pc.val = 1 then .constant 11 (BitVec.ofNat 256 privateBase) (offlineBatchLabel 0)
