@@ -70,4 +70,34 @@ theorem onlineMachine_secondBranch_continue [BN254.FieldCertificate] (attempts f
   tagBranch_continue (onlineMachine attempts) 2883951 2883952 2883953 317604181 2883954 memory
     (BitVec.ofNat 256 (onlineInputBase + 2)) fuel (onlineMachine_secondBranch attempts)
 
+/-- The fixed-oracle simulator charges its firstBranch test and keeps oracle state. -/
+theorem lazyOnlineMachine_firstBranch_continue [BN254.FieldCertificate]
+    (fuel : Nat) (memory : Memory)
+    (oracle : Cryptography.LazyOracle.State Shared.FixedKeyIndex EncPRF.PermutationIndex) :
+    lazyOnlineMachine.run (3 + fuel) ⟨13618, memory⟩ oracle =
+      (lazyOnlineMachine.run fuel
+        ⟨onlineBranchReturn memory 1568228 13621, onlineTagMemory memory⟩ oracle).map
+          (Option.map fun result => (result.1, result.2.1, result.2.2 + 3)) := by
+  apply Simulator.run_prefix lazyOnlineMachine 3 fuel _ _ oracle
+  apply tagBranch_continue lazyOnlineMachine.arithmetic 13618 13619 13620 1568228 13621 memory
+    (BitVec.ofNat 256 (onlineInputBase + 2)) fuel
+  rw [lazyOnlineMachine_private 13618 (by decide), lazyOnlineMachine_private 13619 (by decide),
+    lazyOnlineMachine_private 13620 (by decide)]
+  exact onlineMachine_firstBranch 256
+
+/-- The fixed-oracle simulator charges its secondBranch test and keeps oracle state. -/
+theorem lazyOnlineMachine_secondBranch_continue [BN254.FieldCertificate]
+    (fuel : Nat) (memory : Memory)
+    (oracle : Cryptography.LazyOracle.State Shared.FixedKeyIndex EncPRF.PermutationIndex) :
+    lazyOnlineMachine.run (3 + fuel) ⟨2883951, memory⟩ oracle =
+      (lazyOnlineMachine.run fuel
+        ⟨onlineBranchReturn memory 317604181 2883954, onlineTagMemory memory⟩ oracle).map
+          (Option.map fun result => (result.1, result.2.1, result.2.2 + 3)) := by
+  apply Simulator.run_prefix lazyOnlineMachine 3 fuel _ _ oracle
+  apply tagBranch_continue lazyOnlineMachine.arithmetic 2883951 2883952 2883953 317604181 2883954 memory
+    (BitVec.ofNat 256 (onlineInputBase + 2)) fuel
+  rw [lazyOnlineMachine_private 2883951 (by decide), lazyOnlineMachine_private 2883952 (by decide),
+    lazyOnlineMachine_private 2883953 (by decide)]
+  exact onlineMachine_secondBranch 256
+
 end Kriterion.ArgoMAC.ArithmeticSimulator

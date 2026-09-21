@@ -36,4 +36,23 @@ theorem perfectCorrectness [FieldCertificate] [GroupCertificate] :
   rw [Lamport.restore_selected]
   exact RCBComplete.perfectCorrectness parameter scalar tape.val input
 
+theorem programCiphertextSize [FieldCertificate] [GroupCertificate]
+    (parameter : Nat) (scalar : NonZeroScalar)
+    (tape : PrivateCoins × Cryptography.PublicOracle FixedKeyIndex EncPRF.PermutationIndex) :
+    (Wire.encoding.encode (programCircuit.garble parameter scalar tape).1).length = 9806076 :=
+  ciphertextSize parameter scalar (replaceOracle tape.1.val tape.2)
+
+def programLamportCompatible [FieldCertificate] [GroupCertificate] :
+    GarbledCircuit.LamportCompatibility programCircuit affineLamportBits where
+  keyPairs := Lamport.keyPairs
+  encodeSelectsLabels := Lamport.selectedLabels_eq
+
+theorem programPerfectCorrectness [FieldCertificate] [GroupCertificate] :
+    GarbledCircuit.PerfectCorrectness programCircuit Prod.snd := by
+  intro parameter scalar tape input
+  have correct := perfectCorrectness parameter scalar (replaceOracle tape.1.val tape.2) input
+  simpa [programCircuit, wireCircuit, Lamport.wireCircuit, GarbledCircuit.mapLabels,
+    Garbling.garbledCircuit, Garbling.garble, Garbling.encode, replaceOracle,
+    evaluationOracle, restrict_expand] using correct
+
 end Kriterion.ArgoMAC.Shared

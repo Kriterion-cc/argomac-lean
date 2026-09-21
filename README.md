@@ -4,16 +4,8 @@ This directory is the complete starter for the BN254 scalar multiplication chall
 It contains the ArgoMAC construction, proofs, and tests.
 The Kriterion verifier reads `Submission.solution`.
 
-## Status
-
-`Submission.solution` satisfies the revised challenge.
-Its adaptive privacy proof includes the concrete arithmetic simulator and its total cost.
-The challenge budget follows the checked arithmetic phase sum.
-The [challenge draft](https://github.com/Kriterion-cc/kriterion-challenge/pull/1) defines the revised obligation.
-
 The construction uses 92 digits and three shared permutation slots.
-The construction retains complete homogeneous addition formulas.
-Those formulas require 13 point-adaptor families.
+The complete homogeneous addition formulas require 13 point-adaptor families.
 The paper needs corrected coordinate formulas and an updated adaptor count.
 
 ## Layout
@@ -34,15 +26,17 @@ The generated workspace uses Lean 4.33.1, Mathlib 4.33.1, and the challenge libr
 `Construction/SharedGarbling.lean` exposes the three-slot public interface.
 The hash and pad roles share slots zero and one.
 The third slot serves only the hash role.
-The tape type enforces this equality.
-`Proof/SharedOracle.lean` proves the uniform public-oracle law for that tape type.
+The private coins exclude the public oracle.
+`Proof/SharedOracle.lean` connects the fixed lazy oracle to the complete oracle proof model.
 
-`Proof/SharedGarbling.lean` proves correctness for every input and every tape.
+`Construction/OraclePrograms.lean` supplies the actual garbling and evaluation query programs.
+Their bounds are 1,759,967 and 1,055,879 queries.
+Their results equal the construction results for every complete public oracle.
+
+`Proof/SharedGarbling.lean` proves correctness for every input and every private coin value.
 The proof covers equal points, identity results, and off-curve rejection.
 The selected labels satisfy the Lamport interface.
 The canonical public encoding contains 9,806,076 bytes.
-`tests/Correctness.lean` checks these properties for the shared circuit.
-`tests/Components.lean` checks the 92-digit count and the shared role mapping.
 
 ## Paper correspondence
 
@@ -58,37 +52,31 @@ The comparison uses BaBe.latex commit `e2dcf4d540b2708e13cd21090df759051119a116`
 `Proof/Privacy/PaperConstruction.lean` proves the block formula and tweak relations.
 The point tweaks range from 0 through 91.
 Curve gates use tweak 92.
-The challenge's [PAPER_CORRECTIONS.md](https://github.com/Kriterion-cc/kriterion-challenge/blob/3322a36abd962aa5960e65d7f2d8b9f72478d1e3/bn254-scalar-multiplication/PAPER_CORRECTIONS.md) records the coordinate counterexamples.
+The challenge's [PAPER_CORRECTIONS.md](https://github.com/Kriterion-cc/kriterion-challenge/blob/aaf278948a4127f99ee6752c7cec4b9f9bd43615/bn254-scalar-multiplication/PAPER_CORRECTIONS.md) records the coordinate counterexamples.
 
 ## Simulator proofs
 
-`Proof/Privacy/Simulator/SharedSimulator.lean` uses one transcript for the three shared slots.
-Lean proves its oracle-consistency rules and selected-gate equations.
-The shared collision checks detect domain and range conflicts between the role names.
-The shared assignment theorem gives the exact permutation probability for both branches.
-`SharedOracleProgram.lean` proves the source program's online distribution law.
-The shared adaptive privacy proof and its axiom audit pass.
-The complete arithmetic machine proof also passes Lean.
-The older source transport proofs still assume five independent permutation roles.
+The real and ideal games use the same fixed lazy oracle.
+The oracle serves each adversary query directly.
+The simulator uses fixed instructions for oracle queries, lookups, and fresh programs.
+A refused program aborts the ideal game.
+The proof accounts for this abort with the existing collision event.
 
-`Construction/Simulator/` contains fixed arithmetic machine components.
-The simulator witnesses and their proofs appear in `Proof/Privacy/Simulator/Arithmetic/`.
-The word sampler produces a uniform 256-bit word in 1,798 instructions.
-Its program table costs 13 additional units.
-The bounded sampler has an exact retry law and a failure bound of `2^-256`.
-The RAM caller preserves its saved address across the sampler call.
-Its 256-attempt budget is at most 461,855 units, including its program table.
-The complete simulator bound also includes every later phase and public query.
+`Proof/Privacy/Source/StrictGateSource.lean` proves the strict source privacy bound.
+`StrictSourceSampling.lean` replaces ideal private draws with finite samplers.
+`StrictWirePrivacy.lean` transfers these bounds to the public challenge obligation.
+The axiom audit permits only `propext`, `Classical.choice`, and `Quot.sound`.
 
-The source simulator samples 91 free points and 92 nonzero scales.
-Its existing resource bounds count higher-level operations.
-`CompiledPhaseCost.lean` proves the complete arithmetic phase sum fits the challenge budget.
-`CompiledOnlineCoupling.lean` proves the complete machine-to-ideal connection.
-`compiledAdaptivePrivacy` proves the combined challenge property.
+`Proof/Privacy/Simulator/Arithmetic/` connects each source phase to the closed machine.
+The simulator uses one instruction table and two stage limits.
+Their sum stays below `2^60`.
+The private samplers use at most 256 attempts per draw.
+The source uses 917,653 private draws across both stages.
+The sampling error contributes to the privacy allowance.
 
 ## Validation
 
-The Lake configuration pins the challenge library to commit `3322a36abd962aa5960e65d7f2d8b9f72478d1e3`.
+The Lake configuration pins the challenge library to an exact commit.
 You can run these commands from the repository root:
 
 ```sh
@@ -101,6 +89,5 @@ lake env lean tests/AxiomAudit.lean
 
 The build commands check the exported proofs and the complete submission.
 The challenge also runs these checks through `lake test`.
-The complete `lake test` command passes, including the baseline tests and axiom audits.
 The axiom checks permit only `propext`, `Classical.choice`, and `Quot.sound`.
 No completed proof uses an assumed adaptive privacy theorem.

@@ -144,3 +144,57 @@ abbrev onlineMachine (attempts : Nat) : Machine := ⟨317804844, onlineMachineCo
 
 end
 end Kriterion.ArgoMAC.ArithmeticSimulator
+
+namespace Kriterion.ArgoMAC.ArithmeticSimulator
+open Cryptography.BoundedMachine
+noncomputable section
+
+/-- The online machine delegates all oracle state to the fixed oracle. -/
+def lazyOnlineInstruction (pc : Fin 317804845) : SimulatorInstruction 317804845 :=
+  if link : 1560762 ≤ pc.val ∧ pc.val < 1568228 then
+    relocateSimulator (fun label => onlineBranchLabels 1560762 7466 (by decide) 1568228 label.val)
+      (lazyEncLinkInstruction ⟨pc.val - 1560762, by omega⟩)
+  else if curve : 1568231 ≤ pc.val ∧ pc.val < 2883951 then
+    relocateSimulator (fun label => onlineBranchLabels 1568231 1315720 (by decide) 2883951 label.val)
+      ((lazyGateLoopCode curveGatePlan)[pc.val - 1568231]'(by omega))
+  else if point : 2883957 ≤ pc.val ∧ pc.val < 317604181 then
+    relocateSimulator (fun label => onlineBranchLabels 2883957 314720224 (by decide) 317604181 label.val)
+      ((lazyGateLoopCode pointGatePlan)[pc.val - 2883957]'(by omega))
+  else .compute (onlineInstruction 256 pc)
+
+private def lazyOnlineCodePackage :
+    {code : Vector (SimulatorInstruction 317804845) 317804845 //
+      code = Vector.ofFn lazyOnlineInstruction} :=
+  Classical.choice ⟨⟨Vector.ofFn lazyOnlineInstruction, rfl⟩⟩
+
+/-- The table charge and online fuel fit the constant simulator allowance. -/
+abbrev lazyOnlineMachine : Simulator where
+  size := 317804844
+  code := lazyOnlineCodePackage.val
+  addressBound := by decide
+  firstFuel := 0
+  secondFuel := 2 ^ 46
+  within := by decide
+
+/-- The simulator reads one instruction from its symbolic code table. -/
+theorem lazyOnlineMachine_code (pc : Fin 317804845) :
+    lazyOnlineMachine.code[pc.val] = lazyOnlineInstruction pc := by
+  change lazyOnlineCodePackage.val[pc.val] = _
+  rw [lazyOnlineCodePackage.property, Vector.getElem_ofFn]
+
+/-- Each private instruction agrees with the existing arithmetic machine. -/
+theorem lazyOnlineMachine_private (pc : Fin 317804845)
+    (outside : (pc.val < 1560762 ∨ 1568228 ≤ pc.val) ∧
+      (pc.val < 1568231 ∨ 2883951 ≤ pc.val) ∧
+      (pc.val < 2883957 ∨ 317604181 ≤ pc.val)) :
+    lazyOnlineMachine.arithmetic.code[pc.val] = (onlineMachine 256).code[pc.val] := by
+  have same : lazyOnlineMachine.code[pc.val] = .compute (onlineInstruction 256 pc) := by
+    rw [lazyOnlineMachine_code]
+    simp only [lazyOnlineInstruction, dif_neg (show ¬ (1560762 ≤ pc.val ∧ pc.val < 1568228) by omega),
+      dif_neg (show ¬ (1568231 ≤ pc.val ∧ pc.val < 2883951) by omega),
+      dif_neg (show ¬ (2883957 ≤ pc.val ∧ pc.val < 317604181) by omega)]
+  simp only [Simulator.arithmetic, Vector.getElem_map, same]
+  exact (onlineMachineCode_get 256 pc.val pc.isLt).symm
+
+end
+end Kriterion.ArgoMAC.ArithmeticSimulator
