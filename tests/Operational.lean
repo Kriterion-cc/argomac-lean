@@ -1,82 +1,63 @@
 import Proof.Privacy.Simulator.Arithmetic.WordInputBlock
-import Proof.Privacy.Simulator.SimulatorCutoff
-import Proof.Privacy.Simulator.SimulatorFiniteArithmetic
-import Proof.Privacy.Simulator.SimulatorSamplingCost
-import Proof.Privacy.Simulator.SimulatorTotalSampling
 
-open Kriterion.ArgoMAC Kriterion.ArgoMAC.Security
-open Kriterion.ArgoMAC.Security.SimulatorMachine
-open Kriterion.ArgoMAC.Security.OperationalOracle
-open Kriterion.ArgoMAC.Security.BoundedIntegerSampling
-open Kriterion.Cryptography
+open Kriterion.ArgoMAC Kriterion.ArgoMAC.Security Kriterion.Cryptography
 
-private def integerSource (size : Nat) (positive : 0 < size) (seed : Nat) : Fin size × Nat :=
-  (⟨0, positive⟩, seed + 1)
+namespace ClosedSimulatorRegression
+open BoundedMachine LazyOracle OperationalOracle
 
-private def fixedIndex : Pipeline.FixedKeyIndex := ⟨.curve .y4, ⟨0, by decide⟩, .hash 0⟩
+private def machine (conflict : Bool) : Simulator := {
+  size := 3
+  code := #v[.program 0 0 1 2 3 1, .lookup 0 0 1 4 5 6 2,
+    if conflict then .program 0 0 1 9 3 3 else .query 0 0 1 7 8 3, .compute .halt]
+  addressBound := by decide
+  firstFuel := 4
+  secondFuel := 3
+  within := by decide }
 
-private def emptyState : SparseState :=
-  ⟨((fun _ => ProgrammedPermutation.empty _), []), ⟨[], [], [], [], none, false⟩⟩
+private def memory : Memory := {
+  registers := fun register => if register = 1 then 7 else if register = 2 then 9
+    else if register = 9 then 10 else 0 }
 
-private def collisionTrace : Program combinedSpec (Block × Block) 4 :=
-  .query (.inl (.program (fixedIndex, 0, 1))) fun _ =>
-  .query (.inr (.fixedForward fixedIndex 0)) fun first =>
-  .query (.inl (.program (fixedIndex, 0, 2))) fun _ =>
-  .query (.inr (.fixedForward fixedIndex 0)) fun second => .pure (first, second)
+private noncomputable def result [Kriterion.BN254.FieldCertificate]
+    (conflict : Bool) (fuel : Nat) :=
+  ((machine conflict).run fuel ⟨0, memory⟩ (empty : State Unit Unit)).map
+    (Option.map fun result => (result.1.memory.registers 4,
+      result.1.memory.registers 6, result.1.memory.registers 7, result.2.2))
 
-private def traceResult :=
-  let result := Cost.executeCost integerSource collisionTrace emptyState 0 0
-  (result.1.1.1.toNat, result.1.1.2.toNat, result.1.2.1.metadata.bad,
-    result.1.2.1.metadata.fixedTranscript.length, result.1.2.2, result.2.1, result.2.2)
+/-- The lookup and query return the fresh programmed value. -/
+theorem fresh [Kriterion.BN254.FieldCertificate] :
+    result false (machine false).firstFuel = PMF.pure (some (9, 1, 9, 4)) := by
+  simp [Option.map, result, machine, memory, Simulator.run, Simulator.step, queryFromRegisters,
+    program, lookup, LazyOracle.query, empty, permutationProgram, permutationLookup,
+    SparsePermutation.empty, SparsePermutation.knownInput, SparsePermutation.knownOutput,
+    SparsePermutation.extend, SparsePermutation.input, SparsePermutation.output,
+    SparsePermutation.forward, swaps, Draw.distribution, answerFromWords, answerWords,
+    BoundedMachine.step, Simulator.arithmetic, PMF.pure_map, Function.update]
 
-/-- The failed program preserves the first mapping and records the collision. -/
-example : traceResult = (1, 1, true, 3, 1, 4, 56) := by decide
+/-- The conflicting program aborts the run. -/
+theorem conflict [Kriterion.BN254.FieldCertificate] :
+    result true (machine true).firstFuel = PMF.pure none := by
+  simp [Option.map, result, machine, memory, Simulator.run, Simulator.step, queryFromRegisters,
+    program, lookup, LazyOracle.query, empty, permutationProgram, permutationLookup,
+    SparsePermutation.empty, SparsePermutation.knownInput, SparsePermutation.knownOutput,
+    SparsePermutation.extend, SparsePermutation.input, SparsePermutation.output,
+    SparsePermutation.forward, swaps, Draw.distribution, answerFromWords, answerWords,
+    BoundedMachine.step, Simulator.arithmetic, PMF.pure_map, Function.update]
 
-private def bitSource (width : Nat) (seed : Nat) : Fin (2 ^ width) × Nat :=
-  (⟨(if seed = 0 then 3 else 2) % (2 ^ width), Nat.mod_lt _ (Nat.two_pow_pos width)⟩, seed + 1)
+/-- The shorter stage fuel cannot reach the halt instruction. -/
+theorem exhausted [Kriterion.BN254.FieldCertificate] :
+    result false (machine false).secondFuel = PMF.pure none := by
+  simp [Option.map, result, machine, memory, Simulator.run, Simulator.step, queryFromRegisters,
+    program, lookup, LazyOracle.query, empty, permutationProgram, permutationLookup,
+    SparsePermutation.empty, SparsePermutation.knownInput, SparsePermutation.knownOutput,
+    SparsePermutation.extend, SparsePermutation.input, SparsePermutation.output,
+    SparsePermutation.forward, swaps, Draw.distribution, answerFromWords, answerWords,
+    BoundedMachine.step, Simulator.arithmetic, PMF.pure_map, Function.update]
 
-/-- One rejected block exhausts the one-retry sampler. -/
-example : ((cutoff 3 1).run bitSource 0).1.1 = none := by decide
-
-/-- A second block supplies the requested value after four fair-bit reads. -/
-example : (cutoff 3 2).run bitSource 0 = ((some ⟨2, by decide⟩, 2), 4) := by decide
-
-#print axioms operational_small_error
-#print axioms cutoffEnvelope_has100Bits
-#print axioms Program.cutoff_failure
-#print axioms Program.cutoff_bit_bound
-#print axioms Cost.executeCost_budget
-
-private def failingBits (width : Nat) (seed : Nat) : Fin (2 ^ width) × Nat :=
-  (⟨if seed = 0 then 0 else 2 ^ width - 1, by
-    split <;> have := Nat.two_pow_pos width <;> omega⟩, seed + 1)
-
-private def twoDrawTrace : Program combinedSpec Unit 2 :=
-  .query (.inr (.fixedForward fixedIndex 0)) fun _ =>
-  .query (.inr (.fixedForward fixedIndex 1)) fun _ => .pure ()
-
-/-- Two sampled blocks incur eight rejection-control operations. -/
-example : (SimulatorRejectionCost.runWithCost bitSource (cutoff 3 2) 0).2 = (2, 8) := by decide
-
-/-- The total integer sampler returns a valid zero after its retry limit. -/
-example : ((totalInteger 3 (by decide) 1).run bitSource 0).1.1 = 0 := by decide
-
-private def totalTrace :=
-  let result := Cost.executeTotalCost failingBits 2 twoDrawTrace emptyState 0 0
-  (result.1.2.1.metadata.fixedTranscript.length, result.1.2.2, result.2)
-
-/- The total executor continues after the failed draw and records every query. -/
-#eval show IO Unit from do
-  unless totalTrace == (2, 3, 2, 31, 385) do
-    throw (IO.userError "The total sparse execution check failed.")
-
-#print axioms Cost.executeTotalCost_correct
-#print axioms Cost.executeTotalCost_resources
-#print axioms Cost.executeTotalCost_bits
-
-#print axioms SparsePermutation.forward_joint
-#print axioms SparsePermutation.inverse_joint
-#print axioms adaptive_joint_law
+#print axioms fresh
+#print axioms conflict
+#print axioms exhausted
+end ClosedSimulatorRegression
 
 namespace InputMachineRegression
 open Kriterion.ArgoMAC.ArithmeticSimulator Kriterion.Cryptography.BoundedMachine
@@ -107,6 +88,6 @@ example [Kriterion.BN254.FieldCertificate] :
   change (run readStore (7 * 3 + 6 + 2) ⟨labels 0, initialMemory⟩).map _ = _
   rw [continued]
   simp [run, step, readStore, labels, inputFinal, inputFrame, inputFold,
-    initialMemory, PMF.pure_map, PMF.map_comp, Function.comp_def]
+    initialMemory, PMF.pure_map]
 
 end InputMachineRegression

@@ -36,19 +36,19 @@ theorem seedOffsetsClamped [FieldCertificate] [GroupCertificate] :
 
 /-- The public circuit uses the three shared slots for every input and tape. -/
 theorem argoMACSharedPerfectCorrectness [FieldCertificate] [GroupCertificate] :
-    GarbledCircuit.PerfectCorrectness ArgoMAC.Shared.wireCircuit
-      ArgoMAC.Shared.evaluationOracle :=
-  ArgoMAC.Shared.perfectCorrectness
+    GarbledCircuit.PerfectCorrectness ArgoMAC.Shared.programCircuit Prod.snd :=
+  ArgoMAC.Shared.programPerfectCorrectness
 
 /-- The public circuit sends exactly 508 selected Lamport labels. -/
 def argoMACSharedLamportCompatible [FieldCertificate] [GroupCertificate] :
     GarbledCircuit.LamportCompatibility
-      ArgoMAC.Shared.wireCircuit affineLamportBits :=
-  ArgoMAC.Shared.lamportCompatible
+      ArgoMAC.Shared.programCircuit affineLamportBits :=
+  ArgoMAC.Shared.programLamportCompatible
 
 /-- The public bytes have the same length for every scalar and tape. -/
 theorem argoMACSharedCiphertextSize [FieldCertificate] [GroupCertificate]
-    (parameter : Nat) (scalar : NonZeroScalar) (tape : ArgoMAC.Shared.Randomness) :
+    (parameter : Nat) (scalar : NonZeroScalar) (tape : ArgoMAC.Shared.PrivateCoins ×
+      Cryptography.PublicOracle ArgoMAC.Shared.FixedKeyIndex ArgoMAC.EncPRF.PermutationIndex) :
     (ArgoMAC.Wire.encoding.encode
-      (ArgoMAC.Shared.wireCircuit.garble parameter scalar tape).1).length = 9806076 :=
-  ArgoMAC.Shared.ciphertextSize parameter scalar tape
+      (ArgoMAC.Shared.programCircuit.garble parameter scalar tape).1).length = 9806076 :=
+  ArgoMAC.Shared.programCiphertextSize parameter scalar tape
