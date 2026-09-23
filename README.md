@@ -91,3 +91,7 @@ The build commands check the exported proofs and the complete submission.
 The challenge also runs these checks through `lake test`.
 The axiom checks permit only `propext`, `Classical.choice`, and `Quot.sound`.
 No completed proof uses an assumed adaptive privacy theorem.
+
+## License
+
+This repository is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
