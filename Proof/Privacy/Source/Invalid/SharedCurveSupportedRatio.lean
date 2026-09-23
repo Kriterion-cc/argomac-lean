@@ -1,7 +1,6 @@
 import Proof.Privacy.Source.Invalid.SharedCurveFullSourceMass
 import Proof.Privacy.Source.SharedGateSourceReference
 import Proof.Privacy.Source.SharedGateSourceLength
-import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography
@@ -103,12 +102,6 @@ theorem sharedCurvePhaseWeight_length_le [FieldCertificate] [GroupCertificate] {
   next bad => exact False.elim (nonzero rfl)
 
 /-- The invalid endpoint comparison uses only the advertised adversary query budget. -/
-@[blueprint "Security.sharedFullCurveGood_real_le_budget"
-  (statement := /-- Good-transcript ratio for an off-curve input. For every transcript $\tau$ whose chosen input is
-    off the curve and $q \leq 2^{101}$: $(1 - \varepsilon_2) \cdot \Pr_{\mathrm{ideal}}[\text{good
-    sample} \mapsto \tau] \leq \Pr_{\mathrm{real}}[\tau]$. Only the curve membership layer $C_4,
-    C_5$ is compared, because the labels $L_3$ stay encrypted. -/)
-  (title := /-- BABE Claim~12 -/)]
 theorem sharedFullCurveGood_real_le_budget [FieldCertificate] [GroupCertificate] [Fintype Block] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
     (parameter : Nat) (auxiliary : Aux) (scalar : NonZeroScalar) (witness : Shared.Randomness)
@@ -122,9 +115,6 @@ theorem sharedFullCurveGood_real_le_budget [FieldCertificate] [GroupCertificate]
         (fun coin => PMF.pure coin.2.2) {coin | sharedFullCurveBad scalar.value coin} output ≤
       (realAdaptiveTranscriptWithState sharedInternalCircuit
         (uniformRandomTape Shared.Randomness witness) sharedRealOracleHandler adversary parameter scalar auxiliary) output := by
-  /-- If the good mass is zero the claim is trivial. Otherwise expand the good mass as a weighted sum
-    and pick a nonzero term. The term bounds the query length by $q$. The supported-ratio lemma for
-    the off-curve branch gives the bound. -/
   by_cases zero : sourceGoodMass
       (sharedFullGateTranscriptSamples adversary parameter auxiliary scalar.value witness fallback)
       (fun coin => PMF.pure coin.2.2) {coin | sharedFullCurveBad scalar.value coin} output = 0

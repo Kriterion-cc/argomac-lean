@@ -9,7 +9,7 @@ import glob, os, re, subprocess, sys
 ROOT = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(ROOT, "..", ".."))
 CONTENT = os.path.join(ROOT, "src", "content.tex")
-ARTIFACTS = os.path.join(REPO, ".lake", "build", "blueprint", "module")
+ARTIFACTS = os.path.join(ROOT, "lean", ".lake", "build", "blueprint", "module")
 FIGURES = os.path.join(ROOT, "src", "figures")
 
 COLORS = ["#1CAC78", "#4F86C6", "#E0A458"]

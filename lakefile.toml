@@ -24,8 +24,3 @@ name = "Submission"
 name = "BaselineTests"
 srcDir = "tests"
 roots = ["AdaptivePrivacy", "Components", "Correctness", "E2E", "Operational"]
-
-[[require]]
-name = "LeanArchitect"
-git = "https://github.com/hanwenzhu/LeanArchitect.git"
-rev = "v4.33.0"

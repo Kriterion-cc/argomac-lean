@@ -1,17 +1,18 @@
 # ArgoMAC proof blueprint
 
 The blueprint documents the three verified security properties.
-LeanArchitect extracts each node from the `@[blueprint]` attributes in the Lean source.
+LeanArchitect extracts each node from the `@[blueprint]` attributes in the `lean/` package.
 Lean Blueprint renders the nodes as a PDF and as a web site with a dependency graph.
 
 ## Build
 
 1. Install the Python tools: `pip install leanblueprint`.
 2. Fetch the Mathlib build cache: `lake exe cache get`.
-3. Build the Lean project and extract the nodes: `make -C docs/blueprint extract`.
-4. Build the PDF: `make -C docs/blueprint pdf`.
-5. Build the web site: `make -C docs/blueprint web`.
-6. View the web site: `make -C docs/blueprint serve`.
+3. Build the root project: `lake build`.
+4. Extract the nodes: `make -C docs/blueprint extract`.
+5. Build the PDF: `make -C docs/blueprint pdf`.
+6. Build the web site: `make -C docs/blueprint web`.
+7. View the web site: `make -C docs/blueprint serve`.
 
 The `leanblueprint` command expects the blueprint at the repository root.
 The Makefile runs the same `latexmk` and `plastex` commands from this directory.
@@ -26,10 +27,11 @@ The dependency graph is `docs/blueprint/web/dep_graph_document.html`.
 
 ## Layout
 
+- `lean/` is the Lake package with the `@[blueprint]` nodes. It requires the root package by path and reuses its dependency checkouts.
 - `src/content.tex` selects the nodes for each property.
 - `src/print.tex` and `src/web.tex` are the document preambles.
 - `src/macros/` holds the shared, print, and web macros.
-- `.lake/build/blueprint/` holds the extracted nodes.
+- `lean/.lake/build/blueprint/` holds the extracted nodes.
 
 ## Paper restatements
 
@@ -41,9 +43,10 @@ The restatement environment is not part of the dependency graph.
 
 ## Edit a node
 
-Each node is a `@[blueprint "label" (statement := /-- ... -/)]` attribute on a Lean declaration.
-A `/-- ... -/` comment before a tactic becomes one sentence of the proof text.
-Private lemmas and term-mode proofs use `(proof := /-- ... -/)` in the attribute instead.
+The nodes live in the Lake package `lean/`, in `lean/Blueprint/*.lean`.
+Each node is an `attribute [blueprint "label" (statement := /-- ... -/) (proof := /-- ... -/)] Name` command on a declaration of the root package.
+The verified sources in `Construction/` and `Proof/` do not import LeanArchitect, so the Kriterion verifier does not see the blueprint.
+Private lemmas become visible through `open private ... from Module`.
 Use `\cref{label}` in the text to cite another node.
 LeanArchitect infers the dependencies from the constants in the statement and the proof.
 Add `(proofUses := ["label"])` to show a dependency that passes through untagged lemmas.

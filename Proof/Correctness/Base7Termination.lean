@@ -6,7 +6,6 @@ import Construction.ArgoMAC.Base7
 import Mathlib.Data.Int.Order.Lemmas
 import Mathlib.Data.Int.Sqrt
 import Mathlib.Tactic.NormNum.NatSqrt
-import Architect
 
 namespace Kriterion.ArgoMAC.GLV91
 
@@ -706,16 +705,8 @@ theorem shortInitialCorrect (scalar : BN254.ScalarField) :
 
 set_option maxRecDepth 4096 in
 /-- The paper needs only the original GLV split and 92 recurrence steps. -/
-@[blueprint "GLV91.glvInitialTerminates92"
-  (statement := /-- Alg.~8 terminates. For every scalar $r$, the GLV pair $(a, b)$ with $r \equiv a + \omega b
-    \pmod{\mathbb{r}}$ reaches $(A, B) = (0, 0)$ after $92$ iterations of the digit loop
-    (Appendix~C). -/)
-  (title := /-- BABE Appendix~C -/)]
 theorem glvInitialTerminates92 (scalar : BN254.ScalarField) :
     after 92 (glvInitial scalar) = ⟨0, 0⟩ := by
-  /-- It is enough that the norm of $(a, b)$ is at most the bound for $91$ iterations. The GLV
-    coefficients satisfy the bounds of the decomposition. Bound $a^2$, $b^2$, and $-ab$ by the basis
-    constants. A numeric check compares the constants with the norm bound. -/
   apply afterSuccEqZeroOfNormLe 91
   rw [glvInitialEqCandidateZero]
   obtain ⟨aNonnegative, aUpper, bLower, bUpper⟩ := candidateZeroBounds scalar.val

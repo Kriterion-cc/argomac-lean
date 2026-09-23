@@ -2,7 +2,6 @@ import Proof.Privacy.Source.StrictGateSource
 import Proof.Privacy.Bounds.SharedMachineArithmetic
 import Proof.Privacy.Simulator.SimulatorTotalSampling
 import Proof.Privacy.Simulator.Arithmetic.SharedExactSourceGame
-import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography Cryptography.Assumptions SimulatorMachine
@@ -36,11 +35,6 @@ def sharedStrictSourceDecision [FieldCertificate] [GroupCertificate] {Aux : Type
       sharedStrictFrameDecision online adversary parameter scalar auxiliary (Shared.Simulator.initialState coin oracle)
 
 /-- The two private samplers consume 917653 finite draw allowances. -/
-@[blueprint "Security.sharedStrictSourceDecision_law"
-  (statement := /-- The strict simulator draws $917653$ field elements by rejection sampling. With $k$ attempts per
-    draw, the simulator with bounded draws is a total law of the exact simulator: it agrees with the
-    exact simulator unless some draw fails $k$ times. -/)
-  (title := /-- BABE Construction~3 -/)]
 theorem sharedStrictSourceDecision_law [FieldCertificate] [GroupCertificate] {Aux : Type}
     (attempts : Nat)
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
@@ -50,8 +44,6 @@ theorem sharedStrictSourceDecision_law [FieldCertificate] [GroupCertificate] {Au
         adversary parameter scalar auxiliary)
       (sharedStrictSourceDecision (SimulatorSampling.offline.total attempts).law (SimulatorSampling.online.total attempts).law
         adversary parameter scalar auxiliary) := by
-  /-- Unfold the strict simulator. The offline sampler $\mathsf{Sim}_1$ has a total law with $917470$
-    draws. The online sampler $\mathsf{Sim}_2$ adds $183$ draws. The remaining steps are exact. -/
   unfold sharedStrictSourceDecision sharedStrictFrameDecision
   change TotalLaw attempts (917470 + (183 + 0)) _ _
   apply (SimulatorSampling.Code.total_law attempts SimulatorSampling.offline).bind
@@ -64,12 +56,6 @@ theorem sharedStrictSourceDecision_law [FieldCertificate] [GroupCertificate] {Au
     (fun random => TotalLaw.exact attempts _)
 
 /-- The private sampler error fits the existing machine allowance. -/
-@[blueprint "Security.sharedStrictSourceDecision_allowance"
-  (statement := /-- Bounded rejection sampling. The advantage between the exact strict simulator and the strict
-    simulator with $256$ attempts per draw is at most the machine cutoff allowance of $q$. The
-    simulator of Construction~3 samples with unbounded rejection; the Lean simulator bounds each
-    draw. -/)
-  (title := /-- BABE Construction~3 -/)]
 theorem sharedStrictSourceDecision_allowance [FieldCertificate] [GroupCertificate] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
     (parameter : Nat) (scalar : NonZeroScalar) (auxiliary : Aux) :
@@ -79,8 +65,6 @@ theorem sharedStrictSourceDecision_allowance [FieldCertificate] [GroupCertificat
       (sharedStrictSourceDecision (SimulatorSampling.offline.total 256).law (SimulatorSampling.online.total 256).law
         adversary parameter scalar auxiliary) ≤
       sharedMachineCutoffAllowance (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) := by
-  /-- The total law of \cref{Security.sharedStrictSourceDecision_law} with $256$ attempts bounds the
-    advantage. Unfold the cutoff allowance and compare the coefficients. -/
   have bound := (sharedStrictSourceDecision_law 256 adversary parameter scalar auxiliary).advantage
   apply bound.trans
   simp only [sharedMachineCutoffAllowance, inv_pow, div_eq_mul_inv]

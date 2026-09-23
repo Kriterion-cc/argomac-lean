@@ -3,7 +3,6 @@ import Proof.Privacy.Simulator.Arithmetic.OnlineLazyNullSource
 import Proof.Privacy.Simulator.Arithmetic.OnlineStrictCompletion
 import Proof.Privacy.Simulator.Arithmetic.OnlineLazyExecution
 import Proof.Privacy.Simulator.Arithmetic.CompiledOnlineProtocol
-import Architect
 namespace Kriterion.ArgoMAC.ArithmeticSimulator
 open BN254 Cryptography Cryptography.BoundedMachine Security Security.SimulatorSampling Security.OperationalOracle
 noncomputable section
@@ -135,13 +134,6 @@ theorem lazyOnlineResult_decision {budget : Nat} [FieldCertificate] [GroupCertif
     exact lazyOnlineValidBodyResult_decision memory input output coin stored empty state oracle matching initial decide
 
 /-- The actual parsed online phase has the exact completed strict source law. -/
-@[blueprint "ArithmeticSimulator.lazyCompiledOnline_decision"
-  (statement := /-- The online phase of the compiled machine is $\mathsf{Sim}_2$. When the offline coin is stored in
-    memory and the lazy permutation matches the transcript, the parsed online decision equals the
-    strict decision: sample the online randomness with $256$ attempts, program the active labels of
-    the chosen input, abort on a conflict, and otherwise run the adversary's decision on the
-    programmed permutation. -/)
-  (title := /-- BABE Construction~3 -/)]
 theorem lazyCompiledOnline_decision {budget : Nat} [FieldCertificate] [GroupCertificate]
     (memory : Memory) (input : AffineInput) (value : Option Point) (coin : OfflineCoin)
     (stored : WordsAt memory.ram (BitVec.ofNat 256 privateBase) 0 (offlineSchedule.words coin))
@@ -161,9 +153,6 @@ theorem lazyCompiledOnline_decision {budget : Nat} [FieldCertificate] [GroupCert
             value.map fun output => (sharedOfflineFrame coin).selectedPoints input output (Vector.ofFn sample.1) sample.2)
         if next.bad then PMF.pure false else
           ((decide (Lamport.selectedLabels (coin.2.1.encodeAffine input))).run idealOracleHandler next).map Prod.fst) := by
-  /-- Rewrite the parsed online phase with
-    \cref{ArithmeticSimulator.lazyCompiledMachine_onlineParsed}. The lazy online result decision
-    lemma gives the completed strict law. -/
   rw [lazyCompiledMachine_onlineParsed, PMF.bind_map]
   exact (lazyOnlineResult_decision
     (compiledOnlineMemory memory (GarbledCircuit.SimulatorProtocol.affine input ++ GarbledCircuit.SimulatorProtocol.output value))

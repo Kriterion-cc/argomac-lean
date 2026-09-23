@@ -1,7 +1,6 @@
 import Proof.Privacy.Simulator.Arithmetic.CompiledMachine
 import Proof.Privacy.Simulator.Arithmetic.OnlineLazyExecution
 import Proof.Privacy.Simulator.Arithmetic.SharedParsedGame
-import Architect
 
 namespace Kriterion.ArgoMAC.ArithmeticSimulator
 open BN254 Cryptography Cryptography.BoundedMachine GarbledCircuit.SimulatorProtocol
@@ -13,11 +12,6 @@ def compiledOnlineMemory (memory : Memory) (body : List Bool) : Memory :=
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The online parser retains the exact labels and shared oracle. -/
-@[blueprint "ArithmeticSimulator.lazyCompiledMachine_onlineParsed"
-  (statement := /-- The online parser returns the active labels $L_3$ and the programmed permutation. The parsed
-    online phase of the compiled machine equals the lazy online result mapped to the $508$ labels of
-    $128$ bits. -/)
-  (title := /-- BABE Construction~3 -/)]
 theorem lazyCompiledMachine_onlineParsed [FieldCertificate] [GroupCertificate]
     (memory : Memory) (input : AffineInput) (value : Option Point)
     (oracle : LazyOracle.State Shared.FixedKeyIndex EncPRF.PermutationIndex) :
@@ -25,9 +19,6 @@ theorem lazyCompiledMachine_onlineParsed [FieldCertificate] [GroupCertificate]
       (lazyOnlineResult (compiledOnlineMemory memory (affine input ++ output value)) input value oracle).map
         (fun result => result.bind fun result =>
           (words 128 508 (result.1.bits 3)).map fun labels => (labels, result.2.1)) := by
-  /-- Prepare the input memory with the phase dispatch. Run the compiled machine for the online phase.
-    By \cref{ArithmeticSimulator.lazyOnlineMachine_run} the online machine returns the lazy online
-    result. Parse the labels from memory word $3$. -/
   let body := affine input ++ output value
   let inputMemory : Memory :=
     {memory with bits := Function.update (Function.update memory.bits 0 ([false, true] ++ body)) 3 []}

@@ -1,7 +1,6 @@
 import Proof.Privacy.Simulator.Arithmetic.OnlineLazyRun
 import Proof.Privacy.Simulator.Arithmetic.OnlineLazyMemory
 import Proof.Privacy.Simulator.Arithmetic.OnlineSampling
-import Architect
 
 namespace Kriterion.ArgoMAC.ArithmeticSimulator
 open BN254 Cryptography Cryptography.BoundedMachine
@@ -60,11 +59,6 @@ private theorem onlineFuel_bound (parsed sampled : Nat)
   omega
 
 /-- Every online request fits the same fixed fuel allowance. -/
-@[blueprint "ArithmeticSimulator.lazyOnlineMachine_run"
-  (statement := /-- Every online request fits the fuel $2^{46}$. Running the online machine on a memory that holds
-    the chosen input and the optional output point returns the lazy online result at program counter
-    $317804843$. -/)
-  (title := /-- BABE Construction~3 -/)]
 theorem lazyOnlineMachine_run [FieldCertificate] [GroupCertificate]
     (memory : Memory) (input : AffineInput) (output : Option Point)
     (oracle : LazyOracle.State Shared.FixedKeyIndex EncPRF.PermutationIndex)
@@ -73,8 +67,6 @@ theorem lazyOnlineMachine_run [FieldCertificate] [GroupCertificate]
     lazyOnlineMachine.run (2 ^ 46) ⟨0, memory⟩ oracle =
       (lazyOnlineResult memory input output oracle).map
         (Option.map fun result => (⟨317804843, result.1⟩, result.2.1, result.2.2)) := by
-  /-- Bound the prefix cost and the sampling budget. Split on the output. Without an output the null
-    run fits the fuel. With an output the valid run fits the fuel bound. -/
   have prefixBound : onlinePrefixCost output ≤ 20695 := by
     have inputBound := onlineInput_budget output
     change 98 + onlineInputCost output ≤ 7273 at inputBound

@@ -2,7 +2,6 @@ import Construction.OraclePrograms
 import Proof.Privacy.Simulator.PublicOracleLaw
 import Solution
 import Proof.Privacy.Distribution.Distribution
-import Architect
 
 namespace Kriterion.ArgoMAC.Shared
 open BN254 Cryptography
@@ -32,12 +31,6 @@ noncomputable section
 
 set_option maxRecDepth 4096 in
 /-- The baseline real game separates private coins from the fixed public oracle. -/
-@[blueprint "Security.OperationalOracle.shared_lazy_real"
-  (statement := /-- The real world $\mathcal{O}_{\mathrm{real}}$ splits into private coins and the public
-    permutation (hybrid $\mathsf{Hyb}_0$ in the proof of Theorem~7). The lazy real game, which
-    samples the public permutation on demand, equals the real game of the wire circuit with a
-    uniformly sampled tape. -/)
-  (title := /-- BABE Theorem~7 -/)]
 theorem shared_lazy_real [BN254.FieldCertificate] [BN254.GroupCertificate]
     [Fintype Shared.PrivateCoins] {Aux : Type}
     (adversary : AdaptiveAdversary (publicOracleSpec Shared.FixedKeyIndex EncPRF.PermutationIndex)
@@ -48,10 +41,6 @@ theorem shared_lazy_real [BN254.FieldCertificate] [BN254.GroupCertificate]
       adversary parameter scalar auxiliary =
     realGame Shared.wireCircuit (uniformRandomTape Shared.Randomness witness)
       (publicHandler Shared.evaluationOracle) adversary parameter scalar auxiliary := by
-  /-- Rewrite the lazy real game with the uniform tape. Split the uniform randomness into the private
-    coins and the public permutation. Both games run the adversary under a public handler. The
-    permutation state does not change during the choose phase, so both games evaluate the same
-    experiment. -/
   classical
   letI : Nonempty Shared.Randomness := ⟨witness⟩
   letI : Nonempty Shared.PrivateCoins := ⟨Shared.privateCoins witness⟩

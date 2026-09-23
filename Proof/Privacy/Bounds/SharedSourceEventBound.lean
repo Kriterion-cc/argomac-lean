@@ -1,7 +1,6 @@
 import Proof.Privacy.Source.SharedCombinedRatio
 import Proof.Privacy.Transcript.SharedGateEndpoint
 import Proof.Shared.SourceHCoefficient
-import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography
@@ -16,12 +15,6 @@ private theorem eventFinite {Sample : Type*} (samples : PMF Sample) (event : Set
   exact samples.tsum_coe_indicator_ne_top event
 
 /-- One prefix bound and the exact invalid hash bound control the combined source guard. -/
-@[blueprint "Security.sharedCombinedBad_real_mass_le"
-  (statement := /-- Bad-transcript mass $\varepsilon_1$ (Claim~11). The mass of the bad event of the ideal sample
-    space is at most the given offline bound (collisions among the programmed points, events bad1,
-    bad2, bad4) plus the hash-rounding loss plus $(q + 1) / p$ (the adversary hits a programmed
-    point, event bad3). -/)
-  (title := /-- BABE Claim~11 -/)]
 theorem sharedCombinedBad_real_mass_le [FieldCertificate] [GroupCertificate] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
     (parameter : Nat) (auxiliary : Aux) (scalar : ScalarField) (witness : Shared.Randomness)
@@ -34,8 +27,6 @@ theorem sharedCombinedBad_real_mass_le [FieldCertificate] [GroupCertificate] {Au
       {coin | sharedCombinedBad scalar coin}).toReal ≤ prefixBound +
       ((305054 : ℝ) * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384 +
       ((adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter : Nat) + 1 : ℝ) / baseFieldModulus) := by
-  /-- The combined bad mass is at most the offline bad mass plus the mass of a hit on a programmed
-    point. The first term is the offline bound. The second term is the exact bound for a hit. -/
   have comparison := ENNReal.toReal_mono (ENNReal.add_ne_top.mpr ⟨eventFinite _ _, eventFinite _ _⟩)
     (sharedCombinedBad_mass_le adversary parameter auxiliary scalar witness fallback)
   rw [ENNReal.toReal_add (eventFinite _ _) (eventFinite _ _)] at comparison

@@ -9,7 +9,7 @@ LAKE ?= lake
 all: pdf web
 
 extract:
-	cd ../.. && $(LAKE) build :blueprint
+	cd lean && $(LAKE) build :blueprint
 
 figures:
 	python3 depgraph.py

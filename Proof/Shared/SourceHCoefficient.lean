@@ -1,6 +1,5 @@
 import Proof.Shared.HCoefficient
 import Proof.Shared.SourceGoodMass
-import Architect
 
 namespace Kriterion.ArgoMAC.Security
 
@@ -112,14 +111,6 @@ theorem hCoefficient_event_of_sourceGoodMass {Source Transcript : Type*}
   rwa [sourceGoodMass_missing]
 
 /-- A different continuation on the same bad event keeps the same error bound. -/
-@[blueprint "Security.hCoefficient_event_of_sourceGoodMass_congr"
-  (statement := /-- The H-coefficient technique (Lemma~13) in event form. Let $\mathrm{real}$ be a distribution on
-    transcripts, let the ideal sample space have a bad set $\mathcal{T}_{\mathrm{bad}}$ of mass at
-    most $\varepsilon_1$, and let a kernel map samples to transcripts. If $\Pr_{\mathrm{real}}[\tau]
-    \geq (1 - \varepsilon_2) \cdot \Pr[\text{good sample} \mapsto \tau]$ for every $\tau$, and a
-    replacement kernel agrees with the kernel on good samples, then every event differs between
-    $\mathrm{real}$ and the replacement by at most $\varepsilon_1 + \varepsilon_2$. -/)
-  (title := /-- BABE Lemma~13 -/)]
 theorem hCoefficient_event_of_sourceGoodMass_congr {Source Transcript : Type*}
     (real : PMF Transcript) (samples : PMF Source) (kernel replacement : Source → PMF Transcript)
     (bad : Set Source) (error : ENNReal) (errorFinite : error ≠ ⊤)
@@ -129,9 +120,6 @@ theorem hCoefficient_event_of_sourceGoodMass_congr {Source Transcript : Type*}
     (event : Set Transcript) :
     |(real.toOuterMeasure event).toReal - ((samples.bind replacement).toOuterMeasure event).toReal| ≤
       badBound + error.toReal := by
-  /-- Apply the H-coefficient event bound to the replacement kernel. The good mass of the replacement
-    equals the good mass of the kernel, because both agree on every supported sample outside
-    $\mathcal{T}_{\mathrm{bad}}$. The ratio premise transfers. -/
   apply hCoefficient_event_of_sourceGoodMass real samples replacement bad error errorFinite
     badBound badMass _ event
   intro transcript

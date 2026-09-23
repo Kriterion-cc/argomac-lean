@@ -5,7 +5,6 @@ This file defines the observable `C_23` table operation.
 import Construction.ArgoMAC.Biquadratic
 import Construction.ArgoMAC.Coordinates
 import Construction.ArgoMAC.RandomizedEncoding
-import Architect
 
 namespace Kriterion.ArgoMAC.FieldMacToECMac
 
@@ -218,20 +217,12 @@ theorem evaluateHomogeneousEncoded (rows : Rows) (randomness : Randomness)
   ring_nf
   constructor <;> trivial
 
-@[blueprint "FieldMacToECMac.evaluateEncoded"
-  (statement := /-- Correctness of the garbled $C_2$ (Fig.~10). For garbled rows $\{c'^{(j, W)}_k\}$, randomizers
-    $a_j$, oracles, an encoding key, and an input $\pi$: if every row is sparse, then
-    $\mathsf{Eval}_2$ on the labels of $\pi$ returns the expected result $\{W(r_j \pi + K_j)\}_{j,
-    W}$ of the rows. -/)
-  (title := /-- BABE Fig.~10 -/)]
 theorem evaluateEncoded
     (rows : Rows) (randomness : Randomness)
     (oracles : Oracles) (inputKey : InputMacKey) (input : AffineInput) :
     (∀ index, SparseRow (rows.get index)) →
     evaluate (garble rows randomness oracles inputKey) oracles
         input (inputKey.encodeAffine input) = expectedResult rows input := by
-  /-- Unfold $\mathsf{Eval}_2$. The evaluation of the homogeneous labels equals the expected result,
-    because every row is sparse. -/
   intro sparse
   rw [evaluate, evaluateHomogeneousEncoded rows randomness oracles inputKey input sparse]
   rfl

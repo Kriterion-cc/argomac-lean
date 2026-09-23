@@ -1,7 +1,6 @@
 import Proof.Privacy.Simulator.Arithmetic.SharedParsedGame
 import Proof.Privacy.Simulator.Arithmetic.CompiledMachine
 import Proof.Privacy.Simulator.Arithmetic.OfflineSourceJoint
-import Architect
 
 namespace Kriterion.ArgoMAC.ArithmeticSimulator
 open BN254 Cryptography.BoundedMachine GarbledCircuit.SimulatorProtocol Security
@@ -113,19 +112,11 @@ open BN254 Cryptography Cryptography.BoundedMachine GarbledCircuit.SimulatorProt
 noncomputable section
 
 /-- The parsed setup law keeps the complete private joint source. -/
-@[blueprint "ArithmeticSimulator.lazySetupJoint_parsed"
-  (statement := /-- The setup phase of the compiled machine is $\mathsf{Sim}_1$. Parsing the memory after the setup
-    run returns the public table $\mathsf{ct}_{\mathsf{gc}}$, the memory, and the empty lazy
-    permutation, distributed as the joint offline source. -/)
-  (title := /-- BABE Construction~3 -/)]
 theorem lazySetupJoint_parsed [FieldCertificate] (parameter : Nat) :
     lazyParsedSetup lazyCompiledMachine parameter =
       (lazySetupJoint parameter).map (fun setup =>
         some (publicSourceTable setup.2.1, setup.1,
           (LazyOracle.empty : LazyOracle.State Shared.FixedKeyIndex EncPRF.PermutationIndex))) := by
-  /-- Parse the result of the setup machine run. The setup machine law gives the joint offline source.
-    On the support of the joint source, the public value in memory parses to
-    $\mathsf{ct}_{\mathsf{gc}}$. -/
   let parse (result : Option (Memory × LazyOracle.State Shared.FixedKeyIndex EncPRF.PermutationIndex)) :=
     result.bind fun result => (publicValue Wire.encoding 9806076 (result.1.bits 3)).map
       fun table => (table, result.1, result.2)

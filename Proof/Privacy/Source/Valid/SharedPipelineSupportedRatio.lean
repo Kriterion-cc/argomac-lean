@@ -1,7 +1,6 @@
 import Proof.Privacy.Source.Valid.SharedPipelinePrefixMass
 import Proof.Privacy.Source.SourceReferenceSupport
 import Proof.Privacy.Source.SharedGateSourceReference
-import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography
@@ -49,12 +48,6 @@ private theorem nonzeroTerm {Index : Type*} (weight : Index → ENNReal)
   exact nonzero (ENNReal.tsum_eq_zero.mpr missing)
 
 /-- Every valid output satisfies the pipeline comparison without external reference premises. -/
-@[blueprint "Security.sharedFullPipelinePrefix_real_le_supported"
-  (statement := /-- Good-transcript ratio for an on-curve input. For every transcript $\tau$ whose chosen input is
-    on the curve and whose permutation queries number at most $q \leq 2^{101}$: $(1 - (60199016 +
-    368\,q) / 2^{128}) \cdot \Pr_{\mathrm{ideal}}[\text{good offline sample} \mapsto \tau] \leq
-    \Pr_{\mathrm{real}}[\tau]$. -/)
-  (title := /-- BABE Claim~12 -/)]
 theorem sharedFullPipelinePrefix_real_le_supported [FieldCertificate] [GroupCertificate] [Fintype Block] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
     (parameter : Nat) (auxiliary : Aux) (scalar : NonZeroScalar) (witness : Shared.Randomness)
@@ -71,9 +64,6 @@ theorem sharedFullPipelinePrefix_real_le_supported [FieldCertificate] [GroupCert
           fallback) {sample | sharedFullPipelinePrefixBad scalar.value sample} output ≤
       (realAdaptiveTranscriptWithState sharedInternalCircuit
         (uniformRandomTape Shared.Randomness witness) sharedRealOracleHandler adversary parameter scalar auxiliary) output := by
-  /-- If the good mass is zero the claim is trivial. Otherwise expand the good mass as a weighted sum
-    and pick a nonzero term. The term supplies compatible active labels, input bits, and a label
-    vector. The supported-ratio lemma for the on-curve branch gives the bound. -/
   by_cases zero : sourceGoodMass
       (sharedFullGatePrefixSamples scalar.value witness parameter
         (fun table rest => sharedGateSourceChoose adversary parameter auxiliary table rest.2))

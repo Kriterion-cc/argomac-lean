@@ -2,7 +2,6 @@ import Construction.Garbling
 import Mathlib.AlgebraicGeometry.EllipticCurve.Projective.Point
 import Mathlib.Tactic.LinearCombination
 import Security.Correctness
-import Architect
 
 namespace Kriterion.ArgoMAC.RCBComplete
 
@@ -192,17 +191,10 @@ theorem outputNonzero [FieldCertificate] [GroupCertificate] (a b u v : BaseField
           (pow_ne_zero 3 (mul_ne_zero twoNe bNonzero))
       exact noAffineYZero (doubleCoordinates a b) (doubleOnCurve a b offsetOnCurve) doubleYZero
 
-@[blueprint "RCBComplete.outputNonsingular"
-  (statement := /-- For two on-curve points $(a, b)$ and $(u, v)$, the output $(X, Y, Z)$ of the addition formula of
-    Eqs.~29--31 is a nonsingular point of the projective BN254 curve. -/)
-  (title := /-- BABE Eqs.~29--31 -/)]
 theorem outputNonsingular [FieldCertificate] [GroupCertificate] (a b u v : BaseField)
     (offsetOnCurve : OnCurve { x := a, y := b })
     (inputOnCurve : OnCurve { x := u, y := v }) :
     curve.toProjective.Nonsingular (output a b u v) := by
-  /-- The output satisfies the projective curve equation and is not the zero vector. If $Z = 0$, then
-    $X = 0$ and $Y \neq 0$, so the point is the nonsingular point at infinity. If $Z \neq 0$, the
-    affine point satisfies the curve equation, and the nonzero discriminant gives nonsingularity. -/
   have equation : curve.toProjective.Equation (output a b u v) :=
     outputEquation a b u v (by simpa [OnCurve] using offsetOnCurve)
       (by simpa [OnCurve] using inputOnCurve)
@@ -317,20 +309,12 @@ theorem recoveredYDouble [FieldCertificate] [GroupCertificate] (a b : BaseField)
   linear_combination (norm := (simp only [addY, Coordinates.algorithmY]; ring))
     (-216 * a ^ 3 + 72 * b ^ 2 + 216) * pointOnCurve
 
-@[blueprint "RCBComplete.outputRepresentsSum"
-  (statement := /-- For two on-curve points $(a, b)$ and $(u, v)$, the affine form of the output of the addition
-    formula equals the group sum $(a, b) + (u, v)$ in $\mathbb{G}_1$. -/)
-  (title := /-- BABE Eqs.~29--31 -/)]
 theorem outputRepresentsSum [FieldCertificate] [GroupCertificate]
     (a b u v : BaseField) (offsetOnCurve : OnCurve { x := a, y := b })
     (inputOnCurve : OnCurve { x := u, y := v }) :
     WeierstrassCurve.Projective.Point.toAffine curve.toProjective (output a b u v) =
       affinePoint { x := a, y := b } offsetOnCurve +
         affinePoint { x := u, y := v } inputOnCurve := by
-  /-- Split on whether $a \neq u$. If they differ, $Z \neq 0$, and the recovered coordinates match the
-    affine addition formula. If $a = u$, the $y$ coordinates are equal or opposite. Equal $y$
-    coordinates give the doubling formula with $Z \neq 0$. Opposite $y$ coordinates give $Z = 0$,
-    the point at infinity, and the affine sum is also $0$. -/
   have outputValid := outputNonsingular a b u v offsetOnCurve inputOnCurve
   by_cases xDifferent : a ≠ u
   · rw [WeierstrassCurve.Projective.Point.toAffine_of_Z_ne_zero outputValid
@@ -442,21 +426,12 @@ theorem homogeneousVector_scaledAlgorithmValue
   fin_cases index <;>
     simp [homogeneousVector, scaledAlgorithmValue, output, addX, addY, addZ]
 
-@[blueprint "RCBComplete.decodeScaledAlgorithmValue"
-  (statement := /-- Jacobian addition (Eqs.~29--31) decodes to the affine sum. For two on-curve points $K$ and $\pi$
-    and a nonzero randomizer $a$: converting the scaled output $(a^2 X, a^3 Y, a Z)$ of the addition
-    formula to affine coordinates returns $K + \pi$. -/)
-  (title := /-- BABE Eqs.~29--31 -/)]
 theorem decodeScaledAlgorithmValue [FieldCertificate] [GroupCertificate]
     (randomizer : BaseField) (offset input : AffineInput)
     (randomizerNonzero : randomizer ≠ 0)
     (offsetOnCurve : OnCurve offset) (inputOnCurve : OnCurve input) :
     Garbling.decodeHomogeneous (scaledAlgorithmValue randomizer offset input) =
       some (affinePoint offset offsetOnCurve + affinePoint input inputOnCurve) := by
-  /-- By \cref{RCBComplete.outputNonsingular} the output of the addition formula is a nonsingular
-    projective point. Scaling by $a$ keeps it nonsingular. The decoder returns the affine form of
-    this point, and scaling does not change the affine form. By
-    \cref{RCBComplete.outputRepresentsSum} the affine form is $K + \pi$. -/
   have baseValid :
       curve.toProjective.Nonsingular (output offset.x offset.y input.x input.y) :=
     outputNonsingular offset.x offset.y input.x input.y offsetOnCurve inputOnCurve
@@ -480,10 +455,6 @@ theorem decodeScaledAlgorithmValue [FieldCertificate] [GroupCertificate]
       rw [outputRepresentsSum offset.x offset.y input.x input.y
         offsetOnCurve inputOnCurve]
 
-@[blueprint "RCBComplete.decodeEvaluateRowNone"
-  (statement := /-- For the digit $r_j = 0$, an offset $K_j$, and a nonzero randomizer $a_j$: the row of $C_2$
-    evaluates to a Jacobian representation of $K_j$ and decodes to $K_j$. -/)
-  (title := /-- BABE Eqs.~29--31 -/)]
 theorem decodeEvaluateRowNone [FieldCertificate]
     (offset : FieldMacToECMac.AffineOffset) (input : AffineInput)
     (randomizer : BaseField) (randomizerNonzero : randomizer ≠ 0) :
@@ -491,18 +462,11 @@ theorem decodeEvaluateRowNone [FieldCertificate]
         (FieldMacToECMac.evaluateRow
           (Coordinates.rows offset.coordinates none randomizer) input) =
       some (FieldMacToECMac.AffineOffset.point offset) := by
-  /-- Rewrite the row for the zero digit. The decoder divides by the nonzero randomizer and recovers
-    $K_j$ in affine coordinates. -/
   rw [FieldMacToECMac.evaluateRowsNone]
   simp [Garbling.decodeHomogeneous, randomizerNonzero,
     decodePoint_eq_affinePoint offset.coordinates offset.onCurve,
     affineOffsetPoint_eq offset]
 
-@[blueprint "RCBComplete.decodeEvaluateRowSome"
-  (statement := /-- For a digit $r_j \neq 0$ with endomorphism base $\mu$, $\mu^6 = 1$, an offset $K_j$, a nonzero
-    randomizer $a_j$, and an on-curve input $\pi$: the row of $C_2$ decodes to $K_j + \pi'$, where
-    $\pi' = r_j \pi = (\mu^k x(\pi), \pm y(\pi))$ is the transformed input. -/)
-  (title := /-- BABE Eqs.~29--31 -/)]
 theorem decodeEvaluateRowSome [FieldCertificate] [GroupCertificate]
     (offset : FieldMacToECMac.AffineOffset) (input : AffineInput)
     (phi : NonZeroBase) (randomizer : BaseField)
@@ -516,9 +480,6 @@ theorem decodeEvaluateRowSome [FieldCertificate] [GroupCertificate]
           (by
             simpa [FieldMacToECMac.transformedInput] using
               Coordinates.transformedOnCurve phi.value phiSix input inputOnCurve)) := by
-  /-- The transformed input $\pi'$ stays on the curve because $\mu^6 = 1$. Rewrite the row as the
-    Jacobian addition of $K_j$ and $\pi'$ scaled by $a_j$. Conclude with
-    \cref{RCBComplete.decodeScaledAlgorithmValue}. -/
   have transformedOnCurve :
       OnCurve (FieldMacToECMac.transformedInput phi.value input) := by
     simpa [FieldMacToECMac.transformedInput] using
@@ -656,12 +617,6 @@ theorem transformedInputPoint_eq_digitEndomorphism
       simp [WeierstrassCurve.Affine.Point.neg, WeierstrassCurve.Affine.negY, curve, pow_two, mul_assoc]
 
 
-@[blueprint "RCBComplete.decodeEvaluateOutputKeyRow"
-  (statement := /-- One row of $C_2$ decodes to $r_j P + K_j$. For an output key $(r_j, K_j)$ with digit $r_j \in D
-    = \{0, \pm 1, \pm\omega, \pm(1+\omega)\}$, a nonzero randomizer $a_j$, and an input $\pi$ that
-    decodes to $P$: converting the evaluated row $(X, Y, Z)$ to affine coordinates returns $r_j P +
-    K_j$. -/)
-  (title := /-- BABE Fig.~9 -/)]
 theorem decodeEvaluateOutputKeyRow [FieldCertificate] [GroupCertificate]
     (key : FieldMacToECMac.OutputKey)
     (randomness : FieldMacToECMac.RowRandomness)
@@ -672,10 +627,6 @@ theorem decodeEvaluateOutputKeyRow [FieldCertificate] [GroupCertificate]
             (digitEndomorphismBase key.digit) randomness.rho.value) input) =
       some (digitScalar key.digit • point +
         FieldMacToECMac.AffineOffset.point key.offset) := by
-  /-- Since $\pi$ decodes to a point, $\pi$ is on the curve. Split on the endomorphism base of the
-    digit $r_j$. If $r_j = 0$, \cref{RCBComplete.decodeEvaluateRowNone} returns $K_j$. Otherwise the
-    base is a sixth root of unity $\mu$ with $r_j \pi = (\mu^k x(\pi), \pm y(\pi))$, and
-    \cref{RCBComplete.decodeEvaluateRowSome} returns $K_j + r_j P$. -/
   have inputOnCurve : OnCurve input :=
     (decodePoint_defined input).mp (by simp [decoded])
   cases selected : digitEndomorphismBase key.digit with
@@ -722,11 +673,6 @@ private theorem optionMapMOfFn {n : Nat} {α β : Type}
         (fun index => g index.succ) (fun index => decoded index.succ)]
       rfl
 
-@[blueprint "RCBComplete.decodeRowsForOutputKeys"
-  (statement := /-- For output keys $(r_j, K_j)_j$, randomizers $a_j$, and an input $\pi$ that decodes to $P$:
-    converting every evaluated row of $C_2$ from Jacobian to affine coordinates returns the list of
-    points $r_j P + K_j$ (Fig.~9). -/)
-  (title := /-- BABE Fig.~9 -/)]
 theorem decodeRowsForOutputKeys [FieldCertificate] [GroupCertificate]
     (keys : FieldMacToECMac.OutputKeys)
     (randomness : FieldMacToECMac.Randomness)
@@ -737,9 +683,6 @@ theorem decodeRowsForOutputKeys [FieldCertificate] [GroupCertificate]
       some ((Vector.ofFn fun index =>
         digitScalar (keys.get index).digit • point +
           FieldMacToECMac.AffineOffset.point (keys.get index).offset).toList) := by
-  /-- Unfold the point decoder and the rows. Decode each row with
-    \cref{RCBComplete.decodeEvaluateOutputKeyRow}. The vector of successful decodings is the
-    expected list. -/
   simp only [Garbling.decodePointMacs, FieldMacToECMac.evaluateRows,
     FieldMacToECMac.rowsForOutputKeys, Vector.toList_ofFn, Vector.get_ofFn]
   apply optionMapMOfFn
@@ -789,11 +732,6 @@ private theorem vectorZipWithToList {n : Nat} {α β γ : Type}
       Vector.getElem_toList, Vector.getElem_toList, Vector.get_eq_getElem,
       Vector.get_eq_getElem]
 
-@[blueprint "RCBComplete.outputKeyPoints"
-  (statement := /-- The list of points $r_j P + K_j$ over all output keys equals $L_1 =
-    \mathsf{Encode}_1(\mathsf{ek}_1, P)$ of Fig.~7, where the offsets are clamped by $K_0 = -\sum_{j
-    \geq 1} (2-\omega)^j K_j$. -/)
-  (title := /-- BABE Fig.~7 -/)]
 theorem outputKeyPoints [FieldCertificate] [GroupCertificate]
     (scalar : ScalarField) (offsets : FieldMacToECMac.SuccessfulOffsets)
     (clamped : offsets.IsClamped) (point : Point) :
@@ -803,10 +741,6 @@ theorem outputKeyPoints [FieldCertificate] [GroupCertificate]
         FieldMacToECMac.AffineOffset.point
           ((FieldMacToECMac.outputKeys construction scalar offsets).get index).offset).toList =
       construction.outputs scalar (successfulOffsetRandomness offsets) point := by
-  /-- Read the output keys as the digit vector $(r_0, \ldots, r_{\ell-1})$ paired with the offsets.
-    Rewrite the vector as a zip of the digit multiples with the offset points. The clamped
-    successful offsets are $(K_0, \ldots, K_{\ell-1})$. The zip is the definition of
-    $\mathsf{Encode}_1$. -/
   let digits : Vector Digit FieldMacToECMac.outputMacCount :=
     ⟨(construction.digits scalar).toArray,
       by simpa [FieldMacToECMac.outputMacCount] using construction.digitCount scalar⟩
@@ -835,11 +769,6 @@ theorem outputKeyPoints [FieldCertificate] [GroupCertificate]
     _ = construction.outputs scalar (successfulOffsetRandomness offsets) point := by
       rw [Construction.outputs, encodeDigits_eq_zipWith]
 
-@[blueprint "RCBComplete.decodeExpectedResult"
-  (statement := /-- Decoding the output of $\mathsf{Eval}_2$ gives $rP$. For clamped offsets $K_j$, randomizers
-    $a_j$, and an input $\pi$ that decodes to $P$: converting the Jacobian coordinates $(X, Y,
-    Z)(r_j \pi + K_j)$ to affine coordinates and running $\mathsf{Eval}_1$ (Fig.~21) returns $rP$. -/)
-  (title := /-- BABE Fig.~21 -/)]
 theorem decodeExpectedResult [FieldCertificate] [GroupCertificate]
     [TerminationCertificate] (scalar : ScalarField)
     (offsets : FieldMacToECMac.SuccessfulOffsets) (clamped : offsets.IsClamped)
@@ -850,10 +779,6 @@ theorem decodeExpectedResult [FieldCertificate] [GroupCertificate]
           (FieldMacToECMac.rowsForOutputKeys
             (FieldMacToECMac.outputKeys construction scalar offsets) randomness) input) =
       some (scalarMultiplication scalar point) := by
-  /-- Unfold the decoder and the expected result. By \cref{RCBComplete.decodeRowsForOutputKeys} the
-    rows decode to the points $r_j P + K_j$. By \cref{RCBComplete.outputKeyPoints} this list equals
-    $L_1 = (L_{1,0}, \ldots, L_{1,\ell-1})$ of $\mathsf{Encode}_1$. By \cref{Construction.correct}
-    $\mathsf{Eval}_1(\bot, L_1) = rP$. -/
   unfold Garbling.decodeResult FieldMacToECMac.expectedResult
   rw [decodeRowsForOutputKeys
     (FieldMacToECMac.outputKeys construction scalar offsets)
@@ -863,11 +788,6 @@ theorem decodeExpectedResult [FieldCertificate] [GroupCertificate]
   exact congrArg some
     (construction.correct scalar (successfulOffsetRandomness offsets) point)
 
-@[blueprint "RCBComplete.pipelineEvaluateInvalid"
-  (statement := /-- When $\pi$ is not a point of $\mathbb{G}_1$, the evaluation chain $\mathsf{Eval}_5 \to
-    \mathsf{Eval}_4 \to \mathsf{Dec}_{\hat t} \to \mathsf{Eval}_3 \to \mathsf{Eval}_2$ of Fig.~21
-    returns $\bot$ for every $\mathsf{ct}_{\mathsf{gc}}$ and every label vector $L$. -/)
-  (title := /-- BABE Eq.~27 -/)]
 theorem pipelineEvaluateInvalid [FieldCertificate]
     (fixedKeyOracle : Cryptography.PermutationOracle Pipeline.FixedKeyIndex
       Cryptography.Block)
@@ -878,8 +798,6 @@ theorem pipelineEvaluateInvalid [FieldCertificate]
     (invalid : decodePoint input = none) :
     Pipeline.evaluate fixedKeyOracle encPRFOracle hashOracle table
       (BitInput.ofAffine input) inputMac = none := by
-  /-- Unfold the chain. The first step decodes $\pi$ as a curve point and fails, so the chain returns
-    $\bot$. -/
   simp [Pipeline.evaluate, BitInput.toAffineOfAffine, invalid]
 
 private theorem optionBindSome {α β : Type} (result : Option α)
@@ -889,11 +807,6 @@ private theorem optionBindSome {α β : Type} (result : Option α)
   rw [evaluated]
   exact decoded
 
-@[blueprint "RCBComplete.evaluateCorrectInvalid"
-  (statement := /-- When $\pi$ is not a point of $\mathbb{G}_1$, $\mathsf{Eval}$ returns $f[r](\pi) = 0$ (Eq.~27).
-    The curve membership check $C_4[t, w]$ (Fig.~17) does not release $t$, so the labels $L_3$ stay
-    encrypted. -/)
-  (title := /-- BABE Eq.~27 -/)]
 theorem evaluateCorrectInvalid [FieldCertificate] [GroupCertificate]
     [TerminationCertificate] (scalar : NonZeroScalar)
     (randomness : Garbling.Randomness) (input : AffineInput)
@@ -904,8 +817,6 @@ theorem evaluateCorrectInvalid [FieldCertificate] [GroupCertificate]
         (Garbling.encode (Garbling.garble construction scalar randomness).2
           (BitInput.ofAffine input)) =
       checkedScalarMultiplication scalar.value input := by
-  /-- Unfold $\mathsf{Eval}$. By \cref{RCBComplete.pipelineEvaluateInvalid} the evaluation chain
-    returns $\bot$. The function $f[r]$ also returns $0$ for an off-curve input. -/
   change Garbling.evaluate
     (randomness.fixedKeyOracle, randomness.encPRFOracle, randomness.hashOracle)
     (Garbling.garble construction scalar randomness).1
@@ -919,10 +830,6 @@ theorem evaluateCorrectInvalid [FieldCertificate] [GroupCertificate]
     (randomness.inputMacKey.encode (BitInput.ofAffine input)) invalid]
   simp [checkedScalarMultiplication, invalid]
 
-@[blueprint "RCBComplete.evaluateCorrectValid"
-  (statement := /-- When $\pi$ decodes to a point $P \in \mathbb{G}_1$: $\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}},
-    \mathsf{Encode}(\mathsf{ek}, \pi), \pi) = f[r](\pi) = rP$. -/)
-  (title := /-- BABE Fig.~21 -/)]
 theorem evaluateCorrectValid [FieldCertificate] [GroupCertificate]
     [TerminationCertificate] (scalar : NonZeroScalar)
     (randomness : Garbling.Randomness) (input : AffineInput) (point : Point)
@@ -933,10 +840,6 @@ theorem evaluateCorrectValid [FieldCertificate] [GroupCertificate]
         (Garbling.encode (Garbling.garble construction scalar randomness).2
           (BitInput.ofAffine input)) =
       checkedScalarMultiplication scalar.value input := by
-  /-- Unfold $\mathsf{Eval}$ into the evaluation chain followed by the decoder. By
-    \cref{Garbling.evaluateEncodeRows} the chain returns the Jacobian coordinates of $r_j \pi + K_j$
-    for all $j$. The offsets $K_j$ are clamped, so \cref{RCBComplete.decodeExpectedResult} decodes
-    these coordinates to $rP$. -/
   change Garbling.evaluate
     (randomness.fixedKeyOracle, randomness.encPRFOracle, randomness.hashOracle)
     (Garbling.garble construction scalar randomness).1
@@ -968,11 +871,6 @@ theorem evaluateCorrectValid [FieldCertificate] [GroupCertificate]
     (scalarMultiplication scalar.value point) Garbling.decodeResult evaluated decodedRows
   exact bound.trans (by simp [checkedScalarMultiplication, decoded])
 
-@[blueprint "RCBComplete.evaluateCorrect"
-  (statement := /-- For every nonzero scalar $r$, every randomness, and every input $\pi$:
-    $\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, \mathsf{Encode}(\mathsf{ek}, \pi), \pi) = f[r](\pi)$,
-    where $(\mathsf{ct}_{\mathsf{gc}}, \mathsf{ek}) = \mathsf{Garble}(C[r])$ (Fig.~21). -/)
-  (title := /-- BABE Fig.~21 -/)]
 theorem evaluateCorrect [FieldCertificate] [GroupCertificate]
     [TerminationCertificate] (scalar : NonZeroScalar)
     (randomness : Garbling.Randomness) (input : AffineInput) :
@@ -982,25 +880,15 @@ theorem evaluateCorrect [FieldCertificate] [GroupCertificate]
         (Garbling.encode (Garbling.garble construction scalar randomness).2
           (BitInput.ofAffine input)) =
       checkedScalarMultiplication scalar.value input := by
-  /-- Split on whether $\pi$ decodes to a point of $\mathbb{G}_1$. The off-curve case is
-    \cref{RCBComplete.evaluateCorrectInvalid}. The on-curve case is
-    \cref{RCBComplete.evaluateCorrectValid}. -/
   cases decoded : decodePoint input with
   | none => exact evaluateCorrectInvalid scalar randomness input decoded
   | some point => exact evaluateCorrectValid scalar randomness input point decoded
 
-@[blueprint "RCBComplete.perfectCorrectness"
-  (statement := /-- Perfect correctness of the garbled circuit of Fig.~21 for the fixed base-$(2-\omega)$
-    construction with $\ell = 92$ digits. The random tape supplies the fixed-key permutations of
-    $\mathsf{CTPRF}$, the permutations of $\mathsf{EncPRF}$, and the hash oracle. -/)
-  (title := /-- BABE Fig.~21 -/)]
 theorem perfectCorrectness [FieldCertificate] [GroupCertificate]
     [TerminationCertificate] :
     GarbledCircuit.PerfectCorrectness (Garbling.garbledCircuit construction)
       (fun randomness =>
         (randomness.fixedKeyOracle, randomness.encPRFOracle, randomness.hashOracle)) := by
-  /-- Fix $r$, the randomness, and $\pi$. The claim is \cref{RCBComplete.evaluateCorrect} wrapped in
-    \texttt{some}. -/
   intro securityParameter scalar randomness input
   exact congrArg some (evaluateCorrect scalar randomness input)
 
