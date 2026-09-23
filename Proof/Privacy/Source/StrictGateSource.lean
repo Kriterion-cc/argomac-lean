@@ -2,6 +2,7 @@ import Proof.Privacy.SharedConcreteAdaptivePrivacy
 import Proof.Privacy.Source.Valid.SharedPipelineSourceView
 import Proof.Privacy.Source.Invalid.SharedCurveSourceView
 import Proof.Privacy.Transcript.SharedGateEndpoint
+import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography Cryptography.Assumptions OperationalOracle
@@ -42,6 +43,12 @@ theorem sharedStrictGateSourceObserve_good {Aux : Type}
   simpa only [PMF.map_comp, Function.comp_def] using erased.symm
 
 /-- The source entrance bound also covers strict programming failure. -/
+@[blueprint "Security.sharedStrictGateSource_entrance"
+  (statement := /-- Sampling loss of the real oracle. The real gate source, which samples $\mathbb{F}_p$ elements by
+    reducing $384$-bit hash outputs, and the ideal gate source differ on every event by at most the
+    hash-rounding loss $305054 \cdot (2^{384} \bmod p) / 2^{384}$ plus $2^{-240}$. -/)
+  (title := /-- BABE Lemma~14 -/)
+  (proof := /-- This is the gate source observation bound applied to the strict observer. -/)]
 theorem sharedStrictGateSource_entrance [FieldCertificate] [GroupCertificate] [TerminationCertificate] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table
       Garbling.Labels Aux) (parameter : Nat) (auxiliary : Aux) (scalar : ScalarField) (witness : Shared.Randomness)
@@ -58,6 +65,12 @@ theorem sharedStrictGateSource_entrance [FieldCertificate] [GroupCertificate] [T
   actualSharedGateSource_observation_bound scalar witness parameter _ _ fallback event
 
 /-- The existing pipeline guard also prevents strict abort on the invalid branch. -/
+@[blueprint "Security.sharedStrictSelectedView_good"
+  (statement := /-- The programming of $\mathsf{Sim}_2$ succeeds on a good tag. When the garbled $C_2, C_3$ tag is
+    good and the permutation state starts without a conflict, programming the active labels of the
+    chosen input (Construction~3, Step~3) does not raise the bad flag, on the on-curve and on the
+    off-curve branch. -/)
+  (title := /-- BABE Definition~20 -/)]
 theorem sharedStrictSelectedView_good [FieldCertificate] [GroupCertificate]
     (rest : GarblingSourceRest) (keys : FieldMacToECMac.OutputKeys)
     (table : Pipeline.Table) (input : AffineInput) (key : InputMacKey) (tag : FullCircuitSource)
@@ -70,6 +83,8 @@ theorem sharedStrictSelectedView_good [FieldCertificate] [GroupCertificate]
         rest.algebraic.field.curveMask.value
         (FieldMacToECMac.rowsForOutputKeys keys rest.algebraic.point.pointRandomness)
         input (retainedFullSource rest tag)) input)).bad = false := by
+  /-- Split on whether the input is on the curve. In both branches, rewrite the program view as the
+    source view. The programming commands of a good tag stay fresh, so the bad flag stays false. -/
   by_cases valid : OnCurve input
   · rw [sharedValidSourceView_program rest keys input key tag state valid enc hash]
     exact (sharedCommands_bad_fresh state _ good.2.2.2).trans initial
@@ -194,6 +209,12 @@ def sharedStrictTranscript [FieldCertificate] [GroupCertificate] {State : Type}
     (transcript.1, transcript.2.1, transcript.2.2.1, transcript.2.2.2.1, false, transcript.2.2.2.2.2)
   else transcript
 
+@[blueprint "Security.sharedStrictTranscript_good"
+  (statement := /-- On a good sample, the strict simulator does not abort. For every sample of the ideal space
+    outside $\mathcal{T}_{\mathrm{bad}}$ (Definition~20), the strict transcript equals the sampled
+    transcript. -/)
+  (title := /-- BABE Definition~20 -/)
+  (proofUses := ["Security.sharedStrictSelectedView_good"])]
 theorem sharedStrictTranscript_good [FieldCertificate] [GroupCertificate] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table
       Garbling.Labels Aux) (parameter : Nat) (auxiliary : Aux) (scalar : ScalarField) (witness : Shared.Randomness)
@@ -201,6 +222,9 @@ theorem sharedStrictTranscript_good [FieldCertificate] [GroupCertificate] {Aux :
       PMF (SharedFullGateTranscript adversary.State))
     (coin) (member : coin ∈ (sharedCombinedSource adversary parameter auxiliary scalar witness fallback).support)
     (good : ¬ sharedCombinedBad scalar coin) : sharedStrictTranscript scalar coin = coin.2 := by
+  /-- Unfold the ideal sample space to find the prior draw of the sample. The offline phase does not
+    abort on a good sample. Without an abort the strict transcript equals the sampled transcript.
+    The abort lemmas reduce to \cref{Security.sharedStrictSelectedView_good}. -/
   simp only [sharedCombinedSource, PMF.mem_support_bind_iff, PMF.mem_support_map_iff] at member
   obtain ⟨prior, supported, output, _, rfl⟩ := member
   have noAbort := sharedPrefixAbort_good adversary parameter auxiliary scalar witness prior supported
@@ -228,6 +252,12 @@ theorem sharedStrictTranscript_decision [FieldCertificate] [GroupCertificate] {A
   exact PMF.map_const _ _
 
 /-- Strict programming uses the same bad event and the same error budget. -/
+@[blueprint "Security.sharedStrictAdaptive_event_bound"
+  (statement := /-- H-coefficient bound for the strict simulator (Lemma~13). For every event on the decision bit,
+    the real-world transcript and the ideal-world transcript differ by at most the bad-transcript
+    mass $\varepsilon_1$, which is the given offline bound plus $(60199524 + 372\,q) / 2^{128}$ plus
+    $(q + 1) / p$, plus two hash-rounding losses plus $2^{-240}$. -/)
+  (title := /-- BABE Lemma~13 -/)]
 theorem sharedStrictAdaptive_event_bound [FieldCertificate] [GroupCertificate] [TerminationCertificate]
     [Fintype Block] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
@@ -248,6 +278,13 @@ theorem sharedStrictAdaptive_event_bound [FieldCertificate] [GroupCertificate] [
       prefixBound + (60199524 + 372 * (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) : ℝ) / 2 ^ 128 +
       ((adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter : Nat) + 1 : ℝ) / baseFieldModulus +
       2 * (305054 * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384) + (2 : ℝ) ^ (-240 : ℤ) := by
+  /-- Bound the bad-transcript mass with \cref{Security.sharedCombinedBad_real_mass_le}. Apply
+    \cref{Security.hCoefficient_event_of_sourceGoodMass_congr} to the real transcript and the ideal
+    sample space. The ratio premise $1 - \varepsilon_2$ is
+    \cref{Security.sharedCombinedGood_real_le}. The agreement premise on good transcripts is
+    \cref{Security.sharedStrictTranscript_good}. The strict decision is the projection of the strict
+    transcript. Add the sampling loss of \cref{Security.sharedStrictGateSource_entrance} by the
+    triangle inequality. -/
   have bad := sharedCombinedBad_real_mass_le adversary parameter auxiliary scalar.value witness fallback prefixBound prefixMass
   have ratio := hCoefficient_event_of_sourceGoodMass_congr
     (realAdaptiveTranscriptWithState sharedInternalCircuit (uniformRandomTape Shared.Randomness witness)
@@ -289,6 +326,10 @@ theorem sharedStrictAdaptive_event_bound [FieldCertificate] [GroupCertificate] [
   all_goals first | rfl | ring
 
 /-- Every strict shared source decision satisfies the original adaptive envelope. -/
+@[blueprint "Security.sharedStrictAdaptiveAdvantage_envelope"
+  (statement := /-- For $q \leq 2^{101}$, the advantage between the real world of the internal circuit and the ideal
+    world of the strict simulator $(\mathsf{Sim}_1, \mathsf{Sim}_2)$ is at most $\varepsilon_3(q)$. -/)
+  (title := /-- BABE Lemma~14 -/)]
 theorem sharedStrictAdaptiveAdvantage_envelope [FieldCertificate] [GroupCertificate] [TerminationCertificate]
     {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
@@ -301,6 +342,11 @@ theorem sharedStrictAdaptiveAdvantage_envelope [FieldCertificate] [GroupCertific
         (fun table rest => sharedGateSourceChoose adversary parameter auxiliary table rest.2)
         (fun table selected view rest => sharedStrictGateSourceObserve adversary parameter auxiliary table selected view rest.2)) ≤
       adaptiveErrorEnvelope (adversary.firstQueryBudget parameter + adversary.secondQueryBudget parameter) := by
+  /-- Apply \cref{Security.sharedStrictAdaptive_event_bound} to the event $\{\mathrm{true}\}$ with the
+    bad-transcript mass of \cref{Security.sharedFullPipelinePrefixBad_mass_le}. The real decision is
+    the projection of the real transcript.
+    \Cref{Security.sharedAdaptiveThreeRoundingLossSum_le_envelope} collects $\varepsilon_1$,
+    $\varepsilon_2$, and the sampling losses into $\varepsilon_3(q)$. -/
   letI : Fintype Block := Fintype.ofFinite Block
   have bound := sharedStrictAdaptive_event_bound adversary parameter auxiliary scalar witness
     (fun _ _ => realAdaptiveTranscriptWithState sharedInternalCircuit

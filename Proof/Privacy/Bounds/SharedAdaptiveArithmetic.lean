@@ -1,4 +1,5 @@
 import Proof.Privacy.Bounds.AdaptiveArithmetic
+import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography Cryptography.Assumptions
@@ -34,11 +35,19 @@ theorem sharedAdaptiveLoss_has100Bits (before queries : Nat) (beforeLe : before 
   adaptiveEnvelope_has100Bits queries (sharedAdaptiveLossSum_le_envelope before queries beforeLe)
 
 /-- The complete source proof pays three rounding losses and each collision constant once. -/
+@[blueprint "Security.sharedAdaptiveThreeRoundingLossSum_le_envelope"
+  (statement := /-- Arithmetic of Lemma~14. The sum $\varepsilon_1 + \varepsilon_2$ plus three hash-rounding losses
+    plus $2^{-240}$ is at most $\varepsilon_3(q) = (251850146 + 833\,q) / 2^{128}$ when $q_1 \leq
+    q$. -/)
+  (title := /-- BABE Lemma~14 -/)]
 theorem sharedAdaptiveThreeRoundingLossSum_le_envelope (before queries : Nat) (beforeLe : before ≤ queries) :
     ((188023005716 / 1000 : ℝ) / 2 ^ 128 + 368 * before / 2 ^ 128) +
       ((60199524 + 372 * queries) / 2 ^ 128 + (queries + 1) / (baseFieldModulus : ℝ)) +
       3 * (305054 * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384) + (2 : ℝ) ^ (-240 : ℤ) ≤
         adaptiveErrorEnvelope queries := by
+  /-- The field mask loss is at most the block loss, so $(q + 1) / p \leq (q + 1) / 2^{128}$. The term
+    $2^{-240}$ is at most $2^{-128}$. Sum all terms and compare with the constant of $\varepsilon_3$
+    by linear arithmetic. -/
   have hidden : ((queries : ℝ) + 1) / baseFieldModulus ≤ (queries + 1) / (2 : ℝ) ^ 128 := by
     simpa only [div_eq_mul_inv, one_mul] using
       mul_le_mul_of_nonneg_left fieldMaskLoss_le_block (by positivity : 0 ≤ (queries : ℝ) + 1)

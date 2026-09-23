@@ -1,0 +1,2130 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dependency graph</title>
+  <meta name="generator" content="plasTeX" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles/theme-white.css" />
+  <link rel="stylesheet" href="styles/dep_graph.css" />
+  
+  <script type="text/x-mathjax-config">
+  
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  
+  </script>
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">  </script>
+
+
+<link rel="stylesheet" href="styles/extra_styles.css" />
+
+</head>
+
+<body>
+<header>
+  <a class="toc" href="index.html">Home</a>
+  <h1 id="doc_title">Dependencies</h1>
+</header>
+<div class="wrapper">
+<div class="content">
+  <div id="Legend">
+    <span id="legend_title" class="title">Legend
+    <div class="btn">
+       <div class="bar"></div>
+       <div class="bar"></div>
+       <div class="bar"></div>
+    </div></span> 
+    <dl class="legend">
+      
+      <dt>Boxes</dt><dd>definitions</dd>
+      
+      <dt>Ellipses</dt><dd>theorems and lemmas</dd>
+      
+      <dt>Blue border</dt><dd>the <em>statement</em> of this result is ready to be formalized; all prerequisites are done</dd>
+      
+      <dt>Orange border</dt><dd>the <em>statement</em> of this result is not ready to be formalized; the blueprint needs more work</dd>
+      
+      <dt>Blue background</dt><dd>the <em>proof</em> of this result is ready to be formalized; all prerequisites are done</dd>
+      
+      <dt>Green border</dt><dd>the <em>statement</em> of this result is formalized</dd>
+      
+      <dt>Green background</dt><dd>the <em>proof</em> of this result is formalized</dd>
+      
+      <dt>Dark green background</dt><dd>the <em>proof</em> of this result and all its ancestors are formalized</dd>
+      
+      <dt>Dark green border</dt><dd>this is in Mathlib</dd>
+      
+    </dl>
+  </div>
+    <div id="graph"></div>
+<div id="statements">
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyChosenDecision_completion_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyChosenDecision_completion" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">70</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>    The choose phase keeps only the permutation fields that affect the strict decision. If the parsed online phase has the completed strict law for every chosen input, then the chosen decision of the machine equals the strict frame decision of \(\mathsf{Sim}_2\) after the public completion. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyChosenDecision_completion">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyChosenDecision_completion">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyCompiledAdaptivePrivacy_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyCompiledAdaptivePrivacy" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">45</span><span class="theorem_thmtitle">BABE Theorem&#160;8</span></div>
+    <div class="thm_thmcontent"><p>   Adaptive privacy of the optimized garbling scheme (Theorem&#160;8) at the concrete level of Lemma&#160;14. The compiled simulator \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) proves the public privacy obligation for the program circuit, the Lamport wire encoding, the ciphertext size \(9806076\) bytes, and the uniform private tape: every adversary with work \(T\) has advantage \(\delta \) with \(T / \delta \geq 2^{100}\). The proof uses no hardness assumption beyond the programmable random permutation model. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyCompiledAdaptivePrivacy">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledAdaptivePrivacy">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyCompiledIdealGame_eqStrict_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyCompiledIdealGame_eqStrict" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">67</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>    The compiled machine implements the strict simulator. The ideal world of the compiled machine equals the ideal world of \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) (Construction&#160;3) with \(256\) attempts per draw. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyCompiledIdealGame_eqStrict">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledIdealGame_eqStrict">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyCompiledIdealGame_finiteSource_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyCompiledIdealGame_finiteSource" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">68</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>    If the online phase of the compiled machine equals, for every setup in the support of \(\mathsf{Sim}_1\), the strict frame decision of \(\mathsf{Sim}_2\) after the public completion of the permutation, then the ideal world of the machine equals the strict simulator. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyCompiledIdealGame_finiteSource">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledIdealGame_finiteSource">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyCompiledMachine_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyCompiledMachine" style="display: none">
+    <div class="thm_thmheading">
+      <span class="definition_thmcaption">
+      Definition
+      </span>
+      <span class="definition_thmlabel">74</span><span class="definition_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>    The compiled simulator \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) as one bounded machine. The phase simulator combines the offline machine with \(256\) attempts per draw and the lazy online machine under the shared instruction allowance. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledMachine">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyCompiledMachine_onlineParsed_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyCompiledMachine_onlineParsed" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">72</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>    The online parser returns the active labels \(L_3\) and the programmed permutation. The parsed online phase of the compiled machine equals the lazy online result mapped to the \(508\) labels of \(128\) bits. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine_onlineParsed">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledMachine_onlineParsed">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyCompiledOnline_decision_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyCompiledOnline_decision" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">71</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>    The online phase of the compiled machine is \(\mathsf{Sim}_2\). When the offline coin is stored in memory and the lazy permutation matches the transcript, the parsed online decision equals the strict decision: sample the online randomness with \(256\) attempts, program the active labels of the chosen input, abort on a conflict, and otherwise run the adversary’s decision on the programmed permutation. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyCompiledOnline_decision">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledOnline_decision">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazyOnlineMachine_run_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazyOnlineMachine_run" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">73</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>   Every online request fits the fuel \(2^{46}\). Running the online machine on a memory that holds the chosen input and the optional output point returns the lazy online result at program counter \(317804843\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazyOnlineMachine_run">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyOnlineMachine_run">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.lazySetupJoint_parsed_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.lazySetupJoint_parsed" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">69</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>    The setup phase of the compiled machine is \(\mathsf{Sim}_1\). Parsing the memory after the setup run returns the public table \(\mathsf{ct}_{\mathsf{gc}}\), the memory, and the empty lazy permutation, distributed as the joint offline source. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.lazySetupJoint_parsed">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazySetupJoint_parsed">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="ArithmeticSimulator.phaseBudget_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="ArithmeticSimulator.phaseBudget" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">75</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>   The size of the phase simulator plus both fuel allowances is at most \(2^{60}\), when the setup size plus fuel is at most \(605084290688\), the online code has at most \(317804844\) instructions, and the online fuel is at most \(2^{46}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#ArithmeticSimulator.phaseBudget">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.Privacy.Simulator.Arithmetic.CompiledMachine.0.Kriterion.ArgoMAC.ArithmeticSimulator.phaseBudget">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Construction.correct_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Construction.correct" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">31</span><span class="theorem_thmtitle">BABE Fig.&#160;6</span></div>
+    <div class="thm_thmcontent"><p>   Correctness of \(C_1\) (Fig.&#160;6): \(\mathsf{Eval}_1(\bot , L_1) = \sum _{j=0}^{\ell -1} (2-\omega )^j (r_j P + K_j) = rP\) for every scalar \(r\), every offset randomness, and every point \(P\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Construction.correct">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Construction.correct">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Construction.offsetsCancel_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Construction.offsetsCancel" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">34</span><span class="theorem_thmtitle">BABE Fig.&#160;7</span></div>
+    <div class="thm_thmcontent"><p>   The clamped offsets of \(\mathsf{Garble}_1\) (Fig.&#160;7) cancel: \(\sum _{j=0}^{\ell -1} (2-\omega )^j K_j = 0\) for every offset randomness, because \(K_0 = -\sum _{j \geq 1} (2-\omega )^j K_j\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Construction.offsetsCancel">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Construction.offsetsCancel">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Construction.scalarReconstruction_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Construction.scalarReconstruction" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">32</span><span class="theorem_thmtitle">BABE Alg.&#160;8</span></div>
+    <div class="thm_thmcontent"><p>   Reconstruction of Alg.&#160;8: \(\sum _{j=0}^{\ell -1} r_j (2-\omega )^j \equiv r \pmod{\mathbb {r}}\) for the base-\((2-\omega )\) digits \(r_j \in D\) of every scalar \(r\), with \(\ell = 92\). The termination certificate uses <a href="sect0002.html#GLV91.glvInitialTerminates92">theorem 33</a>. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Construction.scalarReconstruction">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Construction.scalarReconstruction">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="CurveMembership.evaluateEncodedOnCurve_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="CurveMembership.evaluateEncodedOnCurve" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">19</span><span class="theorem_thmtitle">BABE Fig.&#160;18</span></div>
+    <div class="thm_thmcontent"><p>   Correctness of the garbled \(C_4[t, w]\) (Fig.&#160;18). For all \(t, w, r_1, r_2 \in \mathbb {F}_p\), every input \(\pi \) on the curve \(y^2 = x^3 + 3\), and the labels of \(\pi \): \(\mathsf{Eval}_4\) returns \(t + w\, (x(\pi )^3 + 3 - y(\pi )^2) = t\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#CurveMembership.evaluateEncodedOnCurve">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.CurveMembership.evaluateEncodedOnCurve">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="EncPRF.transformEncode_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="EncPRF.transformEncode" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">20</span><span class="theorem_thmtitle">BABE Claim&#160;7</span></div>
+    <div class="thm_thmcontent"><p>   Encrypting labels commutes with selecting labels. For the permutation oracle of \(\mathsf{EncPRF}\), whitening keys, an encoding key \(\mathsf{ek}_3\), and input bits \(\mathbf{b}\): \(\mathsf{Enc}_t(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})) = \mathsf{Encode}_3(\mathsf{Enc}_t(\mathsf{ek}_3), \mathbf{b})\), where \(\mathsf{Enc}_t(\mathsf{ek}_3)\) encrypts every label as in Eq.&#160;33 and Claim&#160;7. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#EncPRF.transformEncode">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.EncPRF.transformEncode">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="FieldMacToECMac.evaluateEncoded_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="FieldMacToECMac.evaluateEncoded" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">21</span><span class="theorem_thmtitle">BABE Fig.&#160;10</span></div>
+    <div class="thm_thmcontent"><p>   Correctness of the garbled \(C_2\) (Fig.&#160;10). For garbled rows \(\{ c'^{(j, W)}_k\} \), randomizers \(a_j\), oracles, an encoding key, and an input \(\pi \): if every row is sparse, then \(\mathsf{Eval}_2\) on the labels of \(\pi \) returns the expected result \(\{ W(r_j \pi + K_j)\} _{j, W}\) of the rows. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#FieldMacToECMac.evaluateEncoded">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.FieldMacToECMac.evaluateEncoded">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Garbling.evaluateEncodeRows_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Garbling.evaluateEncodeRows" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">17</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   For an on-curve input \(\pi \) and the encoding key \(\mathsf{ek}\) of \(\mathsf{Garble}\), the evaluation chain of Fig.&#160;21 applied to \(\mathsf{ct}_{\mathsf{gc}}\) and \(\mathsf{Encode}(\mathsf{ek}, \pi )\) returns the Jacobian coordinates \((X, Y, Z)(r_j \pi + K_j)\) of \(\mathsf{Eval}_2\) for all \(j \in \{ 0, \ldots , \ell -1\} \). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Garbling.evaluateEncodeRows">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Garbling.evaluateEncodeRows">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="GLV91.glvInitialTerminates92_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="GLV91.glvInitialTerminates92" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">33</span><span class="theorem_thmtitle">BABE Appendix&#160;C</span></div>
+    <div class="thm_thmcontent"><p>   Alg.&#160;8 terminates. For every scalar \(r\), the GLV pair \((a, b)\) with \(r \equiv a + \omega b \pmod{\mathbb {r}}\) reaches \((A, B) = (0, 0)\) after \(92\) iterations of the digit loop (Appendix&#160;C). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#GLV91.glvInitialTerminates92">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.GLV91.glvInitialTerminates92">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.affineLamportBits_eq_append_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.affineLamportBits_eq_append" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">81</span><span class="theorem_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>   The bit decomposition \(\mathbf{b}\) of \(\pi \) is the \(254\) bits of \(y(\pi )\) appended to the \(254\) bits of \(x(\pi )\). </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.affineLamportBits_eq_append">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.affineLamportBits_eq_append">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.appendGetHigh_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.appendGetHigh" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">85</span><span class="theorem_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>   For \(i \geq 254\), bit \(i\) of the appended vector is bit \(i - 254\) of the high vector. </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.appendGetHigh">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.appendGetHigh">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.appendGetLow_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.appendGetLow" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">82</span><span class="theorem_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>   For \(i {\lt} 254\), bit \(i\) of the appended vector is bit \(i\) of the low vector. </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.appendGetLow">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.appendGetLow">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.keyPairs_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.keyPairs" style="display: none">
+    <div class="thm_thmheading">
+      <span class="definition_thmcaption">
+      Definition
+      </span>
+      <span class="definition_thmlabel">79</span><span class="definition_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>   The Lamport secret key of \(\mathsf{ek}_3\). Slot \(i {\lt} 254\) holds \((L^0_{x,i}, L^1_{x,i})\) and slot \(i \geq 254\) holds \((L^0_{y,i-254}, L^1_{y,i-254})\). </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.keyPairs">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.keyPairs">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.keyPairsGetHigh_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.keyPairsGetHigh" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">87</span><span class="theorem_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>    For \(i \geq 254\), key pair \(i\) is \((L^0_{y,i-254}, L^1_{y,i-254})\). </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.keyPairsGetHigh">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.keyPairsGetHigh">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.keyPairsGetLow_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.keyPairsGetLow" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">84</span><span class="theorem_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>    For \(i {\lt} 254\), key pair \(i\) is \((L^0_{x,i}, L^1_{x,i})\). </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.keyPairsGetLow">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.keyPairsGetLow">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.restore_selected_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.restore_selected" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">11</span><span class="theorem_thmtitle">BABE Eqs.&#160;15–16</span></div>
+    <div class="thm_thmcontent"><p>   The wire adapter inverts the Lamport encoding. For every input \(\pi \) and every label vector \(L = \{ L^{x_i(\pi )}_{x,i}, L^{y_i(\pi )}_{y,i}\} _{i {\lt} 254}\), restoring \(L\) from its \(508\) Lamport signature slots returns the bits of \(\pi \) together with \(L\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Lamport.restore_selected">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.restore_selected">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.selectedLabels_eq_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.selectedLabels_eq" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">80</span><span class="theorem_thmtitle">BABE Eqs.&#160;15–16</span></div>
+    <div class="thm_thmcontent"><p>    \(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b}) = \{ L^{x_i(\pi )}_{x,i}, L^{y_i(\pi )}_{y,i}\} _{i {\lt} 254}\) equals the Lamport signature of the bits \(\mathbf{b}\) of \(\pi \) under the key pairs. </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.selectedLabels_eq">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.selectedLabels_eq">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.selectedLabelsEncodeHigh_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.selectedLabelsEncodeHigh" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">86</span><span class="theorem_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>   For \(i \geq 254\), label \(i\) of \(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})\) is \(L^{y_{i-254}(\pi )}_{y,i-254}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.selectedLabelsEncodeHigh">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.selectedLabelsEncodeHigh">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Lamport.selectedLabelsEncodeLow_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Lamport.selectedLabelsEncodeLow" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">83</span><span class="theorem_thmtitle">BABE Section&#160;5.1</span></div>
+    <div class="thm_thmcontent"><p>   For \(i {\lt} 254\), label \(i\) of \(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})\) is \(L^{x_i(\pi )}_{x,i}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Lamport.selectedLabelsEncodeLow">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.selectedLabelsEncodeLow">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Pipeline.evaluateEncoded_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Pipeline.evaluateEncoded" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">18</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   Correctness of the evaluation chain. For an on-curve input \(\pi \), evaluating the garbled table on the bit labels \(L = \mathsf{Encode}(\mathsf{ek}, \pi )\) returns \(\mathsf{Eval}_2(\mathsf{ct}_{\mathsf{gc}, 2}, L_2, x(\pi ), y(\pi ))\), the Jacobian coordinates of \(r_j \pi + K_j\) for all \(j\) (Fig.&#160;10). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Pipeline.evaluateEncoded">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Pipeline.evaluateEncoded">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.decodeEvaluateOutputKeyRow_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.decodeEvaluateOutputKeyRow" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">24</span><span class="theorem_thmtitle">BABE Fig.&#160;9</span></div>
+    <div class="thm_thmcontent"><p>   One row of \(C_2\) decodes to \(r_j P + K_j\). For an output key \((r_j, K_j)\) with digit \(r_j \in D = \{ 0, \pm 1, \pm \omega , \pm (1+\omega )\} \), a nonzero randomizer \(a_j\), and an input \(\pi \) that decodes to \(P\): converting the evaluated row \((X, Y, Z)\) to affine coordinates returns \(r_j P + K_j\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.decodeEvaluateOutputKeyRow">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeEvaluateOutputKeyRow">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.decodeEvaluateRowNone_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.decodeEvaluateRowNone" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">25</span><span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span></div>
+    <div class="thm_thmcontent"><p>   For the digit \(r_j = 0\), an offset \(K_j\), and a nonzero randomizer \(a_j\): the row of \(C_2\) evaluates to a Jacobian representation of \(K_j\) and decodes to \(K_j\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.decodeEvaluateRowNone">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeEvaluateRowNone">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.decodeEvaluateRowSome_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.decodeEvaluateRowSome" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">26</span><span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span></div>
+    <div class="thm_thmcontent"><p>   For a digit \(r_j \neq 0\) with endomorphism base \(\mu \), \(\mu ^6 = 1\), an offset \(K_j\), a nonzero randomizer \(a_j\), and an on-curve input \(\pi \): the row of \(C_2\) decodes to \(K_j + \pi '\), where \(\pi ' = r_j \pi = (\mu ^k x(\pi ), \pm y(\pi ))\) is the transformed input. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.decodeEvaluateRowSome">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeEvaluateRowSome">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.decodeExpectedResult_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.decodeExpectedResult" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">22</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   Decoding the output of \(\mathsf{Eval}_2\) gives \(rP\). For clamped offsets \(K_j\), randomizers \(a_j\), and an input \(\pi \) that decodes to \(P\): converting the Jacobian coordinates \((X, Y, Z)(r_j \pi + K_j)\) to affine coordinates and running \(\mathsf{Eval}_1\) (Fig.&#160;21) returns \(rP\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.decodeExpectedResult">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeExpectedResult">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.decodeRowsForOutputKeys_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.decodeRowsForOutputKeys" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">23</span><span class="theorem_thmtitle">BABE Fig.&#160;9</span></div>
+    <div class="thm_thmcontent"><p>   For output keys \((r_j, K_j)_j\), randomizers \(a_j\), and an input \(\pi \) that decodes to \(P\): converting every evaluated row of \(C_2\) from Jacobian to affine coordinates returns the list of points \(r_j P + K_j\) (Fig.&#160;9). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.decodeRowsForOutputKeys">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeRowsForOutputKeys">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.decodeScaledAlgorithmValue_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.decodeScaledAlgorithmValue" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">27</span><span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span></div>
+    <div class="thm_thmcontent"><p>   Jacobian addition (Eqs.&#160;29–31) decodes to the affine sum. For two on-curve points \(K\) and \(\pi \) and a nonzero randomizer \(a\): converting the scaled output \((a^2 X, a^3 Y, a Z)\) of the addition formula to affine coordinates returns \(K + \pi \). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.decodeScaledAlgorithmValue">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeScaledAlgorithmValue">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.evaluateCorrect_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.evaluateCorrect" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">13</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   For every nonzero scalar \(r\), every randomness, and every input \(\pi \): \(\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, \mathsf{Encode}(\mathsf{ek}, \pi ), \pi ) = f[r](\pi )\), where \((\mathsf{ct}_{\mathsf{gc}}, \mathsf{ek}) = \mathsf{Garble}(C[r])\) (Fig.&#160;21). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.evaluateCorrect">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.evaluateCorrect">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.evaluateCorrectInvalid_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.evaluateCorrectInvalid" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">14</span><span class="theorem_thmtitle">BABE Eq.&#160;27</span></div>
+    <div class="thm_thmcontent"><p>   When \(\pi \) is not a point of \(\mathbb {G}_1\), \(\mathsf{Eval}\) returns \(f[r](\pi ) = 0\) (Eq.&#160;27). The curve membership check \(C_4[t, w]\) (Fig.&#160;17) does not release \(t\), so the labels \(L_3\) stay encrypted. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.evaluateCorrectInvalid">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.evaluateCorrectInvalid">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.evaluateCorrectValid_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.evaluateCorrectValid" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">16</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   When \(\pi \) decodes to a point \(P \in \mathbb {G}_1\): \(\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, \mathsf{Encode}(\mathsf{ek}, \pi ), \pi ) = f[r](\pi ) = rP\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.evaluateCorrectValid">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.evaluateCorrectValid">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.outputKeyPoints_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.outputKeyPoints" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">30</span><span class="theorem_thmtitle">BABE Fig.&#160;7</span></div>
+    <div class="thm_thmcontent"><p>   The list of points \(r_j P + K_j\) over all output keys equals \(L_1 = \mathsf{Encode}_1(\mathsf{ek}_1, P)\) of Fig.&#160;7, where the offsets are clamped by \(K_0 = -\sum _{j \geq 1} (2-\omega )^j K_j\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.outputKeyPoints">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.outputKeyPoints">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.outputNonsingular_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.outputNonsingular" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">28</span><span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span></div>
+    <div class="thm_thmcontent"><p>   For two on-curve points \((a, b)\) and \((u, v)\), the output \((X, Y, Z)\) of the addition formula of Eqs.&#160;29–31 is a nonsingular point of the projective BN254 curve. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.outputNonsingular">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.outputNonsingular">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.outputRepresentsSum_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.outputRepresentsSum" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">29</span><span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span></div>
+    <div class="thm_thmcontent"><p>   For two on-curve points \((a, b)\) and \((u, v)\), the affine form of the output of the addition formula equals the group sum \((a, b) + (u, v)\) in \(\mathbb {G}_1\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.outputRepresentsSum">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.outputRepresentsSum">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.perfectCorrectness_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.perfectCorrectness" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">12</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   Perfect correctness of the garbled circuit of Fig.&#160;21 for the fixed base-\((2-\omega )\) construction with \(\ell = 92\) digits. The random tape supplies the fixed-key permutations of \(\mathsf{CTPRF}\), the permutations of \(\mathsf{EncPRF}\), and the hash oracle. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.perfectCorrectness">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.perfectCorrectness">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="RCBComplete.pipelineEvaluateInvalid_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="RCBComplete.pipelineEvaluateInvalid" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">15</span><span class="theorem_thmtitle">BABE Eq.&#160;27</span></div>
+    <div class="thm_thmcontent"><p>   When \(\pi \) is not a point of \(\mathbb {G}_1\), the evaluation chain \(\mathsf{Eval}_5 \to \mathsf{Eval}_4 \to \mathsf{Dec}_{\hat t} \to \mathsf{Eval}_3 \to \mathsf{Eval}_2\) of Fig.&#160;21 returns \(\bot \) for every \(\mathsf{ct}_{\mathsf{gc}}\) and every label vector \(L\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#RCBComplete.pipelineEvaluateInvalid">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.pipelineEvaluateInvalid">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.hCoefficient_event_of_sourceGoodMass_congr_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.hCoefficient_event_of_sourceGoodMass_congr" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">52</span><span class="theorem_thmtitle">BABE Lemma&#160;13</span></div>
+    <div class="thm_thmcontent"><p>   The H-coefficient technique (Lemma&#160;13) in event form. Let \(\mathrm{real}\) be a distribution on transcripts, let the ideal sample space have a bad set \(\mathcal{T}_{\mathrm{bad}}\) of mass at most \(\varepsilon _1\), and let a kernel map samples to transcripts. If \(\Pr _{\mathrm{real}}[\tau ] \geq (1 - \varepsilon _2) \cdot \Pr [\text{good sample} \mapsto \tau ]\) for every \(\tau \), and a replacement kernel agrees with the kernel on good samples, then every event differs between \(\mathrm{real}\) and the replacement by at most \(\varepsilon _1 + \varepsilon _2\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.hCoefficient_event_of_sourceGoodMass_congr">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.hCoefficient_event_of_sourceGoodMass_congr">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.OperationalOracle.shared_lazy_real_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.OperationalOracle.shared_lazy_real" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">47</span><span class="theorem_thmtitle">BABE Theorem&#160;7</span></div>
+    <div class="thm_thmcontent"><p>   The real world \(\mathcal{O}_{\mathrm{real}}\) splits into private coins and the public permutation (hybrid \(\mathsf{Hyb}_0\) in the proof of Theorem&#160;7). The lazy real game, which samples the public permutation on demand, equals the real game of the wire circuit with a uniformly sampled tape. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.OperationalOracle.shared_lazy_real">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.OperationalOracle.shared_lazy_real">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedAdaptiveThreeRoundingLossSum_le_envelope_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedAdaptiveThreeRoundingLossSum_le_envelope" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">62</span><span class="theorem_thmtitle">BABE Lemma&#160;14</span></div>
+    <div class="thm_thmcontent"><p>   Arithmetic of Lemma&#160;14. The sum \(\varepsilon _1 + \varepsilon _2\) plus three hash-rounding losses plus \(2^{-240}\) is at most \(\varepsilon _3(q) = (251850146 + 833\, q) / 2^{128}\) when \(q_1 \leq q\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedAdaptiveThreeRoundingLossSum_le_envelope">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedAdaptiveThreeRoundingLossSum_le_envelope">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedCombinedBad_real_mass_le_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedCombinedBad_real_mass_le" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">53</span><span class="theorem_thmtitle">BABE Claim&#160;11</span></div>
+    <div class="thm_thmcontent"><p>   Bad-transcript mass \(\varepsilon _1\) (Claim&#160;11). The mass of the bad event of the ideal sample space is at most the given offline bound (collisions among the programmed points, events bad1, bad2, bad4) plus the hash-rounding loss plus \((q + 1) / p\) (the adversary hits a programmed point, event bad3). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedCombinedBad_real_mass_le">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedCombinedBad_real_mass_le">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedCombinedGood_real_le_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedCombinedGood_real_le" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">54</span><span class="theorem_thmtitle">BABE Claim&#160;12</span></div>
+    <div class="thm_thmcontent"><p>   Good-transcript ratio (Claim&#160;12). For \(q \leq 2^{101}\) and every transcript \(\tau \): \((1 - \varepsilon _2) \cdot \Pr _{\mathrm{ideal}}[\text{good sample} \mapsto \tau ] \leq \Pr _{\mathrm{real}}[\tau ]\) with \(\varepsilon _2 = (60199524 + 372\, q) / 2^{128}\), for an on-curve and for an off-curve chosen input. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedCombinedGood_real_le">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedCombinedGood_real_le">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedErrors_has100Bits_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedErrors_has100Bits" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">65</span><span class="theorem_thmtitle">BABE Lemma&#160;14</span></div>
+    <div class="thm_thmcontent"><p>   Security level (Lemma&#160;14). If the privacy error is at most \(\varepsilon _3(q)\) and the implementation error is at most the cutoff allowance of \(q\), then \((q + 1) / (\text{privacy error} + \text{implementation error}) \geq 2^{100}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedErrors_has100Bits">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedErrors_has100Bits">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedFullCurveGood_real_le_budget_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedFullCurveGood_real_le_budget" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">56</span><span class="theorem_thmtitle">BABE Claim&#160;12</span></div>
+    <div class="thm_thmcontent"><p>   Good-transcript ratio for an off-curve input. For every transcript \(\tau \) whose chosen input is off the curve and \(q \leq 2^{101}\): \((1 - \varepsilon _2) \cdot \Pr _{\mathrm{ideal}}[\text{good sample} \mapsto \tau ] \leq \Pr _{\mathrm{real}}[\tau ]\). Only the curve membership layer \(C_4, C_5\) is compared, because the labels \(L_3\) stay encrypted. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedFullCurveGood_real_le_budget">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedFullCurveGood_real_le_budget">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedFullPipelinePrefix_real_le_supported_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedFullPipelinePrefix_real_le_supported" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">55</span><span class="theorem_thmtitle">BABE Claim&#160;12</span></div>
+    <div class="thm_thmcontent"><p>   Good-transcript ratio for an on-curve input. For every transcript \(\tau \) whose chosen input is on the curve and whose permutation queries number at most \(q \leq 2^{101}\): \((1 - (60199016 + 368\, q) / 2^{128}) \cdot \Pr _{\mathrm{ideal}}[\text{good offline sample} \mapsto \tau ] \leq \Pr _{\mathrm{real}}[\tau ]\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedFullPipelinePrefix_real_le_supported">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedFullPipelinePrefix_real_le_supported">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedFullPipelinePrefixBad_mass_le_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedFullPipelinePrefixBad_mass_le" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">60</span><span class="theorem_thmtitle">BABE Claim&#160;11</span></div>
+    <div class="thm_thmcontent"><p>   Bad-transcript mass of the offline phase (Claim&#160;11, events bad1, bad2, bad4). The probability that the programmed points of \(\mathsf{Sim}_2\) collide is at most \(188023005.716 / 2^{128} + 368\, q_1 / 2^{128}\) plus the hash-rounding loss, where \(q_1\) is the number of queries before the chosen input. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedFullPipelinePrefixBad_mass_le">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedFullPipelinePrefixBad_mass_le">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedGoodMaskSourceBad_mass_le_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedGoodMaskSourceBad_mass_le" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">61</span><span class="theorem_thmtitle">BABE Claim&#160;11</span></div>
+    <div class="thm_thmcontent"><p>   Joint collision bound (Claim&#160;11). For the independent mask source of the ideal world, the collision flag has mass at most \(188023005.716 / 2^{128} + 368\, q_1 / 2^{128}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedGoodMaskSourceBad_mass_le">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedGoodMaskSourceBad_mass_le">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedLargeBudget_has100Bits_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedLargeBudget_has100Bits" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">66</span><span class="theorem_thmtitle">BABE Lemma&#160;14</span></div>
+    <div class="thm_thmcontent"><p>   Large budgets. When \(q \geq 2^{101}\), the sum of two advantages, each at most \(1\), satisfies \((q + 1) / (\delta + \delta ') \geq 2^{100}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedLargeBudget_has100Bits">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedLargeBudget_has100Bits">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictAdaptive_event_bound_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictAdaptive_event_bound" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">51</span><span class="theorem_thmtitle">BABE Lemma&#160;13</span></div>
+    <div class="thm_thmcontent"><p>   H-coefficient bound for the strict simulator (Lemma&#160;13). For every event on the decision bit, the real-world transcript and the ideal-world transcript differ by at most the bad-transcript mass \(\varepsilon _1\), which is the given offline bound plus \((60199524 + 372\, q) / 2^{128}\) plus \((q + 1) / p\), plus two hash-rounding losses plus \(2^{-240}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictAdaptive_event_bound">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictAdaptive_event_bound">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictAdaptiveAdvantage_envelope_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictAdaptiveAdvantage_envelope" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">50</span><span class="theorem_thmtitle">BABE Lemma&#160;14</span></div>
+    <div class="thm_thmcontent"><p>   For \(q \leq 2^{101}\), the advantage between the real world of the internal circuit and the ideal world of the strict simulator \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) is at most \(\varepsilon _3(q)\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictAdaptiveAdvantage_envelope">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictAdaptiveAdvantage_envelope">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictGateSource_entrance_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictGateSource_entrance" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">59</span><span class="theorem_thmtitle">BABE Lemma&#160;14</span></div>
+    <div class="thm_thmcontent"><p>   Sampling loss of the real oracle. The real gate source, which samples \(\mathbb {F}_p\) elements by reducing \(384\)-bit hash outputs, and the ideal gate source differ on every event by at most the hash-rounding loss \(305054 \cdot (2^{384} \bmod p) / 2^{384}\) plus \(2^{-240}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictGateSource_entrance">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictGateSource_entrance">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictOraclePrivacy_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictOraclePrivacy" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">46</span><span class="theorem_thmtitle">BABE Theorem&#160;8</span></div>
+    <div class="thm_thmcontent"><p>   A closed implementation of the strict simulator meets the privacy rule of Definition&#160;3. If a bounded machine implements the ideal world of \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) with \(256\) sampling attempts per draw, then the program circuit satisfies oracle adaptive privacy with \(T / \delta \geq 2^{100}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictOraclePrivacy">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictOraclePrivacy">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictSelectedView_good_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictSelectedView_good" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">58</span><span class="theorem_thmtitle">BABE Definition&#160;20</span></div>
+    <div class="thm_thmcontent"><p>   The programming of \(\mathsf{Sim}_2\) succeeds on a good tag. When the garbled \(C_2, C_3\) tag is good and the permutation state starts without a conflict, programming the active labels of the chosen input (Construction&#160;3, Step&#160;3) does not raise the bad flag, on the on-curve and on the off-curve branch. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictSelectedView_good">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictSelectedView_good">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictSourceDecision_allowance_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictSourceDecision_allowance" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">63</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>   Bounded rejection sampling. The advantage between the exact strict simulator and the strict simulator with \(256\) attempts per draw is at most the machine cutoff allowance of \(q\). The simulator of Construction&#160;3 samples with unbounded rejection; the Lean simulator bounds each draw. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictSourceDecision_allowance">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictSourceDecision_allowance">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictSourceDecision_law_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictSourceDecision_law" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">64</span><span class="theorem_thmtitle">BABE Construction&#160;3</span></div>
+    <div class="thm_thmcontent"><p>   The strict simulator draws \(917653\) field elements by rejection sampling. With \(k\) attempts per draw, the simulator with bounded draws is a total law of the exact simulator: it agrees with the exact simulator unless some draw fails \(k\) times. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictSourceDecision_law">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictSourceDecision_law">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictTranscript_good_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictTranscript_good" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">57</span><span class="theorem_thmtitle">BABE Definition&#160;20</span></div>
+    <div class="thm_thmcontent"><p>   On a good sample, the strict simulator does not abort. For every sample of the ideal space outside \(\mathcal{T}_{\mathrm{bad}}\) (Definition&#160;20), the strict transcript equals the sampled transcript. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictTranscript_good">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictTranscript_good">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictWireAdvantage_envelope_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictWireAdvantage_envelope" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">49</span><span class="theorem_thmtitle">BABE Lemma&#160;14</span></div>
+    <div class="thm_thmcontent"><p>   For \(q \leq 2^{101}\), the advantage between the real world of the wire circuit and the exact strict simulator is at most \(\varepsilon _3(q) = (251850146 + 833\, q) / 2^{128}\), the Lean counterpart of the bucketed bound of Lemma&#160;14. </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictWireAdvantage_envelope">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictWireAdvantage_envelope">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Security.sharedStrictWirePrivacy_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Security.sharedStrictWirePrivacy" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">48</span><span class="theorem_thmtitle">BABE Lemma&#160;14</span></div>
+    <div class="thm_thmcontent"><p>   Concrete adaptive privacy (Lemma&#160;14). For every adversary with query budget \(q\), the advantage \(\delta \) between the real world of the wire circuit and the strict simulator with \(256\) attempts per draw satisfies \((q + 1) / \delta \geq 2^{100}\). </p>
+</div>
+
+    <a class="latex_link" href="sect0003.html#Security.sharedStrictWirePrivacy">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictWirePrivacy">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Shared.perfectCorrectness_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Shared.perfectCorrectness" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">10</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   Perfect correctness of the wire circuit, the garbling scheme of Fig.&#160;21 whose input labels are the Lamport signatures of the bits of \(\pi \) (Eqs.&#160;15–16). For every coherent tape and every input \(\pi \), evaluation under the evaluation oracle returns \(f[r](\pi )\). </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Shared.perfectCorrectness">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Shared.perfectCorrectness">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Shared.programLamportCompatible_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Shared.programLamportCompatible" style="display: none">
+    <div class="thm_thmheading">
+      <span class="definition_thmcaption">
+      Definition
+      </span>
+      <span class="definition_thmlabel">78</span><span class="definition_thmtitle">BABE Eqs.&#160;15–16</span></div>
+    <div class="thm_thmcontent"><p>    Lamport compatibility (Eqs.&#160;15–16). The Lamport key pairs \(\{ (L^0_{x,i}, L^1_{x,i}), (L^0_{y,i}, L^1_{y,i})\} _{i {\lt} 254}\) of \(\mathsf{ek}\) and the bit decomposition \(\mathbf{b}\) of \(\pi \) select exactly the labels \(\mathsf{Encode}(\mathsf{ek}, \pi )\), so the input labels are the Lamport signature of \(\pi \). </p>
+</div>
+
+    <a class="latex_link" href="sect0004.html#Shared.programLamportCompatible">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Shared.programLamportCompatible">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+
+
+    
+    <div class="dep-modal-container" id="Shared.programPerfectCorrectness_modal">
+      <div class="dep-modal-content">
+          <button class="dep-closebtn">
+<svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        
+  <div class="thm" id="Shared.programPerfectCorrectness" style="display: none">
+    <div class="thm_thmheading">
+      <span class="theorem_thmcaption">
+      Theorem
+      </span>
+      <span class="theorem_thmlabel">9</span><span class="theorem_thmtitle">BABE Fig.&#160;21</span></div>
+    <div class="thm_thmcontent"><p>   Perfect correctness of the garbling scheme \((\mathsf{Garble}, \mathsf{Encode}, \mathsf{Eval})\) of Fig.&#160;21 for \(f[r]\) (Eq.&#160;27). For every secret scalar \(r\), every random tape, and every input \(\pi = (x(\pi ), y(\pi ))\): \(\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, \mathsf{Encode}(\mathsf{ek}, \pi ), \pi ) = f[r](\pi )\), where \((\mathsf{ct}_{\mathsf{gc}}, \mathsf{ek}) = \mathsf{Garble}(C[r])\). The tape supplies the private coins and the public oracles \(\mathsf{CTPRF}\), \(\mathsf{EncPRF}\), and the hash. </p>
+</div>
+
+    <a class="latex_link" href="sect0002.html#Shared.programPerfectCorrectness">LaTeX</a>
+    
+    
+  <a class="lean_link lean_decl" href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Shared.programPerfectCorrectness">Lean</a>
+    
+    
+  
+    
+  </div>
+    
+      </div>
+    </div>
+</div>
+</div> <!-- content -->
+</div> <!-- wrapper -->
+<script src="js/jquery.min.js" type="text/javascript"></script>
+
+<script src="js/d3.min.js"></script>
+<script src="js/hpcc.min.js"></script>
+<script src="js/d3-graphviz.js"></script>
+
+<script type="text/javascript">
+const graphContainer = d3.select("#graph");
+const width = graphContainer.node().clientWidth;
+const height = graphContainer.node().clientHeight;
+
+
+graphContainer.graphviz({useWorker: true})
+    .width(width)
+    .height(height)
+    .fit(true)
+    .renderDot(`strict digraph "" {	graph [bgcolor=transparent];	node [label="\N",		penwidth=1.8	];	edge [arrowhead=vee];	"Shared.programPerfectCorrectness"	[color=green,		fillcolor="#1CAC78",		label="Shared.programPerfectCorrectness",		shape=ellipse,		style=filled];	"RCBComplete.evaluateCorrectValid"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.evaluateCorrectValid",		shape=ellipse,		style=filled];	"RCBComplete.evaluateCorrect"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.evaluateCorrect",		shape=ellipse,		style=filled];	"RCBComplete.evaluateCorrectValid" -> "RCBComplete.evaluateCorrect";	"RCBComplete.perfectCorrectness"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.perfectCorrectness",		shape=ellipse,		style=filled];	"RCBComplete.evaluateCorrect" -> "RCBComplete.perfectCorrectness";	"Shared.perfectCorrectness"	[color=green,		fillcolor="#1CAC78",		label="Shared.perfectCorrectness",		shape=ellipse,		style=filled];	"RCBComplete.perfectCorrectness" -> "Shared.perfectCorrectness";	"RCBComplete.decodeRowsForOutputKeys"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.decodeRowsForOutputKeys",		shape=ellipse,		style=filled];	"RCBComplete.decodeExpectedResult"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.decodeExpectedResult",		shape=ellipse,		style=filled];	"RCBComplete.decodeRowsForOutputKeys" -> "RCBComplete.decodeExpectedResult";	"RCBComplete.decodeExpectedResult" -> "RCBComplete.evaluateCorrectValid";	"GLV91.glvInitialTerminates92"	[color=green,		fillcolor="#1CAC78",		label="GLV91.glvInitialTerminates92",		shape=ellipse,		style=filled];	"Construction.scalarReconstruction"	[color=green,		fillcolor="#1CAC78",		label="Construction.scalarReconstruction",		shape=ellipse,		style=filled];	"GLV91.glvInitialTerminates92" -> "Construction.scalarReconstruction";	"Construction.correct"	[color=green,		fillcolor="#1CAC78",		label="Construction.correct",		shape=ellipse,		style=filled];	"Construction.scalarReconstruction" -> "Construction.correct";	"Construction.correct" -> "RCBComplete.decodeExpectedResult";	"Security.sharedStrictGateSource_entrance"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictGateSource_entrance",		shape=ellipse,		style=filled];	"Construction.correct" -> "Security.sharedStrictGateSource_entrance";	"Shared.perfectCorrectness" -> "Shared.programPerfectCorrectness";	"Security.sharedStrictAdaptive_event_bound"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictAdaptive_event_bound",		shape=ellipse,		style=filled];	"Security.sharedStrictAdaptiveAdvantage_envelope"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictAdaptiveAdvantage_envelope",		shape=ellipse,		style=filled];	"Security.sharedStrictAdaptive_event_bound" -> "Security.sharedStrictAdaptiveAdvantage_envelope";	"Security.sharedStrictWireAdvantage_envelope"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictWireAdvantage_envelope",		shape=ellipse,		style=filled];	"Security.sharedStrictAdaptiveAdvantage_envelope" -> "Security.sharedStrictWireAdvantage_envelope";	"Security.sharedStrictWirePrivacy"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictWirePrivacy",		shape=ellipse,		style=filled];	"Security.sharedStrictWireAdvantage_envelope" -> "Security.sharedStrictWirePrivacy";	"Security.sharedStrictSelectedView_good"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictSelectedView_good",		shape=ellipse,		style=filled];	"Security.sharedStrictTranscript_good"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictTranscript_good",		shape=ellipse,		style=filled];	"Security.sharedStrictSelectedView_good" -> "Security.sharedStrictTranscript_good";	"Security.sharedStrictTranscript_good" -> "Security.sharedStrictAdaptive_event_bound";	"ArithmeticSimulator.lazySetupJoint_parsed"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazySetupJoint_parsed",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazyCompiledIdealGame_finiteSource"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazyCompiledIdealGame_finiteSource",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazySetupJoint_parsed" -> "ArithmeticSimulator.lazyCompiledIdealGame_finiteSource";	"ArithmeticSimulator.lazyCompiledIdealGame_eqStrict"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazyCompiledIdealGame_eqStrict",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazyCompiledIdealGame_finiteSource" -> "ArithmeticSimulator.lazyCompiledIdealGame_eqStrict";	"ArithmeticSimulator.lazyCompiledAdaptivePrivacy"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazyCompiledAdaptivePrivacy",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazyCompiledIdealGame_eqStrict" -> "ArithmeticSimulator.lazyCompiledAdaptivePrivacy";	"ArithmeticSimulator.lazyCompiledOnline_decision"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazyCompiledOnline_decision",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazyCompiledOnline_decision" -> "ArithmeticSimulator.lazyCompiledIdealGame_eqStrict";	"Lamport.affineLamportBits_eq_append"	[color=green,		fillcolor="#1CAC78",		label="Lamport.affineLamportBits_eq_append",		shape=ellipse,		style=filled];	"Lamport.selectedLabels_eq"	[color=green,		fillcolor="#1CAC78",		label="Lamport.selectedLabels_eq",		shape=ellipse,		style=filled];	"Lamport.affineLamportBits_eq_append" -> "Lamport.selectedLabels_eq";	"Shared.programLamportCompatible"	[color=green,		fillcolor="#B0ECA3",		label="Shared.programLamportCompatible",		shape=box,		style=filled];	"Lamport.selectedLabels_eq" -> "Shared.programLamportCompatible"	[style=dashed];	"Lamport.selectedLabelsEncodeLow"	[color=green,		fillcolor="#1CAC78",		label="Lamport.selectedLabelsEncodeLow",		shape=ellipse,		style=filled];	"Lamport.selectedLabelsEncodeLow" -> "Lamport.selectedLabels_eq";	"RCBComplete.pipelineEvaluateInvalid"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.pipelineEvaluateInvalid",		shape=ellipse,		style=filled];	"RCBComplete.evaluateCorrectInvalid"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.evaluateCorrectInvalid",		shape=ellipse,		style=filled];	"RCBComplete.pipelineEvaluateInvalid" -> "RCBComplete.evaluateCorrectInvalid";	"RCBComplete.evaluateCorrectInvalid" -> "RCBComplete.evaluateCorrect";	"FieldMacToECMac.evaluateEncoded"	[color=green,		fillcolor="#1CAC78",		label="FieldMacToECMac.evaluateEncoded",		shape=ellipse,		style=filled];	"Pipeline.evaluateEncoded"	[color=green,		fillcolor="#1CAC78",		label="Pipeline.evaluateEncoded",		shape=ellipse,		style=filled];	"FieldMacToECMac.evaluateEncoded" -> "Pipeline.evaluateEncoded";	"Garbling.evaluateEncodeRows"	[color=green,		fillcolor="#1CAC78",		label="Garbling.evaluateEncodeRows",		shape=ellipse,		style=filled];	"Pipeline.evaluateEncoded" -> "Garbling.evaluateEncodeRows";	"Garbling.evaluateEncodeRows" -> "RCBComplete.evaluateCorrectValid";	"Security.sharedStrictGateSource_entrance" -> "Security.sharedStrictAdaptive_event_bound";	"Security.sharedStrictOraclePrivacy"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictOraclePrivacy",		shape=ellipse,		style=filled];	"Security.sharedStrictWirePrivacy" -> "Security.sharedStrictOraclePrivacy";	"Security.sharedStrictOraclePrivacy" -> "ArithmeticSimulator.lazyCompiledAdaptivePrivacy";	"Security.sharedErrors_has100Bits"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedErrors_has100Bits",		shape=ellipse,		style=filled];	"Security.sharedErrors_has100Bits" -> "Security.sharedStrictWirePrivacy";	"Security.sharedLargeBudget_has100Bits"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedLargeBudget_has100Bits",		shape=ellipse,		style=filled];	"Security.sharedLargeBudget_has100Bits" -> "Security.sharedStrictWirePrivacy";	"Security.hCoefficient_event_of_sourceGoodMass_congr"	[color=green,		fillcolor="#1CAC78",		label="Security.hCoefficient_event_of_sourceGoodMass_congr",		shape=ellipse,		style=filled];	"Security.hCoefficient_event_of_sourceGoodMass_congr" -> "Security.sharedStrictAdaptive_event_bound";	"Security.sharedGoodMaskSourceBad_mass_le"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedGoodMaskSourceBad_mass_le",		shape=ellipse,		style=filled];	"Security.sharedFullPipelinePrefixBad_mass_le"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedFullPipelinePrefixBad_mass_le",		shape=ellipse,		style=filled];	"Security.sharedGoodMaskSourceBad_mass_le" -> "Security.sharedFullPipelinePrefixBad_mass_le";	"Security.sharedFullPipelinePrefixBad_mass_le" -> "Security.sharedStrictAdaptiveAdvantage_envelope";	"ArithmeticSimulator.lazyOnlineMachine_run"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazyOnlineMachine_run",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazyCompiledMachine_onlineParsed"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazyCompiledMachine_onlineParsed",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazyOnlineMachine_run" -> "ArithmeticSimulator.lazyCompiledMachine_onlineParsed";	"ArithmeticSimulator.lazyCompiledMachine_onlineParsed" -> "ArithmeticSimulator.lazyCompiledOnline_decision";	"RCBComplete.decodeEvaluateRowSome"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.decodeEvaluateRowSome",		shape=ellipse,		style=filled];	"RCBComplete.decodeEvaluateOutputKeyRow"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.decodeEvaluateOutputKeyRow",		shape=ellipse,		style=filled];	"RCBComplete.decodeEvaluateRowSome" -> "RCBComplete.decodeEvaluateOutputKeyRow";	"RCBComplete.decodeEvaluateOutputKeyRow" -> "RCBComplete.decodeRowsForOutputKeys";	"RCBComplete.decodeEvaluateOutputKeyRow" -> "Security.sharedStrictGateSource_entrance";	"Security.sharedFullPipelinePrefix_real_le_supported"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedFullPipelinePrefix_real_le_supported",		shape=ellipse,		style=filled];	"Security.sharedCombinedGood_real_le"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedCombinedGood_real_le",		shape=ellipse,		style=filled];	"Security.sharedFullPipelinePrefix_real_le_supported" -> "Security.sharedCombinedGood_real_le";	"Security.sharedCombinedGood_real_le" -> "Security.sharedStrictAdaptive_event_bound";	"Security.sharedStrictSourceDecision_allowance"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictSourceDecision_allowance",		shape=ellipse,		style=filled];	"Security.sharedStrictSourceDecision_allowance" -> "Security.sharedStrictWirePrivacy";	"Security.sharedStrictSourceDecision_law"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedStrictSourceDecision_law",		shape=ellipse,		style=filled];	"Security.sharedStrictSourceDecision_law" -> "Security.sharedStrictSourceDecision_allowance";	"ArithmeticSimulator.lazyCompiledMachine"	[color=green,		fillcolor="#B0ECA3",		label="ArithmeticSimulator.lazyCompiledMachine",		shape=box,		style=filled];	"ArithmeticSimulator.lazyCompiledMachine" -> "ArithmeticSimulator.lazySetupJoint_parsed"	[style=dashed];	"ArithmeticSimulator.lazyCompiledMachine" -> "ArithmeticSimulator.lazyCompiledMachine_onlineParsed"	[style=dashed];	"ArithmeticSimulator.lazyChosenDecision_completion"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.lazyChosenDecision_completion",		shape=ellipse,		style=filled];	"ArithmeticSimulator.lazyCompiledMachine" -> "ArithmeticSimulator.lazyChosenDecision_completion"	[style=dashed];	"ArithmeticSimulator.lazyChosenDecision_completion" -> "ArithmeticSimulator.lazyCompiledIdealGame_eqStrict";	"CurveMembership.evaluateEncodedOnCurve"	[color=green,		fillcolor="#1CAC78",		label="CurveMembership.evaluateEncodedOnCurve",		shape=ellipse,		style=filled];	"CurveMembership.evaluateEncodedOnCurve" -> "Pipeline.evaluateEncoded";	"RCBComplete.decodeEvaluateRowNone"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.decodeEvaluateRowNone",		shape=ellipse,		style=filled];	"RCBComplete.decodeEvaluateRowNone" -> "RCBComplete.decodeEvaluateOutputKeyRow";	"Security.sharedCombinedBad_real_mass_le"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedCombinedBad_real_mass_le",		shape=ellipse,		style=filled];	"Security.sharedCombinedBad_real_mass_le" -> "Security.sharedStrictAdaptive_event_bound";	"Security.sharedAdaptiveThreeRoundingLossSum_le_envelope"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedAdaptiveThreeRoundingLossSum_le_envelope",		shape=ellipse,		style=filled];	"Security.sharedAdaptiveThreeRoundingLossSum_le_envelope" -> "Security.sharedStrictAdaptiveAdvantage_envelope";	"Lamport.appendGetHigh"	[color=green,		fillcolor="#1CAC78",		label="Lamport.appendGetHigh",		shape=ellipse,		style=filled];	"Lamport.appendGetHigh" -> "Lamport.selectedLabels_eq";	"RCBComplete.decodeScaledAlgorithmValue"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.decodeScaledAlgorithmValue",		shape=ellipse,		style=filled];	"RCBComplete.decodeScaledAlgorithmValue" -> "RCBComplete.decodeEvaluateRowSome";	"RCBComplete.outputNonsingular"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.outputNonsingular",		shape=ellipse,		style=filled];	"RCBComplete.outputRepresentsSum"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.outputRepresentsSum",		shape=ellipse,		style=filled];	"RCBComplete.outputNonsingular" -> "RCBComplete.outputRepresentsSum";	"RCBComplete.outputRepresentsSum" -> "RCBComplete.decodeScaledAlgorithmValue";	"Security.sharedFullCurveGood_real_le_budget"	[color=green,		fillcolor="#1CAC78",		label="Security.sharedFullCurveGood_real_le_budget",		shape=ellipse,		style=filled];	"Security.sharedFullCurveGood_real_le_budget" -> "Security.sharedCombinedGood_real_le";	"Lamport.keyPairs"	[color=green,		fillcolor="#B0ECA3",		label="Lamport.keyPairs",		shape=box,		style=filled];	"Lamport.keyPairsGetHigh"	[color=green,		fillcolor="#1CAC78",		label="Lamport.keyPairsGetHigh",		shape=ellipse,		style=filled];	"Lamport.keyPairs" -> "Lamport.keyPairsGetHigh"	[style=dashed];	"Lamport.keyPairsGetLow"	[color=green,		fillcolor="#1CAC78",		label="Lamport.keyPairsGetLow",		shape=ellipse,		style=filled];	"Lamport.keyPairs" -> "Lamport.keyPairsGetLow"	[style=dashed];	"Lamport.keyPairsGetHigh" -> "Lamport.selectedLabels_eq";	"Lamport.keyPairsGetLow" -> "Lamport.selectedLabels_eq";	"Lamport.restore_selected"	[color=green,		fillcolor="#1CAC78",		label="Lamport.restore_selected",		shape=ellipse,		style=filled];	"Lamport.restore_selected" -> "Shared.perfectCorrectness";	"EncPRF.transformEncode"	[color=green,		fillcolor="#1CAC78",		label="EncPRF.transformEncode",		shape=ellipse,		style=filled];	"EncPRF.transformEncode" -> "Security.sharedStrictSelectedView_good";	"EncPRF.transformEncode" -> "Pipeline.evaluateEncoded";	"EncPRF.transformEncode" -> "Security.sharedFullPipelinePrefix_real_le_supported";	"Construction.offsetsCancel"	[color=green,		fillcolor="#1CAC78",		label="Construction.offsetsCancel",		shape=ellipse,		style=filled];	"Construction.offsetsCancel" -> "Construction.correct";	"Lamport.appendGetLow"	[color=green,		fillcolor="#1CAC78",		label="Lamport.appendGetLow",		shape=ellipse,		style=filled];	"Lamport.appendGetLow" -> "Lamport.selectedLabels_eq";	"RCBComplete.outputKeyPoints"	[color=green,		fillcolor="#1CAC78",		label="RCBComplete.outputKeyPoints",		shape=ellipse,		style=filled];	"RCBComplete.outputKeyPoints" -> "RCBComplete.decodeExpectedResult";	"RCBComplete.outputKeyPoints" -> "Security.sharedStrictGateSource_entrance";	"Security.OperationalOracle.shared_lazy_real"	[color=green,		fillcolor="#1CAC78",		label="Security.OperationalOracle.shared_lazy_real",		shape=ellipse,		style=filled];	"Security.OperationalOracle.shared_lazy_real" -> "Security.sharedStrictOraclePrivacy";	"Lamport.selectedLabelsEncodeHigh"	[color=green,		fillcolor="#1CAC78",		label="Lamport.selectedLabelsEncodeHigh",		shape=ellipse,		style=filled];	"Lamport.selectedLabelsEncodeHigh" -> "Lamport.selectedLabels_eq";	"ArithmeticSimulator.phaseBudget"	[color=green,		fillcolor="#1CAC78",		label="ArithmeticSimulator.phaseBudget",		shape=ellipse,		style=filled];	"ArithmeticSimulator.phaseBudget" -> "ArithmeticSimulator.lazyCompiledMachine"	[style=dashed];}`)
+    .on("end", interactive);
+
+latexLabelEscaper = function(label) {
+  return label.replace(/\./g, '\\.').replace(/:/g, '\\:')
+}
+
+clickNode = function() {
+  $("#statements div").hide()
+  var node_id = $('text', this).text();
+  $('.thm').hide();
+  $('#'+latexLabelEscaper(node_id)).show().children().show();
+}
+function interactive() {
+    $("span#legend_title").on("click", function () {
+           $(this).siblings('dl').toggle();
+        })
+
+    d3.selectAll('.node')
+        .attr('pointer-events', 'fill')
+        .on('click', function () {
+           var title = d3.select(this).selectAll('title').text().trim();
+           $('#statements > div').hide()
+           $('.thm').hide();
+           $('#'+latexLabelEscaper(title)+'_modal').show().children().show().children().show();
+           $('#statements').show()
+        });
+
+    d3.selectAll('.dep-closebtn').on('click', function() {
+        var modal =
+            d3.select(this).node().parentNode.parentNode.parentNode ;
+        d3.select(modal).style('display', 'none');
+    });
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,356 @@
+% The Lean build generates the node files.
+% Run `lake build :blueprint` before `make pdf` or `make web`.
+\input{../../../.lake/build/blueprint/library/Construction}
+\input{../../../.lake/build/blueprint/library/Proof}
+
+\chapter{Introduction}
+
+This blueprint describes the three verified security properties of the submitted ArgoMAC garbling scheme for BN254 scalar multiplication from the BABE paper~\cite{babe}.
+The scheme garbles the function $f[r](\pi)$ of \cite[Eq.~27]{babe}: it returns $r\pi$ for a point $\pi \in \mathbb{G}_1$ and $0$ otherwise, and it hides the secret scalar $r$.
+The Lean project extracts each node from the source with LeanArchitect.
+Each node shows the Lean declaration, its statement in the notation of the paper, and its dependencies.
+The dependency graph on the web version shows the proof tree of each property.
+The roots match the \texttt{perfectCorrectness}, \texttt{adaptivePrivacy}, and \texttt{lamportCompatible} fields of \texttt{Submission.solution}.
+
+\section{Paper correspondence}
+
+Each node names its counterpart in the BaBe paper~\cite{babe}.
+The references use BABE v2.0, the version pinned by the Lean sources
+(\href{https://github.com/babylonlabs-io/BaBe.latex/tree/e2dcf4d540b2708e13cd21090df759051119a116}{commit \texttt{e2dcf4d}}).
+Each chapter restates the items of the BaBe paper before the Lean nodes, with the kind of the item in the paper: theorem, lemma, claim, definition, construction, or algorithm.
+Each restatement adapts the wording of the paper to the notation of this blueprint and names the item, for example ``Lemma~14 of the BaBe paper''.
+\Cref{tab:paper} lists the paper items and the Lean nodes that formalize them.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{p{0.34\textwidth}p{0.6\textwidth}}
+\hline
+Paper item & Lean nodes \\
+\hline
+Fig.~21, overall garbling scheme & \cref{Shared.programPerfectCorrectness,Shared.perfectCorrectness,RCBComplete.perfectCorrectness,RCBComplete.evaluateCorrect,RCBComplete.evaluateCorrectValid,Garbling.evaluateEncodeRows,Pipeline.evaluateEncoded,RCBComplete.decodeExpectedResult} \\
+Eq.~27, $f[r]$ rejects off-curve inputs & \cref{RCBComplete.evaluateCorrectInvalid,RCBComplete.pipelineEvaluateInvalid} \\
+Fig.~17 and Fig.~18, circuit $C_4$ & \cref{CurveMembership.evaluateEncodedOnCurve} \\
+Claim~7 and Section~5.5, $\mathsf{Enc}_t$ through $\mathsf{EncPRF}$ & \cref{EncPRF.transformEncode} \\
+Fig.~9 and Fig.~10, circuit $C_2$ & \cref{FieldMacToECMac.evaluateEncoded,RCBComplete.decodeRowsForOutputKeys,RCBComplete.decodeEvaluateOutputKeyRow} \\
+Eqs.~29--31, Jacobian coordinates of $r_j \pi + K_j$ & \cref{RCBComplete.decodeEvaluateRowNone,RCBComplete.decodeEvaluateRowSome,RCBComplete.decodeScaledAlgorithmValue,RCBComplete.outputNonsingular,RCBComplete.outputRepresentsSum} \\
+Fig.~6 and Fig.~7, circuit $C_1$ & \cref{Construction.correct,RCBComplete.outputKeyPoints,Construction.offsetsCancel} \\
+Appendix~C and Alg.~8, base-$(2-\omega)$ digits & \cref{Construction.scalarReconstruction,GLV91.glvInitialTerminates92} \\
+Theorem~8, adaptive privacy of the optimized scheme & \cref{ArithmeticSimulator.lazyCompiledAdaptivePrivacy,Security.sharedStrictOraclePrivacy} \\
+Theorem~7, hybrid $\mathsf{Hyb}_0$ & \cref{Security.OperationalOracle.shared_lazy_real} \\
+Lemma~14, concrete bound for $\mathsf{GC}_3$ in the pRPM & \cref{Security.sharedStrictWirePrivacy,Security.sharedStrictWireAdvantage_envelope,Security.sharedStrictAdaptiveAdvantage_envelope,Security.sharedStrictGateSource_entrance,Security.sharedAdaptiveThreeRoundingLossSum_le_envelope,Security.sharedErrors_has100Bits,Security.sharedLargeBudget_has100Bits} \\
+Lemma~13, H-coefficient technique & \cref{Security.sharedStrictAdaptive_event_bound,Security.hCoefficient_event_of_sourceGoodMass_congr} \\
+Claim~11, bad transcript mass $\varepsilon_1$ & \cref{Security.sharedCombinedBad_real_mass_le,Security.sharedFullPipelinePrefixBad_mass_le,Security.sharedGoodMaskSourceBad_mass_le} \\
+Claim~12, good transcript ratio & \cref{Security.sharedCombinedGood_real_le,Security.sharedFullPipelinePrefix_real_le_supported,Security.sharedFullCurveGood_real_le_budget} \\
+Definition~20, bad transcripts & \cref{Security.sharedStrictTranscript_good,Security.sharedStrictSelectedView_good} \\
+Construction~3, simulator $(\mathsf{Sim}_1, \mathsf{Sim}_2)$ & \cref{Security.sharedStrictSourceDecision_allowance,Security.sharedStrictSourceDecision_law,ArithmeticSimulator.lazyCompiledIdealGame_eqStrict,ArithmeticSimulator.lazyCompiledIdealGame_finiteSource,ArithmeticSimulator.lazySetupJoint_parsed,ArithmeticSimulator.lazyChosenDecision_completion,ArithmeticSimulator.lazyCompiledOnline_decision,ArithmeticSimulator.lazyCompiledMachine_onlineParsed,ArithmeticSimulator.lazyOnlineMachine_run,ArithmeticSimulator.lazyCompiledMachine,ArithmeticSimulator.phaseBudget} \\
+Eqs.~15--16 and Section~5.1, Lamport labels & \cref{Shared.programLamportCompatible,Lamport.selectedLabels_eq,Lamport.restore_selected,Lamport.keyPairs,Lamport.affineLamportBits_eq_append,Lamport.appendGetLow,Lamport.selectedLabelsEncodeLow,Lamport.keyPairsGetLow,Lamport.appendGetHigh,Lamport.selectedLabelsEncodeHigh,Lamport.keyPairsGetHigh} \\
+\hline
+\end{tabular}
+\caption{Paper items and the Lean nodes that formalize them.}
+\label{tab:paper}
+\end{table}
+
+\chapter{Perfect correctness}
+
+The root is \cref{Shared.programPerfectCorrectness}.
+For every secret scalar $r$, every random tape, and every input $\pi$, $\mathsf{Eval}$ on the garbled circuit and the labels of $\pi$ returns $f[r](\pi)$ (Fig.~21).
+The proof follows the evaluation chain of the paper: the curve membership circuit $C_4$ releases $t$, $\mathsf{Dec}_t$ recovers the labels $L_3$, the garbled $C_2$ returns the Jacobian coordinates of $r_j \pi + K_j$, and $\mathsf{Eval}_1$ sums them with the base-$(2-\omega)$ weights.
+\Cref{fig:perfect-correctness} shows the proof tree.
+An arrow points from a lemma to the result that uses it.
+
+\depgraphfigure{perfect-correctness}{Dependencies of the perfect correctness proof.}
+
+\section{Statements from the paper}
+
+\begin{paperdef}[{Correctness; Definition~3 of the BaBe paper~\cite{babe}}]\label{babe:def3-correctness}
+A garbling scheme $\mathsf{GC} = (\mathsf{Garble}, \mathsf{Encode}, \mathsf{Eval})$ is correct if for every circuit $C$ and every input $x$:
+\[
+  \Pr\big[\, C(x) = \mathsf{Eval}(\mathsf{ct}_{\mathsf{GC}}, L_x) \;:\; (\mathsf{ct}_{\mathsf{GC}}, \mathsf{ek}) \gets \mathsf{Garble}(C),\; L_x \gets \mathsf{Encode}(\mathsf{ek}, x) \,\big] = 1 .
+\]
+Formalized by \cref{Shared.programPerfectCorrectness}.
+\end{paperdef}
+
+\begin{paperdef}[{The function $f[r]$; Eq.~27 of the BaBe paper~\cite{babe}}]\label{babe:eq27}
+The Verifier fixes a secret scalar $r \in \mathbb{F}_{\mathbb{r}}^*$.
+The Prover supplies a public input point $\pi$ through the bit decomposition $\mathbf{b} = (x_0(\pi), \ldots, x_{n-1}(\pi), y_0(\pi), \ldots, y_{n-1}(\pi))$ of its affine coordinates, with $n = 254$.
+The garbled function is
+\[
+  f[r](\pi) = \begin{cases} r\pi & \text{if } \pi \in \mathbb{G}_1, \\ 0 & \text{otherwise.} \end{cases}
+\]
+Formalized by \cref{RCBComplete.evaluateCorrect}; the off-curve branch is \cref{RCBComplete.evaluateCorrectInvalid}.
+\end{paperdef}
+
+\begin{paperconstr}[{Overall garbling scheme; Fig.~21 and Fig.~29 of the BaBe paper~\cite{babe}}]\label{babe:fig21}
+$\mathsf{Garble}(C[r_0, \ldots, r_{\ell-1}])$ runs $\mathsf{Garble}_1(C_1)$, $\mathsf{Garble}_2(C_2[\mathsf{ek}_1])$, $\mathsf{Garble}_3(C_3[\mathsf{ek}_2])$, samples $t, w \gets \mathbb{F}_p$, runs $\mathsf{Garble}_4(C_4[t, w])$ and $\mathsf{Garble}_5(C_5[\mathsf{ek}_4])$, and returns $\mathsf{ct}_{\mathsf{gc}} = (\mathsf{ct}_{\mathsf{gc},2}, \mathsf{ct}_{\mathsf{gc},3}, \mathsf{ct}_{\mathsf{gc},4}, \mathsf{ct}_{\mathsf{gc},5})$ and $\mathsf{ek} = (\mathsf{ek}_3, t, \mathsf{ek}_5)$.
+$\mathsf{Encode}(\mathsf{ek}, \mathbf{b})$ returns $L = (\mathsf{Enc}_t(L_3), L_5)$ with $L_3 = \mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})$ and $L_5 = \mathsf{Encode}_5(\mathsf{ek}_5, \mathbf{b})$.
+$\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, L, \mathbf{b})$ computes $L_4 \gets \mathsf{Eval}_5$, $\hat t \gets \mathsf{Eval}_4(\mathsf{ct}_{\mathsf{gc},4}, L_4, x(\pi), y(\pi))$, $L_3 \gets \mathsf{Dec}_{\hat t}(\mathsf{Enc}_t(L_3))$, $L_2 \gets \mathsf{Eval}_3$, the Jacobian coordinates $(X, Y, Z)(r_j \pi + K_j)_{j} \gets \mathsf{Eval}_2(\mathsf{ct}_{\mathsf{gc},2}, L_2, x(\pi), y(\pi))$, converts them to affine points $L_{1,j}$, and returns $\mathsf{Eval}_1(\bot, L_1)$.
+The optimized scheme (Fig.~29) uses the base-$(2-\omega)$ digits $r_j \in D$ with $\ell = 92$ and merges the layers into $\mathsf{GC}_{23}$ and $\mathsf{GC}_{45}$.
+Formalized by \cref{RCBComplete.evaluateCorrectValid,Garbling.evaluateEncodeRows,Pipeline.evaluateEncoded,RCBComplete.decodeExpectedResult}.
+\end{paperconstr}
+
+\begin{paperconstr}[{Circuit $C_1$ and its garbling; Fig.~6 and Fig.~7 of the BaBe paper~\cite{babe}}]\label{babe:fig7}
+$C_1[r_0, \ldots, r_{\ell-1}](\pi) = \sum_{j=0}^{\ell-1} (2-\omega)^j (r_j \pi)$.
+$\mathsf{Garble}_1$ samples $K_j \gets \mathbb{G}_1$ for $j \geq 1$, sets $K_0 = -\sum_{j \geq 1} (2-\omega)^j K_j$, and returns $\mathsf{ct}_{\mathsf{gc},1} = \bot$ and $\mathsf{ek}_1 = (r_0, \ldots, r_{\ell-1}, K_0, \ldots, K_{\ell-1})$.
+$\mathsf{Encode}_1(\mathsf{ek}_1, \pi)$ returns $L_1 = (L_{1,j})_j$ with $L_{1,j} = r_j \pi + K_j$.
+$\mathsf{Eval}_1(\bot, L_1) = \sum_{j=0}^{\ell-1} (2-\omega)^j L_{1,j}$.
+Formalized by \cref{Construction.correct,RCBComplete.outputKeyPoints,Construction.offsetsCancel}.
+\end{paperconstr}
+
+\begin{paperconstr}[{Circuit $C_2$ and its garbling; Fig.~9, Fig.~10, Eqs.~29--31 of the BaBe paper~\cite{babe}}]\label{babe:fig10}
+For each digit $j$ and coordinate $W \in \{X, Y, Z\}$, the Jacobian coordinate $W(r_j \pi + K_j)$ is a quadratic function of $(x(\pi), y(\pi))$:
+\[
+  W(r_j \pi + K_j) = c^{(j,W)}_0 + c^{(j,W)}_1\, x(\pi) + c^{(j,W)}_2\, y(\pi) + c^{(j,W)}_3\, x(\pi) y(\pi) + c^{(j,W)}_4\, x(\pi)^2 + c^{(j,W)}_5\, y(\pi)^2 .
+\]
+For a binary digit $r_j$, an offset $K_j = (x(K_j), y(K_j))$, a randomizer $a_j \gets \mathbb{F}_p$, and $B = 3$, the coefficients are
+\begin{align*}
+  \mathbf{c}^{(j,X)} &= a_j^2 \big( r_j \cdot 2B + (1 - r_j)\, x(K_j),\; r_j\, x(K_j)^2,\; -2 r_j\, y(K_j),\; 0,\; r_j\, x(K_j),\; 0 \big), \\
+  \mathbf{c}^{(j,Y)} &= a_j^3 \big( r_j \cdot 3B\, y(K_j) + (1 - r_j)\, y(K_j),\; 0,\; r_j (-y(K_j)^2 - 3B),\; -3 r_j\, x(K_j)^2,\; 3 r_j\, x(K_j) y(K_j),\; r_j\, y(K_j) \big), \\
+  \mathbf{c}^{(j,Z)} &= a_j \big( -r_j\, x(K_j) + (1 - r_j),\; r_j,\; 0,\; 0,\; 0,\; 0 \big).
+\end{align*}
+The base-$(2-\omega)$ implementation uses the adjusted coefficients of \cite[Eqs.~51--53]{babe} for digits $r_j \in D$.
+$\mathsf{Garble}_2$ applies the Ishai--Wee partial garbling: it samples masks $\rho^{(j,W)}_1, \ldots, \rho^{(j,W)}_{10}$, sets $\rho_0 = -\rho_9 - \rho_{10}$, and publishes $c'_k = c_k + \rho_k$ for $k \leq 5$.
+$\mathsf{Encode}_2$ returns the labels $c'_6, \ldots, c'_{10}$, which are affine in $x(\pi)$ and $y(\pi)$.
+$\mathsf{Eval}_2$ returns $c'_0 + c'_1 x + c'_2 y + c'_3 xy + c'_4 x^2 + c'_5 y^2 + c'_6 x + c'_7 x + c'_8 y + c'_9 + c'_{10} = W(r_j \pi + K_j)$.
+Formalized by \cref{FieldMacToECMac.evaluateEncoded,RCBComplete.decodeRowsForOutputKeys,RCBComplete.decodeEvaluateOutputKeyRow,RCBComplete.decodeEvaluateRowNone,RCBComplete.decodeEvaluateRowSome,RCBComplete.decodeScaledAlgorithmValue,RCBComplete.outputNonsingular,RCBComplete.outputRepresentsSum}.
+\end{paperconstr}
+
+\begin{paperconstr}[{Curve membership circuit $C_4$; Fig.~17 and Fig.~18 of the BaBe paper~\cite{babe}}]\label{babe:fig18}
+$C_4[t, w](x, y) = t + w\,(x^3 + 3 - y^2) = (t + 3w) + w\, x^3 - w\, y^2$ for $t, w \gets \mathbb{F}_p$.
+The value $t$ is released if and only if $\pi$ is on the curve.
+$\mathsf{Garble}_4$ applies the Ishai--Wee technique to the coefficients $(\hat c_0, \hat c_1, \hat c_2) = (t + 3w, w, -w)$ with masks $\hat\rho_1, \ldots, \hat\rho_7$, and $\mathsf{Eval}_4$ returns $\hat c'_0 + \hat c'_1 x^3 + \hat c'_2 y^2 + \hat c'_3 x^2 + \hat c'_4 y + \hat c'_5 x + \hat c'_6 + \hat c'_7$.
+Formalized by \cref{CurveMembership.evaluateEncodedOnCurve}.
+\end{paperconstr}
+
+\begin{paperclaim}[{Encryption of the labels; Claim~7 and Eq.~33 of the BaBe paper~\cite{babe}}]\label{babe:claim7}
+$(\mathsf{Enc}, \mathsf{Dec})$ is implemented with a PRF $\mathsf{EncPRF}$ and a public counter: $\mathsf{Enc}_t(m) = \mathsf{EncPRF}(t, \mathsf{counter}) \oplus m$ and $\mathsf{Dec}_t(\mathsf{ct}) = \mathsf{EncPRF}(t, \mathsf{counter}) \oplus \mathsf{ct}$.
+$\mathsf{EncPRF}(t, (w, i, b)) = \mathsf{P}_{w,i}(\mathsf{enc}(b) \oplus k_1) \oplus k_2$ with $k_1 \| k_2 = \mathsf{SHA256}(t)$ is the two-key Even--Mansour construction, where each $\mathsf{P}_{w,i}$ is a programmable random permutation.
+The labels of $\mathsf{GC}_3$ are encrypted label by label: $\hat L^b_{x,i} = \mathsf{Enc}_t(L^b_{x,i})$ and $\hat L^b_{y,i} = \mathsf{Enc}_t(L^b_{y,i})$ (Eq.~33).
+If $\mathsf{GC}_{45}$ is $\epsilon_1$-adaptively private, then the first two hybrids of the privacy proof differ by at most $\epsilon_1 + \mathsf{negl}(\lambda)$.
+Formalized by \cref{EncPRF.transformEncode}.
+\end{paperclaim}
+
+\begin{paperalg}[{Base-$(2-\omega)$ digits; Appendix~C and Alg.~8 of the BaBe paper~\cite{babe}}]\label{babe:alg8}
+Let $\omega \in \mathbb{F}_{\mathbb{r}}$ with $\omega^2 + \omega + 1 = 0$ and $D = \{0, \pm 1, \pm\omega, \pm(1 + \omega)\}$.
+For every scalar $r \in \{0, \ldots, \mathbb{r} - 1\}$, the GLV decomposition gives small integers $(a, b)$ with $r \equiv a + \omega b \pmod{\mathbb{r}}$.
+Alg.~8 divides $A + B\omega$ by $2 - \omega$ repeatedly, with the digit $r_i \in D$ chosen from $(A + 2B) \bmod 7$ and the exact division $A' = (3A - B)/7$, $B' = (A + 2B)/7$, and stops at $(A, B) = (0, 0)$ within $\ell = 1 + \lceil \log_7 \mathbb{r} \rceil = 92$ iterations.
+The reconstruction $\sum_{i=0}^{\ell-1} r_i (2-\omega)^i \equiv r \pmod{\mathbb{r}}$ holds.
+Multiplication by a digit in $D$ is an endomorphism: $\omega \pi = (\mu\, x(\pi), y(\pi))$ with $\mu^2 + \mu + 1 = 0$ in $\mathbb{F}_p$, and $-\pi = (x(\pi), -y(\pi))$.
+Formalized by \cref{Construction.scalarReconstruction,GLV91.glvInitialTerminates92}.
+\end{paperalg}
+
+\section{Lean statements}
+
+\subsection{Program and wire circuits}
+\inputleannode{Shared.programPerfectCorrectness}
+\inputleannode{Shared.perfectCorrectness}
+\inputleannode{Lamport.restore_selected}
+\inputleannode{RCBComplete.perfectCorrectness}
+\inputleannode{RCBComplete.evaluateCorrect}
+
+\subsection{Invalid inputs}
+\inputleannode{RCBComplete.evaluateCorrectInvalid}
+\inputleannode{RCBComplete.pipelineEvaluateInvalid}
+
+\subsection{Valid inputs}
+\inputleannode{RCBComplete.evaluateCorrectValid}
+\inputleannode{Garbling.evaluateEncodeRows}
+\inputleannode{Pipeline.evaluateEncoded}
+\inputleannode{CurveMembership.evaluateEncodedOnCurve}
+\inputleannode{EncPRF.transformEncode}
+\inputleannode{FieldMacToECMac.evaluateEncoded}
+
+\subsection{Decoding}
+\inputleannode{RCBComplete.decodeExpectedResult}
+\inputleannode{RCBComplete.decodeRowsForOutputKeys}
+\inputleannode{RCBComplete.decodeEvaluateOutputKeyRow}
+\inputleannode{RCBComplete.decodeEvaluateRowNone}
+\inputleannode{RCBComplete.decodeEvaluateRowSome}
+\inputleannode{RCBComplete.decodeScaledAlgorithmValue}
+\inputleannode{RCBComplete.outputNonsingular}
+\inputleannode{RCBComplete.outputRepresentsSum}
+\inputleannode{RCBComplete.outputKeyPoints}
+
+\subsection{Randomized encoding}
+\inputleannode{Construction.correct}
+\inputleannode{Construction.scalarReconstruction}
+\inputleannode{GLV91.glvInitialTerminates92}
+\inputleannode{Construction.offsetsCancel}
+
+\chapter{Adaptive privacy}
+
+The root is \cref{ArithmeticSimulator.lazyCompiledAdaptivePrivacy}.
+The requirement is the work-per-advantage level of Lemma~14: every adversary with work $T$ has advantage $\delta$ with $T / \delta \geq 2^{100}$.
+The proof follows the H-coefficient technique of Lemma~13 in the programmable random permutation model, with the bad transcripts of Definition~20, the bad-transcript mass $\varepsilon_1$ of Claim~11, and the good-transcript ratio of Claim~12.
+The simulator $(\mathsf{Sim}_1, \mathsf{Sim}_2)$ of Construction~3 is compiled to a bounded machine.
+\Cref{fig:adaptive-privacy} shows the proof tree.
+Grey nodes belong to the perfect correctness chapter.
+
+\depgraphfigurewide{adaptive-privacy}{Dependencies of the adaptive privacy proof.}
+
+\section{Statements from the paper}
+
+\begin{paperdef}[{Adaptive privacy; Definition~3 of the BaBe paper~\cite{babe}}]\label{babe:def3-privacy}
+A garbling scheme is $\epsilon$-adaptively private if there is a simulator $\mathsf{Sim} = (\mathsf{Sim}_1, \mathsf{Sim}_2)$ such that for every adversary $\mathcal{A}$, every circuit $C$, and every auxiliary input $\mathsf{aux}$:
+\begin{align*}
+  \Big| &\Pr\big[ \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, L_x, \mathsf{aux}) = 1 : (\mathsf{ct}_{\mathsf{GC}}, \mathsf{ek}) \gets \mathsf{Garble}(C),\; x \gets \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, \mathsf{aux}),\; L_x \gets \mathsf{Encode}(\mathsf{ek}, x) \big] \\
+  &- \Pr\big[ \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, L_x, \mathsf{aux}) = 1 : (\mathsf{ct}_{\mathsf{GC}}, \mathsf{st}) \gets \mathsf{Sim}_1(\mathsf{topo}(C)),\; x \gets \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, \mathsf{aux}),\; L_x \gets \mathsf{Sim}_2(\mathsf{st}, C(x)) \big] \Big| \leq \epsilon .
+\end{align*}
+The adversary chooses the input $x$ after it sees the garbled circuit.
+The Lean statement bounds the advantage by the work of the adversary: $T / \delta \geq 2^{100}$ with $T = q + 1$.
+Formalized by \cref{ArithmeticSimulator.lazyCompiledAdaptivePrivacy,Security.sharedStrictOraclePrivacy}.
+\end{paperdef}
+
+\begin{paperthm}[{Theorem~7 of the BaBe paper~\cite{babe}}]\label{babe:thm7}
+Suppose $\mathsf{GC}_3$ is $\epsilon_3$-adaptively private and $\mathsf{GC}_5$ is $\epsilon_5$-adaptively private.
+Suppose the PRF $\mathsf{CTPRF}$ used in $\mathsf{GC}_3$ and $\mathsf{GC}_5$ is modeled as a programmable random permutation and $(\mathsf{Enc}, \mathsf{Dec})$ is $\epsilon_2$-CPA secure.
+Then the garbling scheme $\mathsf{GC}$ of Fig.~21 is $(\epsilon_2 + \epsilon_3 + \epsilon_5)$-adaptively private.
+The proof is a sequence of hybrids; $\mathsf{Hyb}_0$ is the real experiment.
+Formalized by \cref{Security.OperationalOracle.shared_lazy_real} for $\mathsf{Hyb}_0$.
+\end{paperthm}
+
+\begin{paperthm}[{Theorem~8 of the BaBe paper~\cite{babe}}]\label{babe:thm8}
+Suppose the PRF $\mathsf{CTPRF}$ used in $\mathsf{GC}_{23}$ and $\mathsf{GC}_{45}$ is modeled as a programmable random permutation.
+Suppose $(\mathsf{Enc}, \mathsf{Dec})$ is $\epsilon_2$-CPA secure and is implemented with $\mathsf{EncPRF}$ as in \cref{babe:claim7}, where each permutation $\mathsf{P}_{w,i}$ is a programmable random permutation and $\mathsf{SHA256}$ is a random oracle.
+Then the optimized garbling scheme $\mathsf{GC}^{\mathrm{opt}}$ of Fig.~29 satisfies $(\epsilon_2 + \mathsf{negl}(\lambda))$-adaptive privacy.
+Formalized by \cref{ArithmeticSimulator.lazyCompiledAdaptivePrivacy,Security.sharedStrictOraclePrivacy}.
+\end{paperthm}
+
+\begin{paperlem}[{Key insight; Lemma~12 of the BaBe paper~\cite{babe}}]\label{babe:lem12}
+Fix a deterministic adversary.
+For every attainable transcript $\tau$ and every world $b \in \{\mathrm{real}, \mathrm{ideal}\}$: $\Pr_{\omega \gets \Omega_b}[Z_b(\omega) = \tau] = \Pr_{\omega \gets \Omega_b}[\omega \in \mathsf{comp}_b(\tau)]$, where $Z_b$ is the transcript of the interaction with the oracle $\omega$ and $\mathsf{comp}_b(\tau)$ is the set of oracles compatible with $\tau$.
+\end{paperlem}
+
+\begin{paperlem}[{H-coefficient technique; Lemma~13 of the BaBe paper~\cite{babe}}]\label{babe:lem13}
+Let $\mathcal{T}_{\mathrm{bad}}$ be a set of bad transcripts and $\mathcal{T}_{\mathrm{good}}$ its complement in the attainable transcripts.
+Suppose there are $\varepsilon_1, \varepsilon_2 \geq 0$ such that
+$\sum_{\tau \in \mathcal{T}_{\mathrm{bad}}} \Pr_{\omega \gets \Omega_{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau)] \leq \varepsilon_1$ and, for every $\tau \in \mathcal{T}_{\mathrm{good}}$,
+$1 - \Pr_{\omega \gets \Omega_{\mathrm{real}}}[\omega \in \mathsf{comp}_{\mathrm{real}}(\tau)] / \Pr_{\omega \gets \Omega_{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau)] \leq \varepsilon_2$.
+Then the advantage of the adversary is at most $\varepsilon_1 + \varepsilon_2$.
+Formalized by \cref{Security.hCoefficient_event_of_sourceGoodMass_congr,Security.sharedStrictAdaptive_event_bound}.
+\end{paperlem}
+
+\begin{paperlem}[{Adaptive privacy of $\mathsf{GC}_3$ in the pRPM; Lemma~14 of the BaBe paper~\cite{babe} and the remark after it}]\label{babe:lem14}
+Let $\mathsf{CTPRF}$ be instantiated from fixed-key AES-128 with one independent permutation per bucket $(i, k, W, \mathsf{slot})$, each modeled as a programmable random permutation at $\lambda = 128$.
+Let $n = 254$, let $B = 6858$ be the number of permutations, let $Q^{(b)}_{\mathrm{act}}$ be the number of active gates per bucket, and let $q$ be the total number of permutation queries of the adversary.
+Then $\mathsf{GC}_3$ (Construction~2) with the simulator of Construction~3 is $\varepsilon_3$-adaptively private in the pRPM with
+\[
+  \varepsilon_3 \leq \frac{3 B (Q^{(b)}_{\mathrm{act}})^2 + 4 Q^{(b)}_{\mathrm{act}}\, q}{2^{\lambda}} .
+\]
+With the binary digits, $Q^{(b)}_{\mathrm{act}} = n = 254$ and the work-per-advantage level $\min_{\mathcal{A}} \log_2(T_{\mathcal{A}} / \delta_{\mathcal{A}})$ is at least $97.6$ bits for every $q$.
+With the base-$(2-\omega)$ digits of the implementation, $Q^{(b)}_{\mathrm{act}} = \ell = 92$ and the level is at least $100$ bits: $T / \delta \geq 2^{100.62}$.
+Formalized by \cref{Security.sharedStrictWirePrivacy,Security.sharedStrictWireAdvantage_envelope,Security.sharedStrictAdaptiveAdvantage_envelope,Security.sharedAdaptiveThreeRoundingLossSum_le_envelope,Security.sharedErrors_has100Bits,Security.sharedLargeBudget_has100Bits}, with the Lean envelope $\varepsilon_3(q) = (251850146 + 833\,q) / 2^{128}$.
+\end{paperlem}
+
+\begin{paperdef}[{Bad transcripts; Definition~20 of the BaBe paper~\cite{babe}}]\label{babe:def20}
+For a transcript $\tau = (K_1, \mathsf{ct}_{\mathsf{GC},3}, K_2, (\mathbf{b}, L_3), K_3)$, let $a^*_{i,j,k,W} = L^{(i)}_{3,\delta(k)} \oplus \mathsf{enc}(j, k, W)$ be the active permutation input of gate $(i, j, k, W)$, let $v^*_{i,j,k,W}$ be its required output, and let $w_{i,j,k,W}$ be its inactive output offset.
+A transcript is bad if one of the following events occurs.
+\begin{description}
+  \item[bad1] Two distinct gates have the same active input $a^*$.
+  \item[bad2] Two distinct gates have the same required output $v^*$.
+  \item[bad3] A permutation query $(\alpha, \beta) \in K_1 \cup K_2$ made before the labels are released hits an active input, $\alpha = a^*$, or a required output, $\beta = v^*$.
+  \item[bad4] Two distinct gates that share a wire label have the same inactive offset $w$.
+\end{description}
+Formalized by \cref{Security.sharedStrictTranscript_good,Security.sharedStrictSelectedView_good}: the strict simulator aborts exactly on a bad sample.
+\end{paperdef}
+
+\begin{paperclaim}[{Bad-transcript mass; Claim~11 of the BaBe paper~\cite{babe}}]\label{babe:claim11}
+$\varepsilon_1 = \sum_{\tau \in \mathcal{T}_{\mathrm{bad}}} \Pr_{\omega \gets \Omega_{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau)] \leq \dfrac{\tfrac{3}{2} Q_{\mathrm{act}}^2 + 2 q\, Q_{\mathrm{act}}}{2^{\lambda}}$,
+where bad1, bad2, and bad4 each contribute at most $Q_{\mathrm{act}}^2 / 2^{\lambda + 1}$ and bad3 contributes at most $2 q\, Q_{\mathrm{act}} / 2^{\lambda}$.
+Formalized by \cref{Security.sharedCombinedBad_real_mass_le,Security.sharedFullPipelinePrefixBad_mass_le,Security.sharedGoodMaskSourceBad_mass_le}.
+\end{paperclaim}
+
+\begin{paperclaim}[{Good-transcript ratio; Claim~12 of the BaBe paper~\cite{babe}}]\label{babe:claim12}
+For every good transcript $\tau$:
+$\Pr_{\omega \gets \Omega_{\mathrm{real}}}[\omega \in \mathsf{comp}_{\mathrm{real}}(\tau)] / \Pr_{\omega \gets \Omega_{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau)] \geq 1 - \delta_2$ with $\delta_2 = (3 Q_{\mathrm{act}}^2 + 2 q\, Q_{\mathrm{act}}) / 2^{\lambda}$, so $\varepsilon_2 = \delta_2$.
+Formalized by \cref{Security.sharedCombinedGood_real_le,Security.sharedFullPipelinePrefix_real_le_supported,Security.sharedFullCurveGood_real_le_budget}.
+\end{paperclaim}
+
+\begin{paperconstr}[{Simulator for $\mathsf{GC}_3$; Construction~3 of the BaBe paper~\cite{babe}}]\label{babe:con3}
+$\mathsf{Sim}_1(\mathsf{topo}(C_3))$ samples every ciphertext $\mathsf{ct}^{(i,j,k,W)}_{3,b} \gets \{0,1\}^{\lambda}$ uniformly and outputs $\mathsf{ct}_{\mathsf{GC},3}$ as its state.
+$\mathsf{Sim}_2(\mathsf{st}, \mathbf{b}, \{c'^{(j,W)}_{k,i}\})$ samples the active labels $L^{(i)}_{3,x}, L^{(i)}_{3,y} \gets \{0,1\}^{\lambda}$, and for every gate programs the permutation at $L^{(i)}_{3,\delta(k)} \oplus \mathsf{enc}(j, k, W)$ so that $\mathsf{CTPRF}$ decrypts the active ciphertext to the correct output $c'^{(j,W)}_{k,i}$; it outputs $L_3$.
+The Lean simulator compiles $(\mathsf{Sim}_1, \mathsf{Sim}_2)$ to a bounded machine with at most $2^{60}$ instructions, and bounds every rejection-sampling draw to $256$ attempts.
+Formalized by \cref{ArithmeticSimulator.lazyCompiledMachine,ArithmeticSimulator.lazyCompiledIdealGame_eqStrict,Security.sharedStrictSourceDecision_law,Security.sharedStrictSourceDecision_allowance}.
+\end{paperconstr}
+
+\section{Lean statements}
+
+\subsection{Closed simulator}
+\inputleannode{ArithmeticSimulator.lazyCompiledAdaptivePrivacy}
+\inputleannode{Security.sharedStrictOraclePrivacy}
+\inputleannode{Security.OperationalOracle.shared_lazy_real}
+\inputleannode{Security.sharedStrictWirePrivacy}
+
+\subsection{Privacy bound}
+\inputleannode{Security.sharedStrictWireAdvantage_envelope}
+\inputleannode{Security.sharedStrictAdaptiveAdvantage_envelope}
+\inputleannode{Security.sharedStrictAdaptive_event_bound}
+\inputleannode{Security.hCoefficient_event_of_sourceGoodMass_congr}
+\inputleannode{Security.sharedCombinedBad_real_mass_le}
+\inputleannode{Security.sharedCombinedGood_real_le}
+\inputleannode{Security.sharedFullPipelinePrefix_real_le_supported}
+\inputleannode{Security.sharedFullCurveGood_real_le_budget}
+\inputleannode{Security.sharedStrictTranscript_good}
+\inputleannode{Security.sharedStrictSelectedView_good}
+\inputleannode{Security.sharedStrictGateSource_entrance}
+
+\subsection{Collision bounds}
+\inputleannode{Security.sharedFullPipelinePrefixBad_mass_le}
+\inputleannode{Security.sharedGoodMaskSourceBad_mass_le}
+\inputleannode{Security.sharedAdaptiveThreeRoundingLossSum_le_envelope}
+
+\subsection{Finite sampling}
+\inputleannode{Security.sharedStrictSourceDecision_allowance}
+\inputleannode{Security.sharedStrictSourceDecision_law}
+\inputleannode{Security.sharedErrors_has100Bits}
+\inputleannode{Security.sharedLargeBudget_has100Bits}
+
+\subsection{Simulator execution}
+\inputleannode{ArithmeticSimulator.lazyCompiledIdealGame_eqStrict}
+\inputleannode{ArithmeticSimulator.lazyCompiledIdealGame_finiteSource}
+\inputleannode{ArithmeticSimulator.lazySetupJoint_parsed}
+\inputleannode{ArithmeticSimulator.lazyChosenDecision_completion}
+\inputleannode{ArithmeticSimulator.lazyCompiledOnline_decision}
+\inputleannode{ArithmeticSimulator.lazyCompiledMachine_onlineParsed}
+\inputleannode{ArithmeticSimulator.lazyOnlineMachine_run}
+\inputleannode{ArithmeticSimulator.lazyCompiledMachine}
+\inputleannode{ArithmeticSimulator.phaseBudget}
+
+\chapter{Lamport compatibility}
+
+The root is \cref{Shared.programLamportCompatible}.
+The input labels $\mathsf{Encode}(\mathsf{ek}, \pi)$ are exactly the Lamport signature of the bits of $\pi$ under the key pairs of $\mathsf{ek}$, as the locking scripts of Eqs.~15--16 require.
+\Cref{fig:lamport-compatibility} shows the proof tree.
+
+\depgraphfigure{lamport-compatibility}{Dependencies of the Lamport compatibility proof.}
+
+\section{Statements from the paper}
+
+\begin{paperdef}[{Bitcoin constraint on the input labels; Section~5.1 of the BaBe paper~\cite{babe}}]\label{babe:bitcoin}
+The input labels produced by $\mathsf{Encode}$ are revealed on-chain.
+The Prover commits to $\pi$ by a Lamport signature on the bits $\mathbf{b}$ of its affine coordinates, and the input labels of the garbled circuit are exactly the Lamport signatures of $\mathbf{b}$ under the encoding key $\mathsf{ek}$: for the bit $x_i(\pi)$ the label is $L^{x_i(\pi)}_{x,i}$ and for the bit $y_i(\pi)$ the label is $L^{y_i(\pi)}_{y,i}$.
+Formalized by \cref{Shared.programLamportCompatible,Lamport.selectedLabels_eq}.
+\end{paperdef}
+
+\begin{paperdef}[{Locking scripts; Eqs.~15--16 of the BaBe paper~\cite{babe}}]\label{babe:eq15}
+For a Lamport public key $\mathsf{lpk} = (\mathsf{lpk}^0_i, \mathsf{lpk}^1_i)_{i \leq \ell}$, the script
+$\mathsf{CheckLampSig}(\mathsf{lpk}) = \bigwedge_{i=1}^{\ell} \big( \mathsf{HashLock}(\mathsf{lpk}^0_i) \lor \mathsf{HashLock}(\mathsf{lpk}^1_i) \big)$
+requires a Lamport signature on some message, and
+$\mathsf{CheckLampSigsMatch}(\mathsf{lpk}_A, \mathsf{lpk}_B) = \bigwedge_{i=1}^{\ell} \big[ (\mathsf{HashLock}((\mathsf{lpk}_A)^0_i) \land \mathsf{HashLock}((\mathsf{lpk}_B)^0_i)) \lor (\mathsf{HashLock}((\mathsf{lpk}_A)^1_i) \land \mathsf{HashLock}((\mathsf{lpk}_B)^1_i)) \big]$
+requires signatures under both keys on the same message.
+In ArgoMAC the message is $\mathbf{b}$ with $\ell = 508$ bits, and the key pairs are the labels $(L^0_{x,i}, L^1_{x,i})$ and $(L^0_{y,i}, L^1_{y,i})$.
+Formalized by \cref{Lamport.keyPairs,Lamport.restore_selected}.
+\end{paperdef}
+
+\section{Lean statements}
+
+\inputleannode{Shared.programLamportCompatible}
+\inputleannode{Lamport.keyPairs}
+\inputleannode{Lamport.selectedLabels_eq}
+\inputleannode{Lamport.affineLamportBits_eq_append}
+\inputleannode{Lamport.appendGetLow}
+\inputleannode{Lamport.selectedLabelsEncodeLow}
+\inputleannode{Lamport.keyPairsGetLow}
+\inputleannode{Lamport.appendGetHigh}
+\inputleannode{Lamport.selectedLabelsEncodeHigh}
+\inputleannode{Lamport.keyPairsGetHigh}

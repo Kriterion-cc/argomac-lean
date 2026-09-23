@@ -1,12 +1,19 @@
 import Proof.Privacy.Simulator.Arithmetic.OfflineMachineRun
 import Proof.Privacy.Simulator.Arithmetic.OnlineMachine
 import Proof.Privacy.Simulator.Arithmetic.PhaseMachineRun
+import Architect
 
 namespace Kriterion.ArgoMAC.ArithmeticSimulator
 open Cryptography.BoundedMachine
 noncomputable section
 attribute [local irreducible] publicWireProgram offlinePlan
 
+@[blueprint "ArithmeticSimulator.phaseBudget"
+  (statement := /-- The size of the phase simulator plus both fuel allowances is at most $2^{60}$, when the setup
+    size plus fuel is at most $605084290688$, the online code has at most $317804844$ instructions,
+    and the online fuel is at most $2^{46}$. -/)
+  (title := /-- BABE Construction~3 -/)
+  (proof := /-- Unfold the phase simulator size and use linear arithmetic. -/)]
 private theorem phaseBudget (setup : Machine) (online : Simulator) (fuel : Nat)
     (bound : setup.size + 1 + fuel ≤ 605084290688)
     (code : online.size ≤ 317804844) (steps : online.secondFuel ≤ 2 ^ 46) :
@@ -15,6 +22,11 @@ private theorem phaseBudget (setup : Machine) (online : Simulator) (fuel : Nat)
   omega
 
 /-- One table runs setup and encoding under the shared constant allowance. -/
+@[blueprint "ArithmeticSimulator.lazyCompiledMachine"
+  (statement := /-- The compiled simulator $(\mathsf{Sim}_1, \mathsf{Sim}_2)$ as one bounded machine. The phase
+    simulator combines the offline machine with $256$ attempts per draw and the lazy online machine
+    under the shared instruction allowance. -/)
+  (title := /-- BABE Construction~3 -/)]
 def lazyCompiledMachine : Simulator :=
   phaseSimulator (offlineMachine 256) lazyOnlineMachine
     (batchStepBudget 256 * 917470 + publicWireProgram.length + 3)

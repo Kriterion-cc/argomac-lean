@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  MathJax = { 
+    tex: {
+		    inlineMath: [['$','$'], ['\\(','\\)']]
+	} }
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<meta name="generator" content="plasTeX" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Adaptive privacy</title>
+<link rel="next" href="sect0004.html" title="Lamport compatibility" />
+<link rel="prev" href="sect0002.html" title="Perfect correctness" />
+<link rel="up" href="index.html" title="ArgoMAC security proof blueprint" />
+<link rel="stylesheet" href="styles/theme-white.css" />
+<link rel="stylesheet" href="styles/amsthm.css" />
+<link rel="stylesheet" href="styles/blueprint.css" />
+<link rel="stylesheet" href="styles/extra_styles.css" />
+</head>
+
+<body>
+<header>
+<svg  id="toc-toggle" class="icon icon-list-numbered "><use xlink:href="symbol-defs.svg#icon-list-numbered"></use></svg>
+<h1 id="doc_title"><a href="index.html">ArgoMAC security proof blueprint</a></h1>
+</header>
+
+<div class="wrapper">
+<nav class="toc">
+<ul class="sub-toc-0">
+<li class="">
+  <a href="sect0001.html"><span class="toc_ref">1</span> <span class="toc_entry">Introduction</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0001.html#a0000000007"><span class="toc_ref">1.1</span> <span class="toc_entry">Paper correspondence</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0002.html"><span class="toc_ref">2</span> <span class="toc_entry">Perfect correctness</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0002.html#a0000000008"><span class="toc_ref">2.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0002.html#a0000000009"><span class="toc_ref">2.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class=" active current">
+  <a href="sect0003.html"><span class="toc_ref">3</span> <span class="toc_entry">Adaptive privacy</span></a>
+  <span class="expand-toc">▼</span>
+  <ul class="sub-toc-1 active">
+     <li class="">
+  <a href="sect0003.html#a0000000010"><span class="toc_ref">3.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0003.html#a0000000011"><span class="toc_ref">3.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0004.html"><span class="toc_ref">4</span> <span class="toc_entry">Lamport compatibility</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0004.html#a0000000012"><span class="toc_ref">4.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0004.html#a0000000013"><span class="toc_ref">4.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0005.html"><span class="toc_ref">5</span> <span class="toc_entry">Bibliography</span></a>
+ </li>
+<li ><a href="dep_graph_document.html">Dependency graph</a></li>
+</ul>
+</nav>
+
+<div class="content">
+<div class="content-wrapper">
+
+
+<div class="main-text">
+<h1 id="a0000000004">3 Adaptive privacy</h1>
+<p>The root is <a href="sect0003.html#ArithmeticSimulator.lazyCompiledAdaptivePrivacy">theorem 45</a>. The requirement is the work-per-advantage level of Lemma&#160;14: every adversary with work \(T\) has advantage \(\delta \) with \(T / \delta \geq 2^{100}\). The proof follows the H-coefficient technique of Lemma&#160;13 in the programmable random permutation model, with the bad transcripts of Definition&#160;20, the bad-transcript mass \(\varepsilon _1\) of Claim&#160;11, and the good-transcript ratio of Claim&#160;12. The simulator \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) of Construction&#160;3 is compiled to a bounded machine. <a href="sect0003.html#fig:adaptive-privacy">Figure 3.1</a> shows the proof tree. Grey nodes belong to the perfect correctness chapter. </p>
+<figure id="fig:adaptive-privacy">
+  <p><img src="images/img-0002.svg" alt="\includegraphics{figures/adaptive-privacy.svg}" style="width: ; height: " />
+</p>
+<figcaption>
+  <span class="caption_title">Figure</span> 
+  <span class="caption_ref">3.1</span> 
+  <span class="caption_text">Dependencies of the adaptive privacy proof.</span> 
+</figcaption>
+
+
+</figure>
+<h1 id="a0000000010">3.1 Statements from the paper</h1>
+<div class="paperdef_thmwrapper theorem-style-definition" id="babe:def3-privacy">
+  <div class="paperdef_thmheading">
+    <span class="paperdef_thmcaption">
+    Definition
+    </span>
+    <span class="paperdef_thmlabel">35</span>
+    <span class="paperdef_thmtitle">Adaptive privacy; Definition&#160;3 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:def3-privacy">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperdef_thmcontent">
+  <p> A garbling scheme is \(\epsilon \)-adaptively private if there is a simulator \(\mathsf{Sim} = (\mathsf{Sim}_1, \mathsf{Sim}_2)\) such that for every adversary \(\mathcal{A}\), every circuit \(C\), and every auxiliary input \(\mathsf{aux}\): </p>
+<div class="displaymath" id="a0000000049">
+  \begin{align*}  \Big| & \Pr \big[ \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, L_x, \mathsf{aux}) = 1 : (\mathsf{ct}_{\mathsf{GC}}, \mathsf{ek}) \gets \mathsf{Garble}(C),\;  x \gets \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, \mathsf{aux}),\;  L_x \gets \mathsf{Encode}(\mathsf{ek}, x) \big] \\ & - \Pr \big[ \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, L_x, \mathsf{aux}) = 1 : (\mathsf{ct}_{\mathsf{GC}}, \mathsf{st}) \gets \mathsf{Sim}_1(\mathsf{topo}(C)),\;  x \gets \mathcal{A}(\mathsf{ct}_{\mathsf{GC}}, \mathsf{aux}),\;  L_x \gets \mathsf{Sim}_2(\mathsf{st}, C(x)) \big] \Big| \leq \epsilon . \end{align*}
+</div>
+<p> The adversary chooses the input \(x\) after it sees the garbled circuit. The Lean statement bounds the advantage by the work of the adversary: \(T / \delta \geq 2^{100}\) with \(T = q + 1\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperthm_thmwrapper theorem-style-plain" id="babe:thm7">
+  <div class="paperthm_thmheading">
+    <span class="paperthm_thmcaption">
+    Theorem
+    </span>
+    <span class="paperthm_thmlabel">36</span>
+    <span class="paperthm_thmtitle">Theorem&#160;7 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:thm7">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperthm_thmcontent">
+  <p> Suppose \(\mathsf{GC}_3\) is \(\epsilon _3\)-adaptively private and \(\mathsf{GC}_5\) is \(\epsilon _5\)-adaptively private. Suppose the PRF \(\mathsf{CTPRF}\) used in \(\mathsf{GC}_3\) and \(\mathsf{GC}_5\) is modeled as a programmable random permutation and \((\mathsf{Enc}, \mathsf{Dec})\) is \(\epsilon _2\)-CPA secure. Then the garbling scheme \(\mathsf{GC}\) of Fig.&#160;21 is \((\epsilon _2 + \epsilon _3 + \epsilon _5)\)-adaptively private. The proof is a sequence of hybrids; \(\mathsf{Hyb}_0\) is the real experiment. Formalized by <a href="sect0003.html#Security.OperationalOracle.shared_lazy_real">theorem 47</a> for \(\mathsf{Hyb}_0\). </p>
+
+  </div>
+</div>
+<div class="paperthm_thmwrapper theorem-style-plain" id="babe:thm8">
+  <div class="paperthm_thmheading">
+    <span class="paperthm_thmcaption">
+    Theorem
+    </span>
+    <span class="paperthm_thmlabel">37</span>
+    <span class="paperthm_thmtitle">Theorem&#160;8 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:thm8">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperthm_thmcontent">
+  <p> Suppose the PRF \(\mathsf{CTPRF}\) used in \(\mathsf{GC}_{23}\) and \(\mathsf{GC}_{45}\) is modeled as a programmable random permutation. Suppose \((\mathsf{Enc}, \mathsf{Dec})\) is \(\epsilon _2\)-CPA secure and is implemented with \(\mathsf{EncPRF}\) as in <a href="sect0002.html#babe:claim7">claim 7</a>, where each permutation \(\mathsf{P}_{w,i}\) is a programmable random permutation and \(\mathsf{SHA256}\) is a random oracle. Then the optimized garbling scheme \(\mathsf{GC}^{\mathrm{opt}}\) of Fig.&#160;29 satisfies \((\epsilon _2 + \mathsf{negl}(\lambda ))\)-adaptive privacy. Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperlem_thmwrapper theorem-style-plain" id="babe:lem12">
+  <div class="paperlem_thmheading">
+    <span class="paperlem_thmcaption">
+    Lemma
+    </span>
+    <span class="paperlem_thmlabel">38</span>
+    <span class="paperlem_thmtitle">Key insight; Lemma&#160;12 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:lem12">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperlem_thmcontent">
+  <p> Fix a deterministic adversary. For every attainable transcript \(\tau \) and every world \(b \in \{ \mathrm{real}, \mathrm{ideal}\} \): \(\Pr _{\omega \gets \Omega _b}[Z_b(\omega ) = \tau ] = \Pr _{\omega \gets \Omega _b}[\omega \in \mathsf{comp}_b(\tau )]\), where \(Z_b\) is the transcript of the interaction with the oracle \(\omega \) and \(\mathsf{comp}_b(\tau )\) is the set of oracles compatible with \(\tau \). </p>
+
+  </div>
+</div>
+<div class="paperlem_thmwrapper theorem-style-plain" id="babe:lem13">
+  <div class="paperlem_thmheading">
+    <span class="paperlem_thmcaption">
+    Lemma
+    </span>
+    <span class="paperlem_thmlabel">39</span>
+    <span class="paperlem_thmtitle">H-coefficient technique; Lemma&#160;13 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:lem13">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperlem_thmcontent">
+  <p> Let \(\mathcal{T}_{\mathrm{bad}}\) be a set of bad transcripts and \(\mathcal{T}_{\mathrm{good}}\) its complement in the attainable transcripts. Suppose there are \(\varepsilon _1, \varepsilon _2 \geq 0\) such that \(\sum _{\tau \in \mathcal{T}_{\mathrm{bad}}} \Pr _{\omega \gets \Omega _{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau )] \leq \varepsilon _1\) and, for every \(\tau \in \mathcal{T}_{\mathrm{good}}\), \(1 - \Pr _{\omega \gets \Omega _{\mathrm{real}}}[\omega \in \mathsf{comp}_{\mathrm{real}}(\tau )] / \Pr _{\omega \gets \Omega _{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau )] \leq \varepsilon _2\). Then the advantage of the adversary is at most \(\varepsilon _1 + \varepsilon _2\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperlem_thmwrapper theorem-style-plain" id="babe:lem14">
+  <div class="paperlem_thmheading">
+    <span class="paperlem_thmcaption">
+    Lemma
+    </span>
+    <span class="paperlem_thmlabel">40</span>
+    <span class="paperlem_thmtitle">Adaptive privacy of \(\mathsf{GC}_3\) in the pRPM; Lemma&#160;14 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span> and the remark after it</span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:lem14">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperlem_thmcontent">
+  <p> Let \(\mathsf{CTPRF}\) be instantiated from fixed-key AES-128 with one independent permutation per bucket \((i, k, W, \mathsf{slot})\), each modeled as a programmable random permutation at \(\lambda = 128\). Let \(n = 254\), let \(B = 6858\) be the number of permutations, let \(Q^{(b)}_{\mathrm{act}}\) be the number of active gates per bucket, and let \(q\) be the total number of permutation queries of the adversary. Then \(\mathsf{GC}_3\) (Construction&#160;2) with the simulator of Construction&#160;3 is \(\varepsilon _3\)-adaptively private in the pRPM with </p>
+<div class="displaymath" id="a0000000050">
+  \[  \varepsilon _3 \leq \frac{3 B (Q^{(b)}_{\mathrm{act}})^2 + 4 Q^{(b)}_{\mathrm{act}}\,  q}{2^{\lambda }} .  \]
+</div>
+<p> With the binary digits, \(Q^{(b)}_{\mathrm{act}} = n = 254\) and the work-per-advantage level \(\min _{\mathcal{A}} \log _2(T_{\mathcal{A}} / \delta _{\mathcal{A}})\) is at least \(97.6\) bits for every \(q\). With the base-\((2-\omega )\) digits of the implementation, \(Q^{(b)}_{\mathrm{act}} = \ell = 92\) and the level is at least \(100\) bits: \(T / \delta \geq 2^{100.62}\). Formalized by ??, with the Lean envelope \(\varepsilon _3(q) = (251850146 + 833\, q) / 2^{128}\). </p>
+
+  </div>
+</div>
+<div class="paperdef_thmwrapper theorem-style-definition" id="babe:def20">
+  <div class="paperdef_thmheading">
+    <span class="paperdef_thmcaption">
+    Definition
+    </span>
+    <span class="paperdef_thmlabel">41</span>
+    <span class="paperdef_thmtitle">Bad transcripts; Definition&#160;20 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:def20">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperdef_thmcontent">
+  <p> For a transcript \(\tau = (K_1, \mathsf{ct}_{\mathsf{GC},3}, K_2, (\mathbf{b}, L_3), K_3)\), let \(a^*_{i,j,k,W} = L^{(i)}_{3,\delta (k)} \oplus \mathsf{enc}(j, k, W)\) be the active permutation input of gate \((i, j, k, W)\), let \(v^*_{i,j,k,W}\) be its required output, and let \(w_{i,j,k,W}\) be its inactive output offset. A transcript is bad if one of the following events occurs. </p>
+<dl class="description">
+  <dt>bad1</dt>
+  <dd><p>Two distinct gates have the same active input \(a^*\). </p>
+</dd>
+  <dt>bad2</dt>
+  <dd><p>Two distinct gates have the same required output \(v^*\). </p>
+</dd>
+  <dt>bad3</dt>
+  <dd><p>A permutation query \((\alpha , \beta ) \in K_1 \cup K_2\) made before the labels are released hits an active input, \(\alpha = a^*\), or a required output, \(\beta = v^*\). </p>
+</dd>
+  <dt>bad4</dt>
+  <dd><p>Two distinct gates that share a wire label have the same inactive offset \(w\). </p>
+</dd>
+</dl>
+<p> Formalized by ??: the strict simulator aborts exactly on a bad sample. </p>
+
+  </div>
+</div>
+<div class="paperclaim_thmwrapper theorem-style-plain" id="babe:claim11">
+  <div class="paperclaim_thmheading">
+    <span class="paperclaim_thmcaption">
+    Claim
+    </span>
+    <span class="paperclaim_thmlabel">42</span>
+    <span class="paperclaim_thmtitle">Bad-transcript mass; Claim&#160;11 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:claim11">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperclaim_thmcontent">
+  <p> \(\varepsilon _1 = \sum _{\tau \in \mathcal{T}_{\mathrm{bad}}} \Pr _{\omega \gets \Omega _{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau )] \leq \dfrac {\tfrac {3}{2} Q_{\mathrm{act}}^2 + 2 q\,  Q_{\mathrm{act}}}{2^{\lambda }}\), where bad1, bad2, and bad4 each contribute at most \(Q_{\mathrm{act}}^2 / 2^{\lambda + 1}\) and bad3 contributes at most \(2 q\,  Q_{\mathrm{act}} / 2^{\lambda }\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperclaim_thmwrapper theorem-style-plain" id="babe:claim12">
+  <div class="paperclaim_thmheading">
+    <span class="paperclaim_thmcaption">
+    Claim
+    </span>
+    <span class="paperclaim_thmlabel">43</span>
+    <span class="paperclaim_thmtitle">Good-transcript ratio; Claim&#160;12 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:claim12">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperclaim_thmcontent">
+  <p> For every good transcript \(\tau \): \(\Pr _{\omega \gets \Omega _{\mathrm{real}}}[\omega \in \mathsf{comp}_{\mathrm{real}}(\tau )] / \Pr _{\omega \gets \Omega _{\mathrm{ideal}}}[\omega \in \mathsf{comp}_{\mathrm{ideal}}(\tau )] \geq 1 - \delta _2\) with \(\delta _2 = (3 Q_{\mathrm{act}}^2 + 2 q\,  Q_{\mathrm{act}}) / 2^{\lambda }\), so \(\varepsilon _2 = \delta _2\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperconstr_thmwrapper theorem-style-definition" id="babe:con3">
+  <div class="paperconstr_thmheading">
+    <span class="paperconstr_thmcaption">
+    Construction
+    </span>
+    <span class="paperconstr_thmlabel">44</span>
+    <span class="paperconstr_thmtitle">Simulator for \(\mathsf{GC}_3\); Construction&#160;3 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#babe:con3">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperconstr_thmcontent">
+  <p> \(\mathsf{Sim}_1(\mathsf{topo}(C_3))\) samples every ciphertext \(\mathsf{ct}^{(i,j,k,W)}_{3,b} \gets \{ 0,1\} ^{\lambda }\) uniformly and outputs \(\mathsf{ct}_{\mathsf{GC},3}\) as its state. \(\mathsf{Sim}_2(\mathsf{st}, \mathbf{b}, \{ c'^{(j,W)}_{k,i}\} )\) samples the active labels \(L^{(i)}_{3,x}, L^{(i)}_{3,y} \gets \{ 0,1\} ^{\lambda }\), and for every gate programs the permutation at \(L^{(i)}_{3,\delta (k)} \oplus \mathsf{enc}(j, k, W)\) so that \(\mathsf{CTPRF}\) decrypts the active ciphertext to the correct output \(c'^{(j,W)}_{k,i}\); it outputs \(L_3\). The Lean simulator compiles \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) to a bounded machine with at most \(2^{60}\) instructions, and bounds every rejection-sampling draw to \(256\) attempts. Formalized by ??. </p>
+
+  </div>
+</div>
+<h1 id="a0000000011">3.2 Lean statements</h1>
+<h2 id="a0000000051">3.2.1 Closed simulator</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazyCompiledAdaptivePrivacy">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">45</span>
+    <span class="theorem_thmtitle">BABE Theorem&#160;8</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyCompiledAdaptivePrivacy">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000052"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledAdaptivePrivacy" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledAdaptivePrivacy</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Adaptive privacy of the optimized garbling scheme (Theorem&#160;8) at the concrete level of Lemma&#160;14. The compiled simulator \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) proves the public privacy obligation for the program circuit, the Lamport wire encoding, the ciphertext size \(9806076\) bytes, and the uniform private tape: every adversary with work \(T\) has advantage \(\delta \) with \(T / \delta \geq 2^{100}\). The proof uses no hardness assumption beyond the programmable random permutation model. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000052">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Apply <a href="sect0003.html#Security.sharedStrictOraclePrivacy">theorem 46</a> to the compiled machine. <a href="sect0003.html#ArithmeticSimulator.lazyCompiledIdealGame_eqStrict">Theorem 67</a> shows that the machine implements the strict simulator. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictOraclePrivacy">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">46</span>
+    <span class="theorem_thmtitle">BABE Theorem&#160;8</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictOraclePrivacy">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000053"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictOraclePrivacy" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictOraclePrivacy</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   A closed implementation of the strict simulator meets the privacy rule of Definition&#160;3. If a bounded machine implements the ideal world of \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) with \(256\) sampling attempts per draw, then the program circuit satisfies oracle adaptive privacy with \(T / \delta \geq 2^{100}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000053">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Use the given machine as the simulator. Rewrite the real world with <a href="sect0003.html#Security.OperationalOracle.shared_lazy_real">theorem 47</a> and the ideal world with the implementation premise. Apply <a href="sect0003.html#Security.sharedStrictWirePrivacy">theorem 48</a> to the machine adversary. The machine step count \(T\) dominates the query budget. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.OperationalOracle.shared_lazy_real">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">47</span>
+    <span class="theorem_thmtitle">BABE Theorem&#160;7</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.OperationalOracle.shared_lazy_real">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000054"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.OperationalOracle.shared_lazy_real" class="lean_decl">Kriterion.ArgoMAC.Security.OperationalOracle.shared_lazy_real</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The real world \(\mathcal{O}_{\mathrm{real}}\) splits into private coins and the public permutation (hybrid \(\mathsf{Hyb}_0\) in the proof of Theorem&#160;7). The lazy real game, which samples the public permutation on demand, equals the real game of the wire circuit with a uniformly sampled tape. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000054">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Rewrite the lazy real game with the uniform tape. Split the uniform randomness into the private coins and the public permutation. Both games run the adversary under a public handler. The permutation state does not change during the choose phase, so both games evaluate the same experiment. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictWirePrivacy">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">48</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;14</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictWirePrivacy">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000055"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictWirePrivacy" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictWirePrivacy</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Concrete adaptive privacy (Lemma&#160;14). For every adversary with query budget \(q\), the advantage \(\delta \) between the real world of the wire circuit and the strict simulator with \(256\) attempts per draw satisfies \((q + 1) / \delta \geq 2^{100}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000055">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Let \(q\) be the total query budget. Transfer the advantage through the exact strict simulator. If \(q {\lt} 2^{101}\), apply <a href="sect0003.html#Security.sharedErrors_has100Bits">theorem 65</a> with <a href="sect0003.html#Security.sharedStrictWireAdvantage_envelope">theorem 49</a> and <a href="sect0003.html#Security.sharedStrictSourceDecision_allowance">theorem 63</a>. Otherwise apply <a href="sect0003.html#Security.sharedLargeBudget_has100Bits">theorem 66</a>. </p>
+
+  </div>
+</div>
+<h2 id="a0000000056">3.2.2 Privacy bound</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictWireAdvantage_envelope">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">49</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;14</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictWireAdvantage_envelope">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000057"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictWireAdvantage_envelope" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictWireAdvantage_envelope</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For \(q \leq 2^{101}\), the advantage between the real world of the wire circuit and the exact strict simulator is at most \(\varepsilon _3(q) = (251850146 + 833\, q) / 2^{128}\), the Lean counterpart of the bucketed bound of Lemma&#160;14. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000057">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Rewrite the exact strict simulator. Apply <a href="sect0003.html#Security.sharedStrictAdaptiveAdvantage_envelope">theorem 50</a> to the wire adversary. The wire circuit is the internal circuit with Lamport-mapped labels, so the two real worlds agree. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictAdaptiveAdvantage_envelope">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">50</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;14</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictAdaptiveAdvantage_envelope">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000058"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictAdaptiveAdvantage_envelope" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictAdaptiveAdvantage_envelope</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For \(q \leq 2^{101}\), the advantage between the real world of the internal circuit and the ideal world of the strict simulator \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) is at most \(\varepsilon _3(q)\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000058">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Apply <a href="sect0003.html#Security.sharedStrictAdaptive_event_bound">theorem 51</a> to the event \(\{ \mathrm{true}\} \) with the bad-transcript mass of <a href="sect0003.html#Security.sharedFullPipelinePrefixBad_mass_le">theorem 60</a>. The real decision is the projection of the real transcript. <a href="sect0003.html#Security.sharedAdaptiveThreeRoundingLossSum_le_envelope">Theorem 62</a> collects \(\varepsilon _1\), \(\varepsilon _2\), and the sampling losses into \(\varepsilon _3(q)\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictAdaptive_event_bound">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">51</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;13</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictAdaptive_event_bound">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000059"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictAdaptive_event_bound" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictAdaptive_event_bound</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   H-coefficient bound for the strict simulator (Lemma&#160;13). For every event on the decision bit, the real-world transcript and the ideal-world transcript differ by at most the bad-transcript mass \(\varepsilon _1\), which is the given offline bound plus \((60199524 + 372\, q) / 2^{128}\) plus \((q + 1) / p\), plus two hash-rounding losses plus \(2^{-240}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000059">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Bound the bad-transcript mass with <a href="sect0003.html#Security.sharedCombinedBad_real_mass_le">theorem 53</a>. Apply <a href="sect0003.html#Security.hCoefficient_event_of_sourceGoodMass_congr">theorem 52</a> to the real transcript and the ideal sample space. The ratio premise \(1 - \varepsilon _2\) is <a href="sect0003.html#Security.sharedCombinedGood_real_le">theorem 54</a>. The agreement premise on good transcripts is <a href="sect0003.html#Security.sharedStrictTranscript_good">theorem 57</a>. The strict decision is the projection of the strict transcript. Add the sampling loss of <a href="sect0003.html#Security.sharedStrictGateSource_entrance">theorem 59</a> by the triangle inequality. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.hCoefficient_event_of_sourceGoodMass_congr">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">52</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;13</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.hCoefficient_event_of_sourceGoodMass_congr">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000060"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.hCoefficient_event_of_sourceGoodMass_congr" class="lean_decl">Kriterion.ArgoMAC.Security.hCoefficient_event_of_sourceGoodMass_congr</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The H-coefficient technique (Lemma&#160;13) in event form. Let \(\mathrm{real}\) be a distribution on transcripts, let the ideal sample space have a bad set \(\mathcal{T}_{\mathrm{bad}}\) of mass at most \(\varepsilon _1\), and let a kernel map samples to transcripts. If \(\Pr _{\mathrm{real}}[\tau ] \geq (1 - \varepsilon _2) \cdot \Pr [\text{good sample} \mapsto \tau ]\) for every \(\tau \), and a replacement kernel agrees with the kernel on good samples, then every event differs between \(\mathrm{real}\) and the replacement by at most \(\varepsilon _1 + \varepsilon _2\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000060">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Apply the H-coefficient event bound to the replacement kernel. The good mass of the replacement equals the good mass of the kernel, because both agree on every supported sample outside \(\mathcal{T}_{\mathrm{bad}}\). The ratio premise transfers. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedCombinedBad_real_mass_le">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">53</span>
+    <span class="theorem_thmtitle">BABE Claim&#160;11</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedCombinedBad_real_mass_le">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000061"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedCombinedBad_real_mass_le" class="lean_decl">Kriterion.ArgoMAC.Security.sharedCombinedBad_real_mass_le</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Bad-transcript mass \(\varepsilon _1\) (Claim&#160;11). The mass of the bad event of the ideal sample space is at most the given offline bound (collisions among the programmed points, events bad1, bad2, bad4) plus the hash-rounding loss plus \((q + 1) / p\) (the adversary hits a programmed point, event bad3). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000061">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>The combined bad mass is at most the offline bad mass plus the mass of a hit on a programmed point. The first term is the offline bound. The second term is the exact bound for a hit. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedCombinedGood_real_le">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">54</span>
+    <span class="theorem_thmtitle">BABE Claim&#160;12</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedCombinedGood_real_le">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000062"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedCombinedGood_real_le" class="lean_decl">Kriterion.ArgoMAC.Security.sharedCombinedGood_real_le</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Good-transcript ratio (Claim&#160;12). For \(q \leq 2^{101}\) and every transcript \(\tau \): \((1 - \varepsilon _2) \cdot \Pr _{\mathrm{ideal}}[\text{good sample} \mapsto \tau ] \leq \Pr _{\mathrm{real}}[\tau ]\) with \(\varepsilon _2 = (60199524 + 372\, q) / 2^{128}\), for an on-curve and for an off-curve chosen input. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000062">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Split on whether the chosen input is on the curve. For an on-curve input, the good mass is at most the offline good mass. If that mass is zero the claim is trivial. Otherwise <a href="sect0003.html#Security.sharedFullPipelinePrefix_real_le_supported">theorem 55</a> applies with the query length of a supported transcript. For an off-curve input, the good mass is at most the curve good mass, and <a href="sect0003.html#Security.sharedFullCurveGood_real_le_budget">theorem 56</a> applies. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedFullPipelinePrefix_real_le_supported">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">55</span>
+    <span class="theorem_thmtitle">BABE Claim&#160;12</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedFullPipelinePrefix_real_le_supported">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000063"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedFullPipelinePrefix_real_le_supported" class="lean_decl">Kriterion.ArgoMAC.Security.sharedFullPipelinePrefix_real_le_supported</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Good-transcript ratio for an on-curve input. For every transcript \(\tau \) whose chosen input is on the curve and whose permutation queries number at most \(q \leq 2^{101}\): \((1 - (60199016 + 368\, q) / 2^{128}) \cdot \Pr _{\mathrm{ideal}}[\text{good offline sample} \mapsto \tau ] \leq \Pr _{\mathrm{real}}[\tau ]\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000063">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> If the good mass is zero the claim is trivial. Otherwise expand the good mass as a weighted sum and pick a nonzero term. The term supplies compatible active labels, input bits, and a label vector. The supported-ratio lemma for the on-curve branch gives the bound. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedFullCurveGood_real_le_budget">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">56</span>
+    <span class="theorem_thmtitle">BABE Claim&#160;12</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedFullCurveGood_real_le_budget">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000064"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedFullCurveGood_real_le_budget" class="lean_decl">Kriterion.ArgoMAC.Security.sharedFullCurveGood_real_le_budget</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Good-transcript ratio for an off-curve input. For every transcript \(\tau \) whose chosen input is off the curve and \(q \leq 2^{101}\): \((1 - \varepsilon _2) \cdot \Pr _{\mathrm{ideal}}[\text{good sample} \mapsto \tau ] \leq \Pr _{\mathrm{real}}[\tau ]\). Only the curve membership layer \(C_4, C_5\) is compared, because the labels \(L_3\) stay encrypted. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000064">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>If the good mass is zero the claim is trivial. Otherwise expand the good mass as a weighted sum and pick a nonzero term. The term bounds the query length by \(q\). The supported-ratio lemma for the off-curve branch gives the bound. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictTranscript_good">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">57</span>
+    <span class="theorem_thmtitle">BABE Definition&#160;20</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictTranscript_good">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000065"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictTranscript_good" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictTranscript_good</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   On a good sample, the strict simulator does not abort. For every sample of the ideal space outside \(\mathcal{T}_{\mathrm{bad}}\) (Definition&#160;20), the strict transcript equals the sampled transcript. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000065">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Unfold the ideal sample space to find the prior draw of the sample. The offline phase does not abort on a good sample. Without an abort the strict transcript equals the sampled transcript. The abort lemmas reduce to <a href="sect0003.html#Security.sharedStrictSelectedView_good">theorem 58</a>. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictSelectedView_good">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">58</span>
+    <span class="theorem_thmtitle">BABE Definition&#160;20</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictSelectedView_good">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000066"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictSelectedView_good" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictSelectedView_good</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The programming of \(\mathsf{Sim}_2\) succeeds on a good tag. When the garbled \(C_2, C_3\) tag is good and the permutation state starts without a conflict, programming the active labels of the chosen input (Construction&#160;3, Step&#160;3) does not raise the bad flag, on the on-curve and on the off-curve branch. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000066">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Split on whether the input is on the curve. In both branches, rewrite the program view as the source view. The programming commands of a good tag stay fresh, so the bad flag stays false. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictGateSource_entrance">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">59</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;14</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictGateSource_entrance">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000067"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictGateSource_entrance" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictGateSource_entrance</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Sampling loss of the real oracle. The real gate source, which samples \(\mathbb {F}_p\) elements by reducing \(384\)-bit hash outputs, and the ideal gate source differ on every event by at most the hash-rounding loss \(305054 \cdot (2^{384} \bmod p) / 2^{384}\) plus \(2^{-240}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000067">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> This is the gate source observation bound applied to the strict observer. </p>
+
+  </div>
+</div>
+<h2 id="a0000000068">3.2.3 Collision bounds</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedFullPipelinePrefixBad_mass_le">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">60</span>
+    <span class="theorem_thmtitle">BABE Claim&#160;11</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedFullPipelinePrefixBad_mass_le">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000069"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedFullPipelinePrefixBad_mass_le" class="lean_decl">Kriterion.ArgoMAC.Security.sharedFullPipelinePrefixBad_mass_le</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Bad-transcript mass of the offline phase (Claim&#160;11, events bad1, bad2, bad4). The probability that the programmed points of \(\mathsf{Sim}_2\) collide is at most \(188023005.716 / 2^{128} + 368\, q_1 / 2^{128}\) plus the hash-rounding loss, where \(q_1\) is the number of queries before the chosen input. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000069">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> The bad offline event is the image of the retained bad source under the offline law. By <a href="sect0003.html#Security.sharedGoodMaskSourceBad_mass_le">theorem 61</a> the retained bad source has the joint collision bound. Add the hash-rounding loss. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedGoodMaskSourceBad_mass_le">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">61</span>
+    <span class="theorem_thmtitle">BABE Claim&#160;11</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedGoodMaskSourceBad_mass_le">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000070"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedGoodMaskSourceBad_mass_le" class="lean_decl">Kriterion.ArgoMAC.Security.sharedGoodMaskSourceBad_mass_le</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Joint collision bound (Claim&#160;11). For the independent mask source of the ideal world, the collision flag has mass at most \(188023005.716 / 2^{128} + 368\, q_1 / 2^{128}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000070">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Bound the mass by the concrete retained flags. Unfold both sources into a product of uniform draws. For each retained tape, the observer flags have the checked collision mass. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedAdaptiveThreeRoundingLossSum_le_envelope">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">62</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;14</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedAdaptiveThreeRoundingLossSum_le_envelope">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000071"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedAdaptiveThreeRoundingLossSum_le_envelope" class="lean_decl">Kriterion.ArgoMAC.Security.sharedAdaptiveThreeRoundingLossSum_le_envelope</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Arithmetic of Lemma&#160;14. The sum \(\varepsilon _1 + \varepsilon _2\) plus three hash-rounding losses plus \(2^{-240}\) is at most \(\varepsilon _3(q) = (251850146 + 833\, q) / 2^{128}\) when \(q_1 \leq q\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000071">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>The field mask loss is at most the block loss, so \((q + 1) / p \leq (q + 1) / 2^{128}\). The term \(2^{-240}\) is at most \(2^{-128}\). Sum all terms and compare with the constant of \(\varepsilon _3\) by linear arithmetic. </p>
+
+  </div>
+</div>
+<h2 id="a0000000072">3.2.4 Finite sampling</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictSourceDecision_allowance">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">63</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictSourceDecision_allowance">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000073"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictSourceDecision_allowance" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictSourceDecision_allowance</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Bounded rejection sampling. The advantage between the exact strict simulator and the strict simulator with \(256\) attempts per draw is at most the machine cutoff allowance of \(q\). The simulator of Construction&#160;3 samples with unbounded rejection; the Lean simulator bounds each draw. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000073">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> The total law of <a href="sect0003.html#Security.sharedStrictSourceDecision_law">theorem 64</a> with \(256\) attempts bounds the advantage. Unfold the cutoff allowance and compare the coefficients. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedStrictSourceDecision_law">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">64</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedStrictSourceDecision_law">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000074"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedStrictSourceDecision_law" class="lean_decl">Kriterion.ArgoMAC.Security.sharedStrictSourceDecision_law</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The strict simulator draws \(917653\) field elements by rejection sampling. With \(k\) attempts per draw, the simulator with bounded draws is a total law of the exact simulator: it agrees with the exact simulator unless some draw fails \(k\) times. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000074">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold the strict simulator. The offline sampler \(\mathsf{Sim}_1\) has a total law with \(917470\) draws. The online sampler \(\mathsf{Sim}_2\) adds \(183\) draws. The remaining steps are exact. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedErrors_has100Bits">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">65</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;14</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedErrors_has100Bits">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000075"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedErrors_has100Bits" class="lean_decl">Kriterion.ArgoMAC.Security.sharedErrors_has100Bits</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Security level (Lemma&#160;14). If the privacy error is at most \(\varepsilon _3(q)\) and the implementation error is at most the cutoff allowance of \(q\), then \((q + 1) / (\text{privacy error} + \text{implementation error}) \geq 2^{100}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000075">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Add the two bounds. Multiply by \(2^{100}\). The envelope \(\varepsilon _3\) plus the cutoff allowance has \(100\) bits of work. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Security.sharedLargeBudget_has100Bits">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">66</span>
+    <span class="theorem_thmtitle">BABE Lemma&#160;14</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#Security.sharedLargeBudget_has100Bits">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000076"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Security.sharedLargeBudget_has100Bits" class="lean_decl">Kriterion.ArgoMAC.Security.sharedLargeBudget_has100Bits</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Large budgets. When \(q \geq 2^{101}\), the sum of two advantages, each at most \(1\), satisfies \((q + 1) / (\delta + \delta ') \geq 2^{100}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000076">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Each advantage is at most one, so the sum is at most two. Multiply by \(2^{100}\). The budget plus one is at least \(2^{101}\), which dominates. </p>
+
+  </div>
+</div>
+<h2 id="a0000000077">3.2.5 Simulator execution</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazyCompiledIdealGame_eqStrict">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">67</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyCompiledIdealGame_eqStrict">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000078"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">Definition 74</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledIdealGame_finiteSource">Theorem 68</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledOnline_decision">Theorem 71</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyChosenDecision_completion">Theorem 70</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledIdealGame_eqStrict" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledIdealGame_eqStrict</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    The compiled machine implements the strict simulator. The ideal world of the compiled machine equals the ideal world of \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) (Construction&#160;3) with \(256\) attempts per draw. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000078">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Apply <a href="sect0003.html#ArithmeticSimulator.lazyCompiledIdealGame_finiteSource">theorem 68</a>. For each setup in the support, apply <a href="sect0003.html#ArithmeticSimulator.lazyChosenDecision_completion">theorem 70</a>. The online premise is <a href="sect0003.html#ArithmeticSimulator.lazyCompiledOnline_decision">theorem 71</a> with the offline coin stored in memory. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazyCompiledIdealGame_finiteSource">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">68</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyCompiledIdealGame_finiteSource">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000079"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">Definition 74</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazySetupJoint_parsed">Theorem 69</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledIdealGame_finiteSource" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledIdealGame_finiteSource</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    If the online phase of the compiled machine equals, for every setup in the support of \(\mathsf{Sim}_1\), the strict frame decision of \(\mathsf{Sim}_2\) after the public completion of the permutation, then the ideal world of the machine equals the strict simulator. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000079">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Split the parsed game into the setup and online phases and rewrite the setup with <a href="sect0003.html#ArithmeticSimulator.lazySetupJoint_parsed">theorem 69</a>. Replace the online decision on the support of the setup by the premise. The result is the strict simulator over the joint setup law. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazySetupJoint_parsed">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">69</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazySetupJoint_parsed">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000080"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">Definition 74</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.phaseBudget">Theorem 75</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazySetupJoint_parsed" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazySetupJoint_parsed</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    The setup phase of the compiled machine is \(\mathsf{Sim}_1\). Parsing the memory after the setup run returns the public table \(\mathsf{ct}_{\mathsf{gc}}\), the memory, and the empty lazy permutation, distributed as the joint offline source. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000080">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Parse the result of the setup machine run. The setup machine law gives the joint offline source. On the support of the joint source, the public value in memory parses to \(\mathsf{ct}_{\mathsf{gc}}\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazyChosenDecision_completion">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">70</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyChosenDecision_completion">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000081"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">Definition 74</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyChosenDecision_completion" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyChosenDecision_completion</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    The choose phase keeps only the permutation fields that affect the strict decision. If the parsed online phase has the completed strict law for every chosen input, then the chosen decision of the machine equals the strict frame decision of \(\mathsf{Sim}_2\) after the public completion. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000081">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Complete the choose phase with the online premise. The chosen decision unfolds to the same bind on the support. The strict frame decision agrees with the completed run because the public run keeps the bad flag false. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazyCompiledOnline_decision">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">71</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyCompiledOnline_decision">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000082"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">Definition 74</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine_onlineParsed">Theorem 72</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledOnline_decision" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledOnline_decision</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    The online phase of the compiled machine is \(\mathsf{Sim}_2\). When the offline coin is stored in memory and the lazy permutation matches the transcript, the parsed online decision equals the strict decision: sample the online randomness with \(256\) attempts, program the active labels of the chosen input, abort on a conflict, and otherwise run the adversary’s decision on the programmed permutation. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000082">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Rewrite the parsed online phase with <a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine_onlineParsed">theorem 72</a>. The lazy online result decision lemma gives the completed strict law. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazyCompiledMachine_onlineParsed">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">72</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine_onlineParsed">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000083"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">Definition 74</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.phaseBudget">Theorem 75</a></li>
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.lazyOnlineMachine_run">Theorem 73</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledMachine_onlineParsed" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledMachine_onlineParsed</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    The online parser returns the active labels \(L_3\) and the programmed permutation. The parsed online phase of the compiled machine equals the lazy online result mapped to the \(508\) labels of \(128\) bits. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000083">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Prepare the input memory with the phase dispatch. Run the compiled machine for the online phase. By <a href="sect0003.html#ArithmeticSimulator.lazyOnlineMachine_run">theorem 73</a> the online machine returns the lazy online result. Parse the labels from memory word \(3\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.lazyOnlineMachine_run">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">73</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyOnlineMachine_run">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000084"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyOnlineMachine_run" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyOnlineMachine_run</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Every online request fits the fuel \(2^{46}\). Running the online machine on a memory that holds the chosen input and the optional output point returns the lazy online result at program counter \(317804843\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000084">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Bound the prefix cost and the sampling budget. Split on the output. Without an output the null run fits the fuel. With an output the valid run fits the fuel bound. </p>
+
+  </div>
+</div>
+<div class="definition_thmwrapper theorem-style-definition" id="ArithmeticSimulator.lazyCompiledMachine">
+  <div class="definition_thmheading">
+    <span class="definition_thmcaption">
+    Definition
+    </span>
+    <span class="definition_thmlabel">74</span>
+    <span class="definition_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.lazyCompiledMachine">#</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0003.html#ArithmeticSimulator.phaseBudget">Theorem 75</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledMachine" class="lean_decl">Kriterion.ArgoMAC.ArithmeticSimulator.lazyCompiledMachine</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="definition_thmcontent">
+  <p>    The compiled simulator \((\mathsf{Sim}_1, \mathsf{Sim}_2)\) as one bounded machine. The phase simulator combines the offline machine with \(256\) attempts per draw and the lazy online machine under the shared instruction allowance. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="ArithmeticSimulator.phaseBudget">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">75</span>
+    <span class="theorem_thmtitle">BABE Construction&#160;3</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0003.html#ArithmeticSimulator.phaseBudget">#</a>
+    
+    <a class="icon proof" href="sect0003.html#a0000000085"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.Privacy.Simulator.Arithmetic.CompiledMachine.0.Kriterion.ArgoMAC.ArithmeticSimulator.phaseBudget" class="lean_decl">_private.Proof.Privacy.Simulator.Arithmetic.CompiledMachine.0.Kriterion.ArgoMAC.ArithmeticSimulator.phaseBudget</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The size of the phase simulator plus both fuel allowances is at most \(2^{60}\), when the setup size plus fuel is at most \(605084290688\), the online code has at most \(317804844\) instructions, and the online fuel is at most \(2^{46}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000085">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold the phase simulator size and use linear arithmetic. </p>
+
+  </div>
+</div>
+
+</div> <!--main-text -->
+</div> <!-- content-wrapper -->
+</div> <!-- content -->
+</div> <!-- wrapper -->
+
+<nav class="prev_up_next">
+  <a href="sect0002.html" title="Perfect correctness"><svg  class="icon icon-arrow-left "><use xlink:href="symbol-defs.svg#icon-arrow-left"></use></svg>
+</a>
+  <a href="index.html" title="ArgoMAC security proof blueprint"><svg  class="icon icon-arrow-up "><use xlink:href="symbol-defs.svg#icon-arrow-up"></use></svg>
+</a>
+  <a href="sect0004.html" title="Lamport compatibility"><svg  class="icon icon-arrow-right "><use xlink:href="symbol-defs.svg#icon-arrow-right"></use></svg>
+</a>
+</nav>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/plastex.js"></script>
+<script type="text/javascript" src="js/svgxuse.js"></script>
+</body>
+</html>

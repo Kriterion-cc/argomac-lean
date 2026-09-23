@@ -4,6 +4,7 @@ This file defines the ArgoMAC randomized encoding.
 
 import Construction.ArgoMAC.Offsets
 import RandomizedEncoding
+import Architect
 
 namespace Kriterion.ArgoMAC
 
@@ -15,11 +16,18 @@ def Construction.outputs [FieldCertificate] [GroupCertificate]
   encodeDigits point ((construction.digits scalar).map digitScalar)
     (construction.offsets randomness)
 
+@[blueprint "Construction.correct"
+  (statement := /-- Correctness of $C_1$ (Fig.~6): $\mathsf{Eval}_1(\bot, L_1) = \sum_{j=0}^{\ell-1} (2-\omega)^j
+    (r_j P + K_j) = rP$ for every scalar $r$, every offset randomness, and every point $P$. -/)
+  (title := /-- BABE Fig.~6 -/)]
 theorem Construction.correct [FieldCertificate] [GroupCertificate] [TerminationCertificate]
     (construction : Construction) (scalar : ScalarField)
     (randomness : OffsetRandomness) (point : Point) :
     pointHorner radix (construction.outputs scalar randomness point) =
       scalarMultiplication scalar point := by
+  /-- Unfold $\mathsf{Encode}_1$. The Horner sum splits into $\big(\sum_j r_j (2-\omega)^j\big) P$
+    plus $\sum_j (2-\omega)^j K_j$. By \cref{Construction.scalarReconstruction} the first factor is
+    $r$. By \cref{Construction.offsetsCancel} the second sum is $0$. -/
   rw [Construction.outputs]
   rw [pointHornerEncodeDigits radix point
     ((construction.digits scalar).map digitScalar) (construction.offsets randomness)

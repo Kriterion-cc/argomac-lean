@@ -4,6 +4,7 @@ This file defines the ArgoMAC garbling scheme.
 
 import Construction.ArgoMAC
 import GarbledCircuit
+import Architect
 
 namespace Kriterion.ArgoMAC.Garbling
 
@@ -84,6 +85,12 @@ def evaluate [FieldCertificate] [GroupCertificate] (oracle : EvaluationOracle)
     table labels.input labels.inputMac).bind decodeResult
 
 /-- Correct labels evaluate all table rows. -/
+@[blueprint "Garbling.evaluateEncodeRows"
+  (statement := /-- For an on-curve input $\pi$ and the encoding key $\mathsf{ek}$ of $\mathsf{Garble}$, the
+    evaluation chain of Fig.~21 applied to $\mathsf{ct}_{\mathsf{gc}}$ and
+    $\mathsf{Encode}(\mathsf{ek}, \pi)$ returns the Jacobian coordinates $(X, Y, Z)(r_j \pi + K_j)$
+    of $\mathsf{Eval}_2$ for all $j \in \{0, \ldots, \ell-1\}$. -/)
+  (title := /-- BABE Fig.~21 -/)]
 theorem evaluateEncodeRows [FieldCertificate] (construction : Construction)
     (key : EncodingKey) (input : AffineInput) (point : Point)
     (decoded : decodePoint input = some point) :
@@ -94,6 +101,8 @@ theorem evaluateEncodeRows [FieldCertificate] (construction : Construction)
         (FieldMacToECMac.rowsForOutputKeys
           (FieldMacToECMac.outputKeys construction key.scalar.value key.randomness.offsets)
           key.randomness.pointRandomness) input) := by
+  /-- This is \cref{Pipeline.evaluateEncoded} applied to the output keys $(r_j, K_j)$, the randomizers
+    $a_j$, and the oracles of $\mathsf{ek}$. -/
   exact Pipeline.evaluateEncoded
     (FieldMacToECMac.outputKeys construction key.scalar.value key.randomness.offsets)
     key.randomness.pointRandomness
@@ -121,6 +130,10 @@ end Kriterion.ArgoMAC.Garbling
 namespace Kriterion.ArgoMAC.Lamport
 open BN254 Cryptography
 
+@[blueprint "Lamport.keyPairs"
+  (statement := /-- The Lamport secret key of $\mathsf{ek}_3$. Slot $i < 254$ holds $(L^0_{x,i}, L^1_{x,i})$ and
+    slot $i \geq 254$ holds $(L^0_{y,i-254}, L^1_{y,i-254})$. -/)
+  (title := /-- BABE Section~5.1 -/)]
 def keyPairs (key : InputMacKey) : GarbledCircuit.LamportSecretKey :=
   Vector.ofFn fun index =>
     if low : index.val < 254 then

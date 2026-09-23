@@ -6,6 +6,7 @@ The active paper shows this pipeline at `fig:garbled_c_with_cm_opt`.
 import Construction.ArgoMAC.CurveMembership
 import Construction.ArgoMAC.EncPRF
 import Construction.ArgoMAC.FieldMacToECMac
+import Architect
 
 namespace Kriterion.ArgoMAC.Pipeline
 
@@ -182,6 +183,12 @@ def evaluate [FieldCertificate]
       some (FieldMacToECMac.evaluate table.pointMAC (pointOracles fixedKeyOracle)
         affineInput pointInputMac)
 
+@[blueprint "Pipeline.evaluateEncoded"
+  (statement := /-- Correctness of the evaluation chain. For an on-curve input $\pi$, evaluating the garbled table
+    on the bit labels $L = \mathsf{Encode}(\mathsf{ek}, \pi)$ returns
+    $\mathsf{Eval}_2(\mathsf{ct}_{\mathsf{gc}, 2}, L_2, x(\pi), y(\pi))$, the Jacobian coordinates
+    of $r_j \pi + K_j$ for all $j$ (Fig.~10). -/)
+  (title := /-- BABE Fig.~21 -/)]
 theorem evaluateEncoded [FieldCertificate]
     (outputKeys : FieldMacToECMac.OutputKeys)
     (pointRandomness : FieldMacToECMac.Randomness)
@@ -196,6 +203,12 @@ theorem evaluateEncoded [FieldCertificate]
         (BitInput.ofAffine input) (inputKey.encode (BitInput.ofAffine input)) =
       some (FieldMacToECMac.expectedResult
         (FieldMacToECMac.rowsForOutputKeys outputKeys pointRandomness) input) := by
+  /-- Since $\pi$ decodes to a point, $\pi$ is on the curve. Unfold $\mathsf{Eval}$ and
+    $\mathsf{Garble}$. By \cref{CurveMembership.evaluateEncodedOnCurve} the garbled $C_4[t, w]$
+    releases $\hat t = t$. By \cref{EncPRF.transformEncode} decrypting the encrypted labels
+    $\mathsf{Enc}_t(L_3)$ with $t$ gives the labels $L_3$ of $\pi$. By
+    \cref{FieldMacToECMac.evaluateEncoded} the garbled $C_2$ evaluates to the expected coordinates,
+    because its rows are sparse. -/
   have inputOnCurve : OnCurve input := (decodePoint_defined input).mp (by simp [decoded])
   simp only [evaluate, BitInput.toAffineOfAffine, decoded, garble]
   rw [InputMacKey.encodeOfAffine]

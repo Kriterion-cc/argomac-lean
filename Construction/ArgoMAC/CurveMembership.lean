@@ -4,6 +4,7 @@ This file defines the curve-membership table.
 
 import Construction.ArgoMAC.DigitAdaptor
 import Construction.ArgoMAC.Input
+import Architect
 
 namespace Kriterion.ArgoMAC.CurveMembership
 
@@ -89,10 +90,17 @@ theorem evaluateEncoded (bridgeKey mask r1 r2 : BaseField) (oracles : Oracles)
   ring
 
 /-- Correct labels release `t` for an on-curve input. -/
+@[blueprint "CurveMembership.evaluateEncodedOnCurve"
+  (statement := /-- Correctness of the garbled $C_4[t, w]$ (Fig.~18). For all $t, w, r_1, r_2 \in \mathbb{F}_p$,
+    every input $\pi$ on the curve $y^2 = x^3 + 3$, and the labels of $\pi$: $\mathsf{Eval}_4$
+    returns $t + w\,(x(\pi)^3 + 3 - y(\pi)^2) = t$. -/)
+  (title := /-- BABE Fig.~18 -/)]
 theorem evaluateEncodedOnCurve (bridgeKey mask r1 r2 : BaseField) (oracles : Oracles)
     (inputKey : InputMacKey) (input : AffineInput) (inputOnCurve : OnCurve input) :
     evaluate oracles (garble bridgeKey mask r1 r2 oracles inputKey)
       input (inputKey.encodeAffine input) = bridgeKey := by
+  /-- Rewrite the evaluation on the labels of $\pi$. The curve equation gives $x(\pi)^3 + 3 - y(\pi)^2
+    = 0$, which removes the masked term. The remaining terms cancel by ring arithmetic. -/
   rw [evaluateEncoded]
   rw [show input.x ^ 3 + 3 - input.y ^ 2 = 0 by rw [inputOnCurve]; ring]
   ring

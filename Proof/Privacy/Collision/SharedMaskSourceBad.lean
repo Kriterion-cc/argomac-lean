@@ -1,5 +1,6 @@
 import Proof.Privacy.Collision.SharedSourcePrefixGuard
 import Proof.Privacy.Source.SharedGateSourceSupport
+import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography FieldMacToECMac
@@ -107,10 +108,16 @@ theorem sharedMaskSourceBadObserver_flags [FieldCertificate] [GroupCertificate] 
     (fun good => neither.2 (decide_eq_true_eq.mpr good))) bad
 
 /-- The complete independent shared mask source has the checked joint collision bound. -/
+@[blueprint "Security.sharedGoodMaskSourceBad_mass_le"
+  (statement := /-- Joint collision bound (Claim~11). For the independent mask source of the ideal world, the
+    collision flag has mass at most $188023005.716 / 2^{128} + 368\,q_1 / 2^{128}$. -/)
+  (title := /-- BABE Claim~11 -/)]
 theorem sharedGoodMaskSourceBad_mass_le [FieldCertificate] [GroupCertificate] (scalar : ScalarField) :
     (sharedGoodMaskSourceBad adversary parameter auxiliary scalar).toOuterMeasure {flag | flag = true} ≤
       (188023005716 / 1000) / (2 : ENNReal) ^ 128 +
         (368 * adversary.firstQueryBudget parameter : Nat) / (2 : ENNReal) ^ 128 := by
+  /-- Bound the mass by the concrete retained flags. Unfold both sources into a product of uniform
+    draws. For each retained tape, the observer flags have the checked collision mass. -/
   apply le_trans _ (sharedConcreteRetainedFlags_mass_le adversary parameter auxiliary scalar)
   unfold sharedGoodMaskSourceBad sharedConcreteRetainedFlags
   rw [uniform_product_bind]

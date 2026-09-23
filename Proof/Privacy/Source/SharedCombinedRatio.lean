@@ -1,4 +1,5 @@
 import Proof.Privacy.Source.SharedCombinedSource
+import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography
@@ -39,6 +40,12 @@ theorem sharedCombinedFactor_le_pipeline (budget : Nat) :
   exact_mod_cast (show 60199016 + 368 * budget ≤ 60199524 + 372 * budget by omega)
 
 /-- One complete shared source guard gives the same real endpoint ratio for both input branches. -/
+@[blueprint "Security.sharedCombinedGood_real_le"
+  (statement := /-- Good-transcript ratio (Claim~12). For $q \leq 2^{101}$ and every transcript $\tau$: $(1 -
+    \varepsilon_2) \cdot \Pr_{\mathrm{ideal}}[\text{good sample} \mapsto \tau] \leq
+    \Pr_{\mathrm{real}}[\tau]$ with $\varepsilon_2 = (60199524 + 372\,q) / 2^{128}$, for an on-curve
+    and for an off-curve chosen input. -/)
+  (title := /-- BABE Claim~12 -/)]
 theorem sharedCombinedGood_real_le [FieldCertificate] [GroupCertificate] [Fintype Block] {Aux : Type}
     (adversary : GarbledCircuit.AdaptiveAdversary sharedRealOracleSpec AffineInput Pipeline.Table Garbling.Labels Aux)
     (parameter : Nat) (auxiliary : Aux) (scalar : NonZeroScalar) (witness : Shared.Randomness)
@@ -51,6 +58,11 @@ theorem sharedCombinedGood_real_le [FieldCertificate] [GroupCertificate] [Fintyp
         (fun coin => PMF.pure coin.2) {coin | sharedCombinedBad scalar.value coin} output ≤
       (realAdaptiveTranscriptWithState sharedInternalCircuit
         (uniformRandomTape Shared.Randomness witness) sharedRealOracleHandler adversary parameter scalar auxiliary) output := by
+  /-- Split on whether the chosen input is on the curve. For an on-curve input, the good mass is at
+    most the offline good mass. If that mass is zero the claim is trivial. Otherwise
+    \cref{Security.sharedFullPipelinePrefix_real_le_supported} applies with the query length of a
+    supported transcript. For an off-curve input, the good mass is at most the curve good mass, and
+    \cref{Security.sharedFullCurveGood_real_le_budget} applies. -/
   by_cases valid : OnCurve output.2.1.1
   · have comparison := sharedCombinedGood_prefix_le adversary parameter auxiliary scalar.value witness fallback output
     by_cases zero : sourceGoodMass (sharedFullGatePrefixSamples scalar.value witness parameter

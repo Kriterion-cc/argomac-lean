@@ -3,6 +3,7 @@ This file defines the EncPRF label link.
 -/
 
 import Construction.ArgoMAC.Input
+import Architect
 
 namespace Kriterion.ArgoMAC.EncPRF
 
@@ -89,10 +90,19 @@ theorem transformCoordinateEncode (oracle : PermutationOracle PermutationIndex B
     Vector.getElem_ofFn]
   cases bits.getLsb finiteIndex <;> simp [BitAdaptor.encode]
 
+@[blueprint "EncPRF.transformEncode"
+  (statement := /-- Encrypting labels commutes with selecting labels. For the permutation oracle of
+    $\mathsf{EncPRF}$, whitening keys, an encoding key $\mathsf{ek}_3$, and input bits $\mathbf{b}$:
+    $\mathsf{Enc}_t(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})) =
+    \mathsf{Encode}_3(\mathsf{Enc}_t(\mathsf{ek}_3), \mathbf{b})$, where
+    $\mathsf{Enc}_t(\mathsf{ek}_3)$ encrypts every label as in Eq.~33 and Claim~7. -/)
+  (title := /-- BABE Claim~7 -/)]
 theorem transformEncode (oracle : PermutationOracle PermutationIndex Block)
     (keys : WhiteningKeys) (key : InputMacKey) (input : BitInput) :
     transformMac oracle keys input (key.encode input) =
       (transformKey oracle keys key).encode input := by
+  /-- Compare the $x$ and $y$ label vectors. Each coordinate follows from the transformation of one
+    coordinate encoding. -/
   apply InputMac.ext
   · exact transformCoordinateEncode oracle keys .x key.x input.xBits
   · exact transformCoordinateEncode oracle keys .y key.y input.yBits

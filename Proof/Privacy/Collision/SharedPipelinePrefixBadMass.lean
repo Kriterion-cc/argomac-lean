@@ -1,5 +1,6 @@
 import Proof.Privacy.Collision.SharedPipelinePrefixBad
 import Proof.Privacy.ThreePhasePrivacy
+import Architect
 
 namespace Kriterion.ArgoMAC.Security
 open BN254 Cryptography FieldMacToECMac
@@ -72,6 +73,13 @@ theorem sharedFullPipelinePrefixBad_law [FieldCertificate] [GroupCertificate] (s
     (sharedFullRetainedBadObserver adversary parameter auxiliary scalar)
 
 /-- The actual complete shared prefix pays the checked collision and hash-rounding losses. -/
+@[blueprint "Security.sharedFullPipelinePrefixBad_mass_le"
+  (statement := /-- Bad-transcript mass of the offline phase (Claim~11, events bad1, bad2, bad4). The probability
+    that the programmed points of $\mathsf{Sim}_2$ collide is at most $188023005.716 / 2^{128} +
+    368\,q_1 / 2^{128}$ plus the hash-rounding loss, where $q_1$ is the number of queries before the
+    chosen input. -/)
+  (title := /-- BABE Claim~11 -/)
+  (proofUses := ["Security.sharedGoodMaskSourceBad_mass_le"])]
 theorem sharedFullPipelinePrefixBad_mass_le [FieldCertificate] [GroupCertificate] (scalar : ScalarField)
     (witness : Shared.Randomness) :
     ((sharedFullGatePrefixSamples scalar witness parameter
@@ -80,6 +88,9 @@ theorem sharedFullPipelinePrefixBad_mass_le [FieldCertificate] [GroupCertificate
       (188023005716 / 1000) / (2 : ℝ) ^ 128 +
         (368 * adversary.firstQueryBudget parameter : Nat) / (2 : ℝ) ^ 128 +
         (305054 : ℝ) * (2 ^ 384 % baseFieldModulus : Nat) / 2 ^ 384 := by
+  /-- The bad offline event is the image of the retained bad source under the offline law. By
+    \cref{Security.sharedGoodMaskSourceBad_mass_le} the retained bad source has the joint collision
+    bound. Add the hash-rounding loss. -/
   have bound := sharedFullRetainedBadSource_mass_le adversary parameter auxiliary scalar
   rw [← sharedFullPipelinePrefixBad_law adversary parameter auxiliary scalar witness,
     PMF.toOuterMeasure_map_apply] at bound

@@ -1,0 +1,27 @@
+digraph {
+  rankdir=BT; nodesep=0.25; ranksep=0.45;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, penwidth=0, margin="0.08,0.03"];
+  edge [arrowsize=0.6, color="#555555"];
+  "Lamport.affineLamportBits_eq_append" [label="Lamport\naffineLamportBits_eq_append", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.appendGetHigh" [label="Lamport\nappendGetHigh", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.appendGetLow" [label="Lamport\nappendGetLow", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.keyPairs" [label="Lamport\nkeyPairs", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.keyPairsGetHigh" [label="Lamport\nkeyPairsGetHigh", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.keyPairsGetLow" [label="Lamport\nkeyPairsGetLow", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.selectedLabelsEncodeHigh" [label="Lamport\nselectedLabelsEncodeHigh", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.selectedLabelsEncodeLow" [label="Lamport\nselectedLabelsEncodeLow", fillcolor="#E0A458", fontcolor="white"];
+  "Lamport.selectedLabels_eq" [label="Lamport\nselectedLabels_eq", fillcolor="#E0A458", fontcolor="white"];
+  "Shared.programLamportCompatible" [label="Shared\nprogramLamportCompatible", fillcolor="#E0A458", fontcolor="white", peripheries=2];
+  "Lamport.keyPairs" -> "Lamport.keyPairsGetHigh";
+  "Lamport.keyPairs" -> "Lamport.keyPairsGetLow";
+  "Lamport.affineLamportBits_eq_append" -> "Lamport.selectedLabels_eq";
+  "Lamport.appendGetHigh" -> "Lamport.selectedLabels_eq";
+  "Lamport.appendGetLow" -> "Lamport.selectedLabels_eq";
+  "Lamport.keyPairs" -> "Lamport.selectedLabels_eq";
+  "Lamport.keyPairsGetHigh" -> "Lamport.selectedLabels_eq";
+  "Lamport.keyPairsGetLow" -> "Lamport.selectedLabels_eq";
+  "Lamport.selectedLabelsEncodeHigh" -> "Lamport.selectedLabels_eq";
+  "Lamport.selectedLabelsEncodeLow" -> "Lamport.selectedLabels_eq";
+  "Lamport.keyPairs" -> "Shared.programLamportCompatible";
+  "Lamport.selectedLabels_eq" -> "Shared.programLamportCompatible";
+}

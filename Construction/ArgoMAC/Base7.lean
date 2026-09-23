@@ -5,6 +5,7 @@ This file defines the optimized BN254 scalar digits.
 import Construction.ArgoMAC.Algebra
 import Mathlib.Tactic.IntervalCases
 import Mathlib.Tactic.Ring
+import Architect
 
 namespace Kriterion.ArgoMAC
 
@@ -316,9 +317,19 @@ theorem Construction.digitCount (construction : Construction)
   exact decomposeLength 92 _
 
 /-- The fixed recurrence reconstructs the input scalar. -/
+@[blueprint "Construction.scalarReconstruction"
+  (statement := /-- Reconstruction of Alg.~8: $\sum_{j=0}^{\ell-1} r_j (2-\omega)^j \equiv r \pmod{\mathbb{r}}$ for
+    the base-$(2-\omega)$ digits $r_j \in D$ of every scalar $r$, with $\ell = 92$. The termination
+    certificate uses \cref{GLV91.glvInitialTerminates92}. -/)
+  (title := /-- BABE Alg.~8 -/)
+  (proofUses := ["GLV91.glvInitialTerminates92"])]
 theorem Construction.scalarReconstruction [TerminationCertificate]
     (construction : Construction) (scalar : BN254.ScalarField) :
     scalarHorner radix ((construction.digits scalar).map digitScalar) = scalar := by
+  /-- The reconstruction invariant holds for $92$ iterations of Alg.~8 with the remaining pair $(A,
+    B)$ as a tail. By the termination certificate $(A, B) = (0, 0)$ after $92$ iterations, so the
+    tail vanishes. The initial pair $(a, b)$ satisfies $a + \omega b \equiv r$ by the GLV
+    decomposition. -/
   have invariant := reconstructionWithTail 92
     (glvInitial scalar)
   rw [TerminationCertificate.terminal scalar] at invariant
