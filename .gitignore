@@ -1,1 +1,5 @@
 /.lake/
+/docs/blueprint/lean/.lake/
+# latexmk intermediates; the PDF itself is tracked
+/docs/blueprint/print/*
+!/docs/blueprint/print/print.pdf

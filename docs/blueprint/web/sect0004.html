@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  MathJax = { 
+    tex: {
+		    inlineMath: [['$','$'], ['\\(','\\)']]
+	} }
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<meta name="generator" content="plasTeX" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lamport compatibility</title>
+<link rel="next" href="sect0005.html" title="Bibliography" />
+<link rel="prev" href="sect0003.html" title="Adaptive privacy" />
+<link rel="up" href="index.html" title="ArgoMAC security proof blueprint" />
+<link rel="stylesheet" href="styles/theme-white.css" />
+<link rel="stylesheet" href="styles/amsthm.css" />
+<link rel="stylesheet" href="styles/blueprint.css" />
+<link rel="stylesheet" href="styles/extra_styles.css" />
+</head>
+
+<body>
+<header>
+<svg  id="toc-toggle" class="icon icon-list-numbered "><use xlink:href="symbol-defs.svg#icon-list-numbered"></use></svg>
+<h1 id="doc_title"><a href="index.html">ArgoMAC security proof blueprint</a></h1>
+</header>
+
+<div class="wrapper">
+<nav class="toc">
+<ul class="sub-toc-0">
+<li class="">
+  <a href="sect0001.html"><span class="toc_ref">1</span> <span class="toc_entry">Introduction</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0001.html#a0000000007"><span class="toc_ref">1.1</span> <span class="toc_entry">Paper correspondence</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0002.html"><span class="toc_ref">2</span> <span class="toc_entry">Perfect correctness</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0002.html#a0000000008"><span class="toc_ref">2.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0002.html#a0000000009"><span class="toc_ref">2.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0003.html"><span class="toc_ref">3</span> <span class="toc_entry">Adaptive privacy</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0003.html#a0000000010"><span class="toc_ref">3.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0003.html#a0000000011"><span class="toc_ref">3.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class=" active current">
+  <a href="sect0004.html"><span class="toc_ref">4</span> <span class="toc_entry">Lamport compatibility</span></a>
+  <span class="expand-toc">▼</span>
+  <ul class="sub-toc-1 active">
+     <li class="">
+  <a href="sect0004.html#a0000000012"><span class="toc_ref">4.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0004.html#a0000000013"><span class="toc_ref">4.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0005.html"><span class="toc_ref">5</span> <span class="toc_entry">Bibliography</span></a>
+ </li>
+<li ><a href="dep_graph_document.html">Dependency graph</a></li>
+</ul>
+</nav>
+
+<div class="content">
+<div class="content-wrapper">
+
+
+<div class="main-text">
+<h1 id="a0000000005">4 Lamport compatibility</h1>
+<p>The root is <a href="sect0004.html#Shared.programLamportCompatible">definition 78</a>. The input labels \(\mathsf{Encode}(\mathsf{ek}, \pi )\) are exactly the Lamport signature of the bits of \(\pi \) under the key pairs of \(\mathsf{ek}\), as the locking scripts of Eqs.&#160;15–16 require. <a href="sect0004.html#fig:lamport-compatibility">Figure 4.1</a> shows the proof tree. </p>
+<figure id="fig:lamport-compatibility">
+  <p><img src="images/img-0003.svg" alt="\includegraphics{figures/lamport-compatibility.svg}" style="width: ; height: " />
+</p>
+<figcaption>
+  <span class="caption_title">Figure</span> 
+  <span class="caption_ref">4.1</span> 
+  <span class="caption_text">Dependencies of the Lamport compatibility proof.</span> 
+</figcaption>
+
+
+</figure>
+<h1 id="a0000000012">4.1 Statements from the paper</h1>
+<div class="paperdef_thmwrapper theorem-style-definition" id="babe:bitcoin">
+  <div class="paperdef_thmheading">
+    <span class="paperdef_thmcaption">
+    Definition
+    </span>
+    <span class="paperdef_thmlabel">76</span>
+    <span class="paperdef_thmtitle">Bitcoin constraint on the input labels; Section&#160;5.1 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#babe:bitcoin">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperdef_thmcontent">
+  <p> The input labels produced by \(\mathsf{Encode}\) are revealed on-chain. The Prover commits to \(\pi \) by a Lamport signature on the bits \(\mathbf{b}\) of its affine coordinates, and the input labels of the garbled circuit are exactly the Lamport signatures of \(\mathbf{b}\) under the encoding key \(\mathsf{ek}\): for the bit \(x_i(\pi )\) the label is \(L^{x_i(\pi )}_{x,i}\) and for the bit \(y_i(\pi )\) the label is \(L^{y_i(\pi )}_{y,i}\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperdef_thmwrapper theorem-style-definition" id="babe:eq15">
+  <div class="paperdef_thmheading">
+    <span class="paperdef_thmcaption">
+    Definition
+    </span>
+    <span class="paperdef_thmlabel">77</span>
+    <span class="paperdef_thmtitle">Locking scripts; Eqs.&#160;15–16 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#babe:eq15">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperdef_thmcontent">
+  <p> For a Lamport public key \(\mathsf{lpk} = (\mathsf{lpk}^0_i, \mathsf{lpk}^1_i)_{i \leq \ell }\), the script \(\mathsf{CheckLampSig}(\mathsf{lpk}) = \bigwedge _{i=1}^{\ell } \big( \mathsf{HashLock}(\mathsf{lpk}^0_i) \lor \mathsf{HashLock}(\mathsf{lpk}^1_i) \big)\) requires a Lamport signature on some message, and \(\mathsf{CheckLampSigsMatch}(\mathsf{lpk}_A, \mathsf{lpk}_B) = \bigwedge _{i=1}^{\ell } \big[ (\mathsf{HashLock}((\mathsf{lpk}_A)^0_i) \land \mathsf{HashLock}((\mathsf{lpk}_B)^0_i)) \lor (\mathsf{HashLock}((\mathsf{lpk}_A)^1_i) \land \mathsf{HashLock}((\mathsf{lpk}_B)^1_i)) \big]\) requires signatures under both keys on the same message. In ArgoMAC the message is \(\mathbf{b}\) with \(\ell = 508\) bits, and the key pairs are the labels \((L^0_{x,i}, L^1_{x,i})\) and \((L^0_{y,i}, L^1_{y,i})\). Formalized by ??. </p>
+
+  </div>
+</div>
+<h1 id="a0000000013">4.2 Lean statements</h1>
+<div class="definition_thmwrapper theorem-style-definition" id="Shared.programLamportCompatible">
+  <div class="definition_thmheading">
+    <span class="definition_thmcaption">
+    Definition
+    </span>
+    <span class="definition_thmlabel">78</span>
+    <span class="definition_thmtitle">BABE Eqs.&#160;15–16</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Shared.programLamportCompatible">#</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0004.html#Lamport.keyPairs">Definition 79</a></li>
+          
+          <li><a href="sect0004.html#Lamport.selectedLabels_eq">Theorem 80</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Shared.programLamportCompatible" class="lean_decl">Kriterion.ArgoMAC.Shared.programLamportCompatible</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="definition_thmcontent">
+  <p>    Lamport compatibility (Eqs.&#160;15–16). The Lamport key pairs \(\{ (L^0_{x,i}, L^1_{x,i}), (L^0_{y,i}, L^1_{y,i})\} _{i {\lt} 254}\) of \(\mathsf{ek}\) and the bit decomposition \(\mathbf{b}\) of \(\pi \) select exactly the labels \(\mathsf{Encode}(\mathsf{ek}, \pi )\), so the input labels are the Lamport signature of \(\pi \). </p>
+
+  </div>
+</div>
+<div class="definition_thmwrapper theorem-style-definition" id="Lamport.keyPairs">
+  <div class="definition_thmheading">
+    <span class="definition_thmcaption">
+    Definition
+    </span>
+    <span class="definition_thmlabel">79</span>
+    <span class="definition_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.keyPairs">#</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.keyPairs" class="lean_decl">Kriterion.ArgoMAC.Lamport.keyPairs</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="definition_thmcontent">
+  <p>   The Lamport secret key of \(\mathsf{ek}_3\). Slot \(i {\lt} 254\) holds \((L^0_{x,i}, L^1_{x,i})\) and slot \(i \geq 254\) holds \((L^0_{y,i-254}, L^1_{y,i-254})\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.selectedLabels_eq">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">80</span>
+    <span class="theorem_thmtitle">BABE Eqs.&#160;15–16</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.selectedLabels_eq">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000086"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0004.html#Lamport.keyPairs">Definition 79</a></li>
+          
+          <li><a href="sect0004.html#Lamport.keyPairsGetLow">Theorem 84</a></li>
+          
+          <li><a href="sect0004.html#Lamport.appendGetLow">Theorem 82</a></li>
+          
+          <li><a href="sect0004.html#Lamport.appendGetHigh">Theorem 85</a></li>
+          
+          <li><a href="sect0004.html#Lamport.affineLamportBits_eq_append">Theorem 81</a></li>
+          
+          <li><a href="sect0004.html#Lamport.keyPairsGetHigh">Theorem 87</a></li>
+          
+          <li><a href="sect0004.html#Lamport.selectedLabelsEncodeLow">Theorem 83</a></li>
+          
+          <li><a href="sect0004.html#Lamport.selectedLabelsEncodeHigh">Theorem 86</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.selectedLabels_eq" class="lean_decl">Kriterion.ArgoMAC.Lamport.selectedLabels_eq</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    \(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b}) = \{ L^{x_i(\pi )}_{x,i}, L^{y_i(\pi )}_{y,i}\} _{i {\lt} 254}\) equals the Lamport signature of the bits \(\mathbf{b}\) of \(\pi \) under the key pairs. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000086">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Rewrite \(\mathbf{b}\) as an append with <a href="sect0004.html#Lamport.affineLamportBits_eq_append">theorem 81</a>. Compare index by index. For \(i {\lt} 254\) use <a href="sect0004.html#Lamport.appendGetLow">theorem 82</a>, <a href="sect0004.html#Lamport.selectedLabelsEncodeLow">theorem 83</a>, and <a href="sect0004.html#Lamport.keyPairsGetLow">theorem 84</a>. For \(i \geq 254\) use <a href="sect0004.html#Lamport.appendGetHigh">theorem 85</a>, <a href="sect0004.html#Lamport.selectedLabelsEncodeHigh">theorem 86</a>, and <a href="sect0004.html#Lamport.keyPairsGetHigh">theorem 87</a>. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.affineLamportBits_eq_append">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">81</span>
+    <span class="theorem_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.affineLamportBits_eq_append">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000087"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.affineLamportBits_eq_append" class="lean_decl">Kriterion.ArgoMAC.Lamport.affineLamportBits_eq_append</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The bit decomposition \(\mathbf{b}\) of \(\pi \) is the \(254\) bits of \(y(\pi )\) appended to the \(254\) bits of \(x(\pi )\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000087">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Compare the natural values. The appended value is \(y(\pi )\) shifted by \(254\) bits or \(x(\pi )\). Both coordinates are below \(2^{254}\), so no reduction occurs. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.appendGetLow">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">82</span>
+    <span class="theorem_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.appendGetLow">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000088"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.appendGetLow" class="lean_decl">_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.appendGetLow</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For \(i {\lt} 254\), bit \(i\) of the appended vector is bit \(i\) of the low vector. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000088">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>The bit of an appended vector below the low width reads the low vector. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.selectedLabelsEncodeLow">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">83</span>
+    <span class="theorem_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.selectedLabelsEncodeLow">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000089"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.selectedLabelsEncodeLow" class="lean_decl">_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.selectedLabelsEncodeLow</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For \(i {\lt} 254\), label \(i\) of \(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})\) is \(L^{x_i(\pi )}_{x,i}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000089">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold the selected labels and the encoding. The low index selects the \(x\) coordinate encoding. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.keyPairsGetLow">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">84</span>
+    <span class="theorem_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.keyPairsGetLow">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000090"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0004.html#Lamport.keyPairs">Definition 79</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.keyPairsGetLow" class="lean_decl">_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.keyPairsGetLow</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    For \(i {\lt} 254\), key pair \(i\) is \((L^0_{x,i}, L^1_{x,i})\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000090">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold the key pairs. The low index selects the \(x\) item. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.appendGetHigh">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">85</span>
+    <span class="theorem_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.appendGetHigh">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000091"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.appendGetHigh" class="lean_decl">_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.appendGetHigh</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For \(i \geq 254\), bit \(i\) of the appended vector is bit \(i - 254\) of the high vector. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000091">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>The bit of an appended vector at or above the low width reads the high vector at \(i - 254\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.selectedLabelsEncodeHigh">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">86</span>
+    <span class="theorem_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.selectedLabelsEncodeHigh">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000092"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.selectedLabelsEncodeHigh" class="lean_decl">_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.selectedLabelsEncodeHigh</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For \(i \geq 254\), label \(i\) of \(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})\) is \(L^{y_{i-254}(\pi )}_{y,i-254}\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000092">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold the selected labels and the encoding. The high index selects the \(y\) coordinate encoding at \(i - 254\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.keyPairsGetHigh">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">87</span>
+    <span class="theorem_thmtitle">BABE Section&#160;5.1</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0004.html#Lamport.keyPairsGetHigh">#</a>
+    
+    <a class="icon proof" href="sect0004.html#a0000000093"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    <button class="modal"><svg  class="icon icon-mindmap "><use xlink:href="symbol-defs.svg#icon-mindmap"></use></svg>
+</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Uses</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="sect0004.html#Lamport.keyPairs">Definition 79</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.keyPairsGetHigh" class="lean_decl">_private.Proof.LamportCompatibility.Labels.0.Kriterion.ArgoMAC.Lamport.keyPairsGetHigh</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>    For \(i \geq 254\), key pair \(i\) is \((L^0_{y,i-254}, L^1_{y,i-254})\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000093">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold the key pairs. The high index selects the \(y\) item at \(i - 254\). </p>
+
+  </div>
+</div>
+
+
+</div> <!--main-text -->
+</div> <!-- content-wrapper -->
+</div> <!-- content -->
+</div> <!-- wrapper -->
+
+<nav class="prev_up_next">
+  <a href="sect0003.html" title="Adaptive privacy"><svg  class="icon icon-arrow-left "><use xlink:href="symbol-defs.svg#icon-arrow-left"></use></svg>
+</a>
+  <a href="index.html" title="ArgoMAC security proof blueprint"><svg  class="icon icon-arrow-up "><use xlink:href="symbol-defs.svg#icon-arrow-up"></use></svg>
+</a>
+  <a href="sect0005.html" title="Bibliography"><svg  class="icon icon-arrow-right "><use xlink:href="symbol-defs.svg#icon-arrow-right"></use></svg>
+</a>
+</nav>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/plastex.js"></script>
+<script type="text/javascript" src="js/svgxuse.js"></script>
+</body>
+</html>

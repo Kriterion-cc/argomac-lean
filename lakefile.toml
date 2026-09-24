@@ -1,6 +1,9 @@
 name = "argomac-baseline-check"
 version = "0.1.0"
 defaultTargets = ["Construction", "Proof", "Submission"]
+# Share build artifacts between local copies through the Lake cache.
+enableArtifactCache = true
+restoreAllArtifacts = true
 
 [[require]]
 name = "bn254-scalar-multiplication"

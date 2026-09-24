@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  MathJax = { 
+    tex: {
+		    inlineMath: [['$','$'], ['\\(','\\)']]
+	} }
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<meta name="generator" content="plasTeX" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perfect correctness</title>
+<link rel="next" href="sect0003.html" title="Adaptive privacy" />
+<link rel="prev" href="sect0001.html" title="Introduction" />
+<link rel="up" href="index.html" title="ArgoMAC security proof blueprint" />
+<link rel="stylesheet" href="styles/theme-white.css" />
+<link rel="stylesheet" href="styles/amsthm.css" />
+<link rel="stylesheet" href="styles/blueprint.css" />
+<link rel="stylesheet" href="styles/extra_styles.css" />
+</head>
+
+<body>
+<header>
+<svg  id="toc-toggle" class="icon icon-list-numbered "><use xlink:href="symbol-defs.svg#icon-list-numbered"></use></svg>
+<h1 id="doc_title"><a href="index.html">ArgoMAC security proof blueprint</a></h1>
+</header>
+
+<div class="wrapper">
+<nav class="toc">
+<ul class="sub-toc-0">
+<li class="">
+  <a href="sect0001.html"><span class="toc_ref">1</span> <span class="toc_entry">Introduction</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0001.html#a0000000007"><span class="toc_ref">1.1</span> <span class="toc_entry">Paper correspondence</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class=" active current">
+  <a href="sect0002.html"><span class="toc_ref">2</span> <span class="toc_entry">Perfect correctness</span></a>
+  <span class="expand-toc">▼</span>
+  <ul class="sub-toc-1 active">
+     <li class="">
+  <a href="sect0002.html#a0000000008"><span class="toc_ref">2.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0002.html#a0000000009"><span class="toc_ref">2.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0003.html"><span class="toc_ref">3</span> <span class="toc_entry">Adaptive privacy</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0003.html#a0000000010"><span class="toc_ref">3.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0003.html#a0000000011"><span class="toc_ref">3.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0004.html"><span class="toc_ref">4</span> <span class="toc_entry">Lamport compatibility</span></a>
+  <span class="expand-toc">▶</span>
+  <ul class="sub-toc-1">
+     <li class="">
+  <a href="sect0004.html#a0000000012"><span class="toc_ref">4.1</span> <span class="toc_entry">Statements from the paper</span></a>
+ </li>
+<li class="">
+  <a href="sect0004.html#a0000000013"><span class="toc_ref">4.2</span> <span class="toc_entry">Lean statements</span></a>
+ </li>
+
+  </ul>
+ </li>
+<li class="">
+  <a href="sect0005.html"><span class="toc_ref">5</span> <span class="toc_entry">Bibliography</span></a>
+ </li>
+<li ><a href="dep_graph_document.html">Dependency graph</a></li>
+</ul>
+</nav>
+
+<div class="content">
+<div class="content-wrapper">
+
+
+<div class="main-text">
+<h1 id="a0000000003">2 Perfect correctness</h1>
+<p>The root is <a href="sect0002.html#Shared.programPerfectCorrectness">theorem 9</a>. For every secret scalar \(r\), every random tape, and every input \(\pi \), \(\mathsf{Eval}\) on the garbled circuit and the labels of \(\pi \) returns \(f[r](\pi )\) (Fig.&#160;21). The proof follows the evaluation chain of the paper: the curve membership circuit \(C_4\) releases \(t\), \(\mathsf{Dec}_t\) recovers the labels \(L_3\), the garbled \(C_2\) returns the Jacobian coordinates of \(r_j \pi + K_j\), and \(\mathsf{Eval}_1\) sums them with the base-\((2-\omega )\) weights. <a href="sect0002.html#fig:perfect-correctness">Figure 2.1</a> shows the proof tree. An arrow points from a lemma to the result that uses it. </p>
+<figure id="fig:perfect-correctness">
+  <p><img src="images/img-0001.svg" alt="\includegraphics{figures/perfect-correctness.svg}" style="width: ; height: " />
+</p>
+<figcaption>
+  <span class="caption_title">Figure</span> 
+  <span class="caption_ref">2.1</span> 
+  <span class="caption_text">Dependencies of the perfect correctness proof.</span> 
+</figcaption>
+
+
+</figure>
+<h1 id="a0000000008">2.1 Statements from the paper</h1>
+<div class="paperdef_thmwrapper theorem-style-definition" id="babe:def3-correctness">
+  <div class="paperdef_thmheading">
+    <span class="paperdef_thmcaption">
+    Definition
+    </span>
+    <span class="paperdef_thmlabel">1</span>
+    <span class="paperdef_thmtitle">Correctness; Definition&#160;3 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:def3-correctness">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperdef_thmcontent">
+  <p> A garbling scheme \(\mathsf{GC} = (\mathsf{Garble}, \mathsf{Encode}, \mathsf{Eval})\) is correct if for every circuit \(C\) and every input \(x\): </p>
+<div class="displaymath" id="a0000000014">
+  \[  \Pr \big[\,  C(x) = \mathsf{Eval}(\mathsf{ct}_{\mathsf{GC}}, L_x) \; :\;  (\mathsf{ct}_{\mathsf{GC}}, \mathsf{ek}) \gets \mathsf{Garble}(C),\;  L_x \gets \mathsf{Encode}(\mathsf{ek}, x) \, \big] = 1 .  \]
+</div>
+<p> Formalized by <a href="sect0002.html#Shared.programPerfectCorrectness">theorem 9</a>. </p>
+
+  </div>
+</div>
+<div class="paperdef_thmwrapper theorem-style-definition" id="babe:eq27">
+  <div class="paperdef_thmheading">
+    <span class="paperdef_thmcaption">
+    Definition
+    </span>
+    <span class="paperdef_thmlabel">2</span>
+    <span class="paperdef_thmtitle">The function \(f[r]\); Eq.&#160;27 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:eq27">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperdef_thmcontent">
+  <p> The Verifier fixes a secret scalar \(r \in \mathbb {F}_{\mathbb {r}}^*\). The Prover supplies a public input point \(\pi \) through the bit decomposition \(\mathbf{b} = (x_0(\pi ), \ldots , x_{n-1}(\pi ), y_0(\pi ), \ldots , y_{n-1}(\pi ))\) of its affine coordinates, with \(n = 254\). The garbled function is </p>
+<div class="displaymath" id="a0000000015">
+  \[  f[r](\pi ) = \begin{cases}  r\pi &  \text{if } \pi \in \mathbb {G}_1, \\ 0 &  \text{otherwise.} \end{cases}  \]
+</div>
+<p> Formalized by <a href="sect0002.html#RCBComplete.evaluateCorrect">theorem 13</a>; the off-curve branch is <a href="sect0002.html#RCBComplete.evaluateCorrectInvalid">theorem 14</a>. </p>
+
+  </div>
+</div>
+<div class="paperconstr_thmwrapper theorem-style-definition" id="babe:fig21">
+  <div class="paperconstr_thmheading">
+    <span class="paperconstr_thmcaption">
+    Construction
+    </span>
+    <span class="paperconstr_thmlabel">3</span>
+    <span class="paperconstr_thmtitle">Overall garbling scheme; Fig.&#160;21 and Fig.&#160;29 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:fig21">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperconstr_thmcontent">
+  <p> \(\mathsf{Garble}(C[r_0, \ldots , r_{\ell -1}])\) runs \(\mathsf{Garble}_1(C_1)\), \(\mathsf{Garble}_2(C_2[\mathsf{ek}_1])\), \(\mathsf{Garble}_3(C_3[\mathsf{ek}_2])\), samples \(t, w \gets \mathbb {F}_p\), runs \(\mathsf{Garble}_4(C_4[t, w])\) and \(\mathsf{Garble}_5(C_5[\mathsf{ek}_4])\), and returns \(\mathsf{ct}_{\mathsf{gc}} = (\mathsf{ct}_{\mathsf{gc},2}, \mathsf{ct}_{\mathsf{gc},3}, \mathsf{ct}_{\mathsf{gc},4}, \mathsf{ct}_{\mathsf{gc},5})\) and \(\mathsf{ek} = (\mathsf{ek}_3, t, \mathsf{ek}_5)\). \(\mathsf{Encode}(\mathsf{ek}, \mathbf{b})\) returns \(L = (\mathsf{Enc}_t(L_3), L_5)\) with \(L_3 = \mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})\) and \(L_5 = \mathsf{Encode}_5(\mathsf{ek}_5, \mathbf{b})\). \(\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, L, \mathbf{b})\) computes \(L_4 \gets \mathsf{Eval}_5\), \(\hat t \gets \mathsf{Eval}_4(\mathsf{ct}_{\mathsf{gc},4}, L_4, x(\pi ), y(\pi ))\), \(L_3 \gets \mathsf{Dec}_{\hat t}(\mathsf{Enc}_t(L_3))\), \(L_2 \gets \mathsf{Eval}_3\), the Jacobian coordinates \((X, Y, Z)(r_j \pi + K_j)_{j} \gets \mathsf{Eval}_2(\mathsf{ct}_{\mathsf{gc},2}, L_2, x(\pi ), y(\pi ))\), converts them to affine points \(L_{1,j}\), and returns \(\mathsf{Eval}_1(\bot , L_1)\). The optimized scheme (Fig.&#160;29) uses the base-\((2-\omega )\) digits \(r_j \in D\) with \(\ell = 92\) and merges the layers into \(\mathsf{GC}_{23}\) and \(\mathsf{GC}_{45}\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperconstr_thmwrapper theorem-style-definition" id="babe:fig7">
+  <div class="paperconstr_thmheading">
+    <span class="paperconstr_thmcaption">
+    Construction
+    </span>
+    <span class="paperconstr_thmlabel">4</span>
+    <span class="paperconstr_thmtitle">Circuit \(C_1\) and its garbling; Fig.&#160;6 and Fig.&#160;7 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:fig7">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperconstr_thmcontent">
+  <p> \(C_1[r_0, \ldots , r_{\ell -1}](\pi ) = \sum _{j=0}^{\ell -1} (2-\omega )^j (r_j \pi )\). \(\mathsf{Garble}_1\) samples \(K_j \gets \mathbb {G}_1\) for \(j \geq 1\), sets \(K_0 = -\sum _{j \geq 1} (2-\omega )^j K_j\), and returns \(\mathsf{ct}_{\mathsf{gc},1} = \bot \) and \(\mathsf{ek}_1 = (r_0, \ldots , r_{\ell -1}, K_0, \ldots , K_{\ell -1})\). \(\mathsf{Encode}_1(\mathsf{ek}_1, \pi )\) returns \(L_1 = (L_{1,j})_j\) with \(L_{1,j} = r_j \pi + K_j\). \(\mathsf{Eval}_1(\bot , L_1) = \sum _{j=0}^{\ell -1} (2-\omega )^j L_{1,j}\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperconstr_thmwrapper theorem-style-definition" id="babe:fig10">
+  <div class="paperconstr_thmheading">
+    <span class="paperconstr_thmcaption">
+    Construction
+    </span>
+    <span class="paperconstr_thmlabel">5</span>
+    <span class="paperconstr_thmtitle">Circuit \(C_2\) and its garbling; Fig.&#160;9, Fig.&#160;10, Eqs.&#160;29–31 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:fig10">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperconstr_thmcontent">
+  <p> For each digit \(j\) and coordinate \(W \in \{ X, Y, Z\} \), the Jacobian coordinate \(W(r_j \pi + K_j)\) is a quadratic function of \((x(\pi ), y(\pi ))\): </p>
+<div class="displaymath" id="a0000000016">
+  \[  W(r_j \pi + K_j) = c^{(j,W)}_0 + c^{(j,W)}_1\,  x(\pi ) + c^{(j,W)}_2\,  y(\pi ) + c^{(j,W)}_3\,  x(\pi ) y(\pi ) + c^{(j,W)}_4\,  x(\pi )^2 + c^{(j,W)}_5\,  y(\pi )^2 .  \]
+</div>
+<p> For a binary digit \(r_j\), an offset \(K_j = (x(K_j), y(K_j))\), a randomizer \(a_j \gets \mathbb {F}_p\), and \(B = 3\), the coefficients are </p>
+<div class="displaymath" id="a0000000017">
+  \begin{align*}  \mathbf{c}^{(j,X)} & = a_j^2 \big( r_j \cdot 2B + (1 - r_j)\,  x(K_j),\;  r_j\,  x(K_j)^2,\;  -2 r_j\,  y(K_j),\;  0,\;  r_j\,  x(K_j),\;  0 \big), \\ \mathbf{c}^{(j,Y)} & = a_j^3 \big( r_j \cdot 3B\,  y(K_j) + (1 - r_j)\,  y(K_j),\;  0,\;  r_j (-y(K_j)^2 - 3B),\;  -3 r_j\,  x(K_j)^2,\;  3 r_j\,  x(K_j) y(K_j),\;  r_j\,  y(K_j) \big), \\ \mathbf{c}^{(j,Z)} & = a_j \big( -r_j\,  x(K_j) + (1 - r_j),\;  r_j,\;  0,\;  0,\;  0,\;  0 \big). \end{align*}
+</div>
+<p> The base-\((2-\omega )\) implementation uses the adjusted coefficients of <span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	, 
+	Eqs.
+	
+	51–53
+	]
+</span> for digits \(r_j \in D\). \(\mathsf{Garble}_2\) applies the Ishai–Wee partial garbling: it samples masks \(\rho ^{(j,W)}_1, \ldots , \rho ^{(j,W)}_{10}\), sets \(\rho _0 = -\rho _9 - \rho _{10}\), and publishes \(c'_k = c_k + \rho _k\) for \(k \leq 5\). \(\mathsf{Encode}_2\) returns the labels \(c'_6, \ldots , c'_{10}\), which are affine in \(x(\pi )\) and \(y(\pi )\). \(\mathsf{Eval}_2\) returns \(c'_0 + c'_1 x + c'_2 y + c'_3 xy + c'_4 x^2 + c'_5 y^2 + c'_6 x + c'_7 x + c'_8 y + c'_9 + c'_{10} = W(r_j \pi + K_j)\). Formalized by ??. </p>
+
+  </div>
+</div>
+<div class="paperconstr_thmwrapper theorem-style-definition" id="babe:fig18">
+  <div class="paperconstr_thmheading">
+    <span class="paperconstr_thmcaption">
+    Construction
+    </span>
+    <span class="paperconstr_thmlabel">6</span>
+    <span class="paperconstr_thmtitle">Curve membership circuit \(C_4\); Fig.&#160;17 and Fig.&#160;18 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:fig18">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperconstr_thmcontent">
+  <p> \(C_4[t, w](x, y) = t + w\, (x^3 + 3 - y^2) = (t + 3w) + w\,  x^3 - w\,  y^2\) for \(t, w \gets \mathbb {F}_p\). The value \(t\) is released if and only if \(\pi \) is on the curve. \(\mathsf{Garble}_4\) applies the Ishai–Wee technique to the coefficients \((\hat c_0, \hat c_1, \hat c_2) = (t + 3w, w, -w)\) with masks \(\hat\rho _1, \ldots , \hat\rho _7\), and \(\mathsf{Eval}_4\) returns \(\hat c'_0 + \hat c'_1 x^3 + \hat c'_2 y^2 + \hat c'_3 x^2 + \hat c'_4 y + \hat c'_5 x + \hat c'_6 + \hat c'_7\). Formalized by <a href="sect0002.html#CurveMembership.evaluateEncodedOnCurve">theorem 19</a>. </p>
+
+  </div>
+</div>
+<div class="paperclaim_thmwrapper theorem-style-plain" id="babe:claim7">
+  <div class="paperclaim_thmheading">
+    <span class="paperclaim_thmcaption">
+    Claim
+    </span>
+    <span class="paperclaim_thmlabel">7</span>
+    <span class="paperclaim_thmtitle">Encryption of the labels; Claim&#160;7 and Eq.&#160;33 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:claim7">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperclaim_thmcontent">
+  <p> \((\mathsf{Enc}, \mathsf{Dec})\) is implemented with a PRF \(\mathsf{EncPRF}\) and a public counter: \(\mathsf{Enc}_t(m) = \mathsf{EncPRF}(t, \mathsf{counter}) \oplus m\) and \(\mathsf{Dec}_t(\mathsf{ct}) = \mathsf{EncPRF}(t, \mathsf{counter}) \oplus \mathsf{ct}\). \(\mathsf{EncPRF}(t, (w, i, b)) = \mathsf{P}_{w,i}(\mathsf{enc}(b) \oplus k_1) \oplus k_2\) with \(k_1 \|  k_2 = \mathsf{SHA256}(t)\) is the two-key Even–Mansour construction, where each \(\mathsf{P}_{w,i}\) is a programmable random permutation. The labels of \(\mathsf{GC}_3\) are encrypted label by label: \(\hat L^b_{x,i} = \mathsf{Enc}_t(L^b_{x,i})\) and \(\hat L^b_{y,i} = \mathsf{Enc}_t(L^b_{y,i})\) (Eq.&#160;33). If \(\mathsf{GC}_{45}\) is \(\epsilon _1\)-adaptively private, then the first two hybrids of the privacy proof differ by at most \(\epsilon _1 + \mathsf{negl}(\lambda )\). Formalized by <a href="sect0002.html#EncPRF.transformEncode">theorem 20</a>. </p>
+
+  </div>
+</div>
+<div class="paperalg_thmwrapper theorem-style-definition" id="babe:alg8">
+  <div class="paperalg_thmheading">
+    <span class="paperalg_thmcaption">
+    Algorithm
+    </span>
+    <span class="paperalg_thmlabel">8</span>
+    <span class="paperalg_thmtitle">Base-\((2-\omega )\) digits; Appendix&#160;C and Alg.&#160;8 of the BaBe paper&#160;<span class="cite">
+	[
+	<a href="sect0005.html#babe" >1</a>
+	]
+</span></span>
+    <div class="thm_header_extras">
+
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#babe:alg8">#</a>
+    
+    
+    
+        </div>
+  </div>
+  <div class="paperalg_thmcontent">
+  <p> Let \(\omega \in \mathbb {F}_{\mathbb {r}}\) with \(\omega ^2 + \omega + 1 = 0\) and \(D = \{ 0, \pm 1, \pm \omega , \pm (1 + \omega )\} \). For every scalar \(r \in \{ 0, \ldots , \mathbb {r} - 1\} \), the GLV decomposition gives small integers \((a, b)\) with \(r \equiv a + \omega b \pmod{\mathbb {r}}\). Alg.&#160;8 divides \(A + B\omega \) by \(2 - \omega \) repeatedly, with the digit \(r_i \in D\) chosen from \((A + 2B) \bmod 7\) and the exact division \(A' = (3A - B)/7\), \(B' = (A + 2B)/7\), and stops at \((A, B) = (0, 0)\) within \(\ell = 1 + \lceil \log _7 \mathbb {r} \rceil = 92\) iterations. The reconstruction \(\sum _{i=0}^{\ell -1} r_i (2-\omega )^i \equiv r \pmod{\mathbb {r}}\) holds. Multiplication by a digit in \(D\) is an endomorphism: \(\omega \pi = (\mu \,  x(\pi ), y(\pi ))\) with \(\mu ^2 + \mu + 1 = 0\) in \(\mathbb {F}_p\), and \(-\pi = (x(\pi ), -y(\pi ))\). Formalized by ??. </p>
+
+  </div>
+</div>
+<h1 id="a0000000009">2.2 Lean statements</h1>
+<h2 id="a0000000018">2.2.1 Program and wire circuits</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="Shared.programPerfectCorrectness">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">9</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Shared.programPerfectCorrectness">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000019"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Shared.programPerfectCorrectness" class="lean_decl">Kriterion.ArgoMAC.Shared.programPerfectCorrectness</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Perfect correctness of the garbling scheme \((\mathsf{Garble}, \mathsf{Encode}, \mathsf{Eval})\) of Fig.&#160;21 for \(f[r]\) (Eq.&#160;27). For every secret scalar \(r\), every random tape, and every input \(\pi = (x(\pi ), y(\pi ))\): \(\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, \mathsf{Encode}(\mathsf{ek}, \pi ), \pi ) = f[r](\pi )\), where \((\mathsf{ct}_{\mathsf{gc}}, \mathsf{ek}) = \mathsf{Garble}(C[r])\). The tape supplies the private coins and the public oracles \(\mathsf{CTPRF}\), \(\mathsf{EncPRF}\), and the hash. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000019">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Fix \(r\), the tape, and \(\pi \). Apply <a href="sect0002.html#Shared.perfectCorrectness">theorem 10</a> to the tape whose public oracle is replaced by the oracle component of the tape. Unfold the program circuit, the wire circuit, and the label map. The two sides agree. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Shared.perfectCorrectness">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">10</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Shared.perfectCorrectness">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000020"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Shared.perfectCorrectness" class="lean_decl">Kriterion.ArgoMAC.Shared.perfectCorrectness</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Perfect correctness of the wire circuit, the garbling scheme of Fig.&#160;21 whose input labels are the Lamport signatures of the bits of \(\pi \) (Eqs.&#160;15–16). For every coherent tape and every input \(\pi \), evaluation under the evaluation oracle returns \(f[r](\pi )\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000020">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Fix \(r\), a coherent tape, and \(\pi \). Unfold the wire circuit and rewrite the evaluation oracle with the tape property. By <a href="sect0002.html#Lamport.restore_selected">theorem 11</a> the Lamport signature restores the bit labels \(L\). Conclude with <a href="sect0002.html#RCBComplete.perfectCorrectness">theorem 12</a>. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Lamport.restore_selected">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">11</span>
+    <span class="theorem_thmtitle">BABE Eqs.&#160;15–16</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Lamport.restore_selected">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000021"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Lamport.restore_selected" class="lean_decl">Kriterion.ArgoMAC.Lamport.restore_selected</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The wire adapter inverts the Lamport encoding. For every input \(\pi \) and every label vector \(L = \{ L^{x_i(\pi )}_{x,i}, L^{y_i(\pi )}_{y,i}\} _{i {\lt} 254}\), restoring \(L\) from its \(508\) Lamport signature slots returns the bits of \(\pi \) together with \(L\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000021">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Compare the \(x\) and \(y\) label vectors index by index. For \(i {\lt} 254\) slot \(i\) holds \(L^{x_i(\pi )}_{x,i}\). For \(i \geq 254\) slot \(i\) holds \(L^{y_{i-254}(\pi )}_{y,i-254}\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.perfectCorrectness">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">12</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.perfectCorrectness">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000022"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.perfectCorrectness" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.perfectCorrectness</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Perfect correctness of the garbled circuit of Fig.&#160;21 for the fixed base-\((2-\omega )\) construction with \(\ell = 92\) digits. The random tape supplies the fixed-key permutations of \(\mathsf{CTPRF}\), the permutations of \(\mathsf{EncPRF}\), and the hash oracle. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000022">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Fix \(r\), the randomness, and \(\pi \). The claim is <a href="sect0002.html#RCBComplete.evaluateCorrect">theorem 13</a> wrapped in <span class="ttfamily">some</span>. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.evaluateCorrect">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">13</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.evaluateCorrect">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000023"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.evaluateCorrect" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.evaluateCorrect</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For every nonzero scalar \(r\), every randomness, and every input \(\pi \): \(\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, \mathsf{Encode}(\mathsf{ek}, \pi ), \pi ) = f[r](\pi )\), where \((\mathsf{ct}_{\mathsf{gc}}, \mathsf{ek}) = \mathsf{Garble}(C[r])\) (Fig.&#160;21). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000023">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Split on whether \(\pi \) decodes to a point of \(\mathbb {G}_1\). The off-curve case is <a href="sect0002.html#RCBComplete.evaluateCorrectInvalid">theorem 14</a>. The on-curve case is <a href="sect0002.html#RCBComplete.evaluateCorrectValid">theorem 16</a>. </p>
+
+  </div>
+</div>
+<h2 id="a0000000024">2.2.2 Invalid inputs</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.evaluateCorrectInvalid">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">14</span>
+    <span class="theorem_thmtitle">BABE Eq.&#160;27</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.evaluateCorrectInvalid">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000025"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.evaluateCorrectInvalid" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.evaluateCorrectInvalid</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   When \(\pi \) is not a point of \(\mathbb {G}_1\), \(\mathsf{Eval}\) returns \(f[r](\pi ) = 0\) (Eq.&#160;27). The curve membership check \(C_4[t, w]\) (Fig.&#160;17) does not release \(t\), so the labels \(L_3\) stay encrypted. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000025">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Unfold \(\mathsf{Eval}\). By <a href="sect0002.html#RCBComplete.pipelineEvaluateInvalid">theorem 15</a> the evaluation chain returns \(\bot \). The function \(f[r]\) also returns \(0\) for an off-curve input. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.pipelineEvaluateInvalid">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">15</span>
+    <span class="theorem_thmtitle">BABE Eq.&#160;27</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.pipelineEvaluateInvalid">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000026"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.pipelineEvaluateInvalid" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.pipelineEvaluateInvalid</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   When \(\pi \) is not a point of \(\mathbb {G}_1\), the evaluation chain \(\mathsf{Eval}_5 \to \mathsf{Eval}_4 \to \mathsf{Dec}_{\hat t} \to \mathsf{Eval}_3 \to \mathsf{Eval}_2\) of Fig.&#160;21 returns \(\bot \) for every \(\mathsf{ct}_{\mathsf{gc}}\) and every label vector \(L\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000026">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold the chain. The first step decodes \(\pi \) as a curve point and fails, so the chain returns \(\bot \). </p>
+
+  </div>
+</div>
+<h2 id="a0000000027">2.2.3 Valid inputs</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.evaluateCorrectValid">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">16</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.evaluateCorrectValid">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000028"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.evaluateCorrectValid" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.evaluateCorrectValid</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   When \(\pi \) decodes to a point \(P \in \mathbb {G}_1\): \(\mathsf{Eval}(\mathsf{ct}_{\mathsf{gc}}, \mathsf{Encode}(\mathsf{ek}, \pi ), \pi ) = f[r](\pi ) = rP\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000028">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Unfold \(\mathsf{Eval}\) into the evaluation chain followed by the decoder. By <a href="sect0002.html#Garbling.evaluateEncodeRows">theorem 17</a> the chain returns the Jacobian coordinates of \(r_j \pi + K_j\) for all \(j\). The offsets \(K_j\) are clamped, so <a href="sect0002.html#RCBComplete.decodeExpectedResult">theorem 22</a> decodes these coordinates to \(rP\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Garbling.evaluateEncodeRows">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">17</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Garbling.evaluateEncodeRows">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000029"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Garbling.evaluateEncodeRows" class="lean_decl">Kriterion.ArgoMAC.Garbling.evaluateEncodeRows</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For an on-curve input \(\pi \) and the encoding key \(\mathsf{ek}\) of \(\mathsf{Garble}\), the evaluation chain of Fig.&#160;21 applied to \(\mathsf{ct}_{\mathsf{gc}}\) and \(\mathsf{Encode}(\mathsf{ek}, \pi )\) returns the Jacobian coordinates \((X, Y, Z)(r_j \pi + K_j)\) of \(\mathsf{Eval}_2\) for all \(j \in \{ 0, \ldots , \ell -1\} \). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000029">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> This is <a href="sect0002.html#Pipeline.evaluateEncoded">theorem 18</a> applied to the output keys \((r_j, K_j)\), the randomizers \(a_j\), and the oracles of \(\mathsf{ek}\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Pipeline.evaluateEncoded">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">18</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Pipeline.evaluateEncoded">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000030"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Pipeline.evaluateEncoded" class="lean_decl">Kriterion.ArgoMAC.Pipeline.evaluateEncoded</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Correctness of the evaluation chain. For an on-curve input \(\pi \), evaluating the garbled table on the bit labels \(L = \mathsf{Encode}(\mathsf{ek}, \pi )\) returns \(\mathsf{Eval}_2(\mathsf{ct}_{\mathsf{gc}, 2}, L_2, x(\pi ), y(\pi ))\), the Jacobian coordinates of \(r_j \pi + K_j\) for all \(j\) (Fig.&#160;10). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000030">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Since \(\pi \) decodes to a point, \(\pi \) is on the curve. Unfold \(\mathsf{Eval}\) and \(\mathsf{Garble}\). By <a href="sect0002.html#CurveMembership.evaluateEncodedOnCurve">theorem 19</a> the garbled \(C_4[t, w]\) releases \(\hat t = t\). By <a href="sect0002.html#EncPRF.transformEncode">theorem 20</a> decrypting the encrypted labels \(\mathsf{Enc}_t(L_3)\) with \(t\) gives the labels \(L_3\) of \(\pi \). By <a href="sect0002.html#FieldMacToECMac.evaluateEncoded">theorem 21</a> the garbled \(C_2\) evaluates to the expected coordinates, because its rows are sparse. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="CurveMembership.evaluateEncodedOnCurve">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">19</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;18</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#CurveMembership.evaluateEncodedOnCurve">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000031"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.CurveMembership.evaluateEncodedOnCurve" class="lean_decl">Kriterion.ArgoMAC.CurveMembership.evaluateEncodedOnCurve</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Correctness of the garbled \(C_4[t, w]\) (Fig.&#160;18). For all \(t, w, r_1, r_2 \in \mathbb {F}_p\), every input \(\pi \) on the curve \(y^2 = x^3 + 3\), and the labels of \(\pi \): \(\mathsf{Eval}_4\) returns \(t + w\, (x(\pi )^3 + 3 - y(\pi )^2) = t\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000031">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Rewrite the evaluation on the labels of \(\pi \). The curve equation gives \(x(\pi )^3 + 3 - y(\pi )^2 = 0\), which removes the masked term. The remaining terms cancel by ring arithmetic. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="EncPRF.transformEncode">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">20</span>
+    <span class="theorem_thmtitle">BABE Claim&#160;7</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#EncPRF.transformEncode">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000032"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.EncPRF.transformEncode" class="lean_decl">Kriterion.ArgoMAC.EncPRF.transformEncode</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Encrypting labels commutes with selecting labels. For the permutation oracle of \(\mathsf{EncPRF}\), whitening keys, an encoding key \(\mathsf{ek}_3\), and input bits \(\mathbf{b}\): \(\mathsf{Enc}_t(\mathsf{Encode}_3(\mathsf{ek}_3, \mathbf{b})) = \mathsf{Encode}_3(\mathsf{Enc}_t(\mathsf{ek}_3), \mathbf{b})\), where \(\mathsf{Enc}_t(\mathsf{ek}_3)\) encrypts every label as in Eq.&#160;33 and Claim&#160;7. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000032">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Compare the \(x\) and \(y\) label vectors. Each coordinate follows from the transformation of one coordinate encoding. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="FieldMacToECMac.evaluateEncoded">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">21</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;10</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#FieldMacToECMac.evaluateEncoded">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000033"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.FieldMacToECMac.evaluateEncoded" class="lean_decl">Kriterion.ArgoMAC.FieldMacToECMac.evaluateEncoded</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Correctness of the garbled \(C_2\) (Fig.&#160;10). For garbled rows \(\{ c'^{(j, W)}_k\} \), randomizers \(a_j\), oracles, an encoding key, and an input \(\pi \): if every row is sparse, then \(\mathsf{Eval}_2\) on the labels of \(\pi \) returns the expected result \(\{ W(r_j \pi + K_j)\} _{j, W}\) of the rows. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000033">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Unfold \(\mathsf{Eval}_2\). The evaluation of the homogeneous labels equals the expected result, because every row is sparse. </p>
+
+  </div>
+</div>
+<h2 id="a0000000034">2.2.4 Decoding</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.decodeExpectedResult">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">22</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;21</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.decodeExpectedResult">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000035"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeExpectedResult" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.decodeExpectedResult</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Decoding the output of \(\mathsf{Eval}_2\) gives \(rP\). For clamped offsets \(K_j\), randomizers \(a_j\), and an input \(\pi \) that decodes to \(P\): converting the Jacobian coordinates \((X, Y, Z)(r_j \pi + K_j)\) to affine coordinates and running \(\mathsf{Eval}_1\) (Fig.&#160;21) returns \(rP\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000035">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Unfold the decoder and the expected result. By <a href="sect0002.html#RCBComplete.decodeRowsForOutputKeys">theorem 23</a> the rows decode to the points \(r_j P + K_j\). By <a href="sect0002.html#RCBComplete.outputKeyPoints">theorem 30</a> this list equals \(L_1 = (L_{1,0}, \ldots , L_{1,\ell -1})\) of \(\mathsf{Encode}_1\). By <a href="sect0002.html#Construction.correct">theorem 31</a> \(\mathsf{Eval}_1(\bot , L_1) = rP\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.decodeRowsForOutputKeys">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">23</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;9</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.decodeRowsForOutputKeys">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000036"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeRowsForOutputKeys" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.decodeRowsForOutputKeys</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For output keys \((r_j, K_j)_j\), randomizers \(a_j\), and an input \(\pi \) that decodes to \(P\): converting every evaluated row of \(C_2\) from Jacobian to affine coordinates returns the list of points \(r_j P + K_j\) (Fig.&#160;9). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000036">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Unfold the point decoder and the rows. Decode each row with <a href="sect0002.html#RCBComplete.decodeEvaluateOutputKeyRow">theorem 24</a>. The vector of successful decodings is the expected list. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.decodeEvaluateOutputKeyRow">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">24</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;9</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.decodeEvaluateOutputKeyRow">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000037"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeEvaluateOutputKeyRow" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.decodeEvaluateOutputKeyRow</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   One row of \(C_2\) decodes to \(r_j P + K_j\). For an output key \((r_j, K_j)\) with digit \(r_j \in D = \{ 0, \pm 1, \pm \omega , \pm (1+\omega )\} \), a nonzero randomizer \(a_j\), and an input \(\pi \) that decodes to \(P\): converting the evaluated row \((X, Y, Z)\) to affine coordinates returns \(r_j P + K_j\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000037">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Since \(\pi \) decodes to a point, \(\pi \) is on the curve. Split on the endomorphism base of the digit \(r_j\). If \(r_j = 0\), <a href="sect0002.html#RCBComplete.decodeEvaluateRowNone">theorem 25</a> returns \(K_j\). Otherwise the base is a sixth root of unity \(\mu \) with \(r_j \pi = (\mu ^k x(\pi ), \pm y(\pi ))\), and <a href="sect0002.html#RCBComplete.decodeEvaluateRowSome">theorem 26</a> returns \(K_j + r_j P\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.decodeEvaluateRowNone">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">25</span>
+    <span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.decodeEvaluateRowNone">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000038"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeEvaluateRowNone" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.decodeEvaluateRowNone</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For the digit \(r_j = 0\), an offset \(K_j\), and a nonzero randomizer \(a_j\): the row of \(C_2\) evaluates to a Jacobian representation of \(K_j\) and decodes to \(K_j\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000038">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Rewrite the row for the zero digit. The decoder divides by the nonzero randomizer and recovers \(K_j\) in affine coordinates. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.decodeEvaluateRowSome">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">26</span>
+    <span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.decodeEvaluateRowSome">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000039"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeEvaluateRowSome" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.decodeEvaluateRowSome</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For a digit \(r_j \neq 0\) with endomorphism base \(\mu \), \(\mu ^6 = 1\), an offset \(K_j\), a nonzero randomizer \(a_j\), and an on-curve input \(\pi \): the row of \(C_2\) decodes to \(K_j + \pi '\), where \(\pi ' = r_j \pi = (\mu ^k x(\pi ), \pm y(\pi ))\) is the transformed input. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000039">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> The transformed input \(\pi '\) stays on the curve because \(\mu ^6 = 1\). Rewrite the row as the Jacobian addition of \(K_j\) and \(\pi '\) scaled by \(a_j\). Conclude with <a href="sect0002.html#RCBComplete.decodeScaledAlgorithmValue">theorem 27</a>. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.decodeScaledAlgorithmValue">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">27</span>
+    <span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.decodeScaledAlgorithmValue">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000040"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.decodeScaledAlgorithmValue" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.decodeScaledAlgorithmValue</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Jacobian addition (Eqs.&#160;29–31) decodes to the affine sum. For two on-curve points \(K\) and \(\pi \) and a nonzero randomizer \(a\): converting the scaled output \((a^2 X, a^3 Y, a Z)\) of the addition formula to affine coordinates returns \(K + \pi \). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000040">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> By <a href="sect0002.html#RCBComplete.outputNonsingular">theorem 28</a> the output of the addition formula is a nonsingular projective point. Scaling by \(a\) keeps it nonsingular. The decoder returns the affine form of this point, and scaling does not change the affine form. By <a href="sect0002.html#RCBComplete.outputRepresentsSum">theorem 29</a> the affine form is \(K + \pi \). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.outputNonsingular">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">28</span>
+    <span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.outputNonsingular">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000041"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.outputNonsingular" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.outputNonsingular</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For two on-curve points \((a, b)\) and \((u, v)\), the output \((X, Y, Z)\) of the addition formula of Eqs.&#160;29–31 is a nonsingular point of the projective BN254 curve. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000041">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>The output satisfies the projective curve equation and is not the zero vector. If \(Z = 0\), then \(X = 0\) and \(Y \neq 0\), so the point is the nonsingular point at infinity. If \(Z \neq 0\), the affine point satisfies the curve equation, and the nonzero discriminant gives nonsingularity. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.outputRepresentsSum">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">29</span>
+    <span class="theorem_thmtitle">BABE Eqs.&#160;29–31</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.outputRepresentsSum">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000042"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.outputRepresentsSum" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.outputRepresentsSum</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   For two on-curve points \((a, b)\) and \((u, v)\), the affine form of the output of the addition formula equals the group sum \((a, b) + (u, v)\) in \(\mathbb {G}_1\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000042">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Split on whether \(a \neq u\). If they differ, \(Z \neq 0\), and the recovered coordinates match the affine addition formula. If \(a = u\), the \(y\) coordinates are equal or opposite. Equal \(y\) coordinates give the doubling formula with \(Z \neq 0\). Opposite \(y\) coordinates give \(Z = 0\), the point at infinity, and the affine sum is also \(0\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="RCBComplete.outputKeyPoints">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">30</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;7</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#RCBComplete.outputKeyPoints">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000043"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.RCBComplete.outputKeyPoints" class="lean_decl">Kriterion.ArgoMAC.RCBComplete.outputKeyPoints</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The list of points \(r_j P + K_j\) over all output keys equals \(L_1 = \mathsf{Encode}_1(\mathsf{ek}_1, P)\) of Fig.&#160;7, where the offsets are clamped by \(K_0 = -\sum _{j \geq 1} (2-\omega )^j K_j\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000043">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>Read the output keys as the digit vector \((r_0, \ldots , r_{\ell -1})\) paired with the offsets. Rewrite the vector as a zip of the digit multiples with the offset points. The clamped successful offsets are \((K_0, \ldots , K_{\ell -1})\). The zip is the definition of \(\mathsf{Encode}_1\). </p>
+
+  </div>
+</div>
+<h2 id="a0000000044">2.2.5 Randomized encoding</h2>
+<div class="theorem_thmwrapper theorem-style-plain" id="Construction.correct">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">31</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;6</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Construction.correct">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000045"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Construction.correct" class="lean_decl">Kriterion.ArgoMAC.Construction.correct</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Correctness of \(C_1\) (Fig.&#160;6): \(\mathsf{Eval}_1(\bot , L_1) = \sum _{j=0}^{\ell -1} (2-\omega )^j (r_j P + K_j) = rP\) for every scalar \(r\), every offset randomness, and every point \(P\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000045">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> Unfold \(\mathsf{Encode}_1\). The Horner sum splits into \(\big(\sum _j r_j (2-\omega )^j\big) P\) plus \(\sum _j (2-\omega )^j K_j\). By <a href="sect0002.html#Construction.scalarReconstruction">theorem 32</a> the first factor is \(r\). By <a href="sect0002.html#Construction.offsetsCancel">theorem 34</a> the second sum is \(0\). </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Construction.scalarReconstruction">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">32</span>
+    <span class="theorem_thmtitle">BABE Alg.&#160;8</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Construction.scalarReconstruction">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000046"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Construction.scalarReconstruction" class="lean_decl">Kriterion.ArgoMAC.Construction.scalarReconstruction</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Reconstruction of Alg.&#160;8: \(\sum _{j=0}^{\ell -1} r_j (2-\omega )^j \equiv r \pmod{\mathbb {r}}\) for the base-\((2-\omega )\) digits \(r_j \in D\) of every scalar \(r\), with \(\ell = 92\). The termination certificate uses <a href="sect0002.html#GLV91.glvInitialTerminates92">theorem 33</a>. </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000046">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p> The reconstruction invariant holds for \(92\) iterations of Alg.&#160;8 with the remaining pair \((A, B)\) as a tail. By the termination certificate \((A, B) = (0, 0)\) after \(92\) iterations, so the tail vanishes. The initial pair \((a, b)\) satisfies \(a + \omega b \equiv r\) by the GLV decomposition. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="GLV91.glvInitialTerminates92">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">33</span>
+    <span class="theorem_thmtitle">BABE Appendix&#160;C</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#GLV91.glvInitialTerminates92">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000047"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.GLV91.glvInitialTerminates92" class="lean_decl">Kriterion.ArgoMAC.GLV91.glvInitialTerminates92</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   Alg.&#160;8 terminates. For every scalar \(r\), the GLV pair \((a, b)\) with \(r \equiv a + \omega b \pmod{\mathbb {r}}\) reaches \((A, B) = (0, 0)\) after \(92\) iterations of the digit loop (Appendix&#160;C). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000047">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>It is enough that the norm of \((a, b)\) is at most the bound for \(91\) iterations. The GLV coefficients satisfy the bounds of the decomposition. Bound \(a^2\), \(b^2\), and \(-ab\) by the basis constants. A numeric check compares the constants with the norm bound. </p>
+
+  </div>
+</div>
+<div class="theorem_thmwrapper theorem-style-plain" id="Construction.offsetsCancel">
+  <div class="theorem_thmheading">
+    <span class="theorem_thmcaption">
+    Theorem
+    </span>
+    <span class="theorem_thmlabel">34</span>
+    <span class="theorem_thmtitle">BABE Fig.&#160;7</span>
+    <div class="thm_header_extras">
+
+    
+    ✓
+        </div>
+    <div class="thm_header_hidden_extras">
+
+    <a class="icon proof" href="sect0002.html#Construction.offsetsCancel">#</a>
+    
+    <a class="icon proof" href="sect0002.html#a0000000048"><svg  class="icon icon-cogs "><use xlink:href="symbol-defs.svg#icon-cogs"></use></svg>
+</a>
+    
+    
+    
+    <button class="modal lean">L∃∀N</button>
+        <div class="modal-container">
+      <div class="modal-content">
+        <header>
+          <h1>Lean declarations</h1>
+          <button class="closebtn"><svg  class="icon icon-cross "><use xlink:href="symbol-defs.svg#icon-cross"></use></svg>
+</button>
+        </header>
+        
+        <ul class="uses">
+          
+          <li><a href="https://github.com/Kriterion-cc/argomac-lean/find/#doc/Kriterion.ArgoMAC.Construction.offsetsCancel" class="lean_decl">Kriterion.ArgoMAC.Construction.offsetsCancel</a></li>
+          
+        </ul>
+    
+      </div>
+    </div>
+
+    
+        </div>
+  </div>
+  <div class="theorem_thmcontent">
+  <p>   The clamped offsets of \(\mathsf{Garble}_1\) (Fig.&#160;7) cancel: \(\sum _{j=0}^{\ell -1} (2-\omega )^j K_j = 0\) for every offset randomness, because \(K_0 = -\sum _{j \geq 1} (2-\omega )^j K_j\). </p>
+
+  </div>
+</div>
+<div class="proof_wrapper" id="a0000000048">
+  <div class="proof_heading">
+    <span class="proof_caption">
+    Proof
+    </span>
+    <span class="expand-proof">▼</span>
+  </div>
+  <div class="proof_content">
+  <p>The clamp lemma cancels the Horner sum of the free offsets \(K_1, \ldots , K_{\ell -1}\). </p>
+
+  </div>
+</div>
+
+</div> <!--main-text -->
+</div> <!-- content-wrapper -->
+</div> <!-- content -->
+</div> <!-- wrapper -->
+
+<nav class="prev_up_next">
+  <a href="sect0001.html" title="Introduction"><svg  class="icon icon-arrow-left "><use xlink:href="symbol-defs.svg#icon-arrow-left"></use></svg>
+</a>
+  <a href="index.html" title="ArgoMAC security proof blueprint"><svg  class="icon icon-arrow-up "><use xlink:href="symbol-defs.svg#icon-arrow-up"></use></svg>
+</a>
+  <a href="sect0003.html" title="Adaptive privacy"><svg  class="icon icon-arrow-right "><use xlink:href="symbol-defs.svg#icon-arrow-right"></use></svg>
+</a>
+</nav>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/plastex.js"></script>
+<script type="text/javascript" src="js/svgxuse.js"></script>
+</body>
+</html>

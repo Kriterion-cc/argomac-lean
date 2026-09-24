@@ -1,0 +1,21 @@
+# Blueprint annotations for the ArgoMAC proofs.
+# This package is not part of the verified submission.
+name = "argomac-blueprint"
+version = "0.1.0"
+defaultTargets = ["Blueprint"]
+# Reuse the dependency checkouts and build artifacts of the root package.
+packagesDir = "../../../.lake/packages"
+enableArtifactCache = true
+restoreAllArtifacts = true
+
+[[require]]
+name = "argomac-baseline-check"
+path = "../../.."
+
+[[require]]
+name = "LeanArchitect"
+git = "https://github.com/hanwenzhu/LeanArchitect.git"
+rev = "v4.33.0"
+
+[[lean_lib]]
+name = "Blueprint"

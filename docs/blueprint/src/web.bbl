@@ -1,0 +1,10 @@
+\begin{thebibliography}{1}
+
+\bibitem{babe}
+Sanjam Garg, Dimitris Kolonelos, Mikhail Sergeevitch, Srivatsan Sridhar, and
+  David Tse.
+\newblock {BABE}: Verifying proofs on {Bitcoin} made 10,000x cheaper.
+\newblock LaTeX sources, version v2.0, commit \texttt{e2dcf4d},
+  \url{https://github.com/babylonlabs-io/BaBe.latex}, 2026.
+
+\end{thebibliography}

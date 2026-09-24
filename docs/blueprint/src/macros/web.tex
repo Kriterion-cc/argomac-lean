@@ -1,0 +1,9 @@
+% In this file you should put macros to be used only by
+% the web version. Of course they should have a corresponding
+% version in macros/print.tex.
+% Typically the printed version could have more fancy decorations.
+% This will probably be a very short file.
+
+% Dependency figures. The web version also has the interactive graph page.
+\newcommand{\depgraphfigure}[2]{\begin{figure}\includegraphics{figures/#1.svg}\caption{#2}\label{fig:#1}\end{figure}}
+\newcommand{\depgraphfigurewide}[2]{\depgraphfigure{#1}{#2}}
